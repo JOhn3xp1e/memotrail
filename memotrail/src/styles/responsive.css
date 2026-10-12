@@ -1407,6 +1407,38 @@
     gap: 5px;
   }
 }
+@media (max-width: 767px) {
+  .page-heading-action {
+    width: 100%;
+    flex: 1 0 100%;
+  }
+  .collection-actions .button {
+    flex: 1 1 130px;
+    min-width: 0;
+  }
+  .collection-actions,
+  .composer-submit-actions {
+    flex-wrap: wrap;
+  }
+  .collection-actions .button {
+    flex: 1;
+  }
+  .timeline-filters {
+    align-items: stretch;
+  }
+  .timeline-filters label {
+    flex: 1 1 135px;
+  }
+  .timeline-filters select,
+  .timeline-filters input {
+    width: 100%;
+    min-width: 0;
+  }
+  .album-banner-actions {
+    align-items: flex-end;
+    flex-direction: column-reverse;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

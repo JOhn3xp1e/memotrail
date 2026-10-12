@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import {
   ArrowUpRight,
   Grid2X2,
@@ -15,25 +15,30 @@ import { EmptyState } from "@/components/empty-state";
 import { MemoryCard } from "@/components/memory-card";
 import { MemoryDialog } from "@/components/memory-dialog";
 import { useMemoryData } from "@/hooks/use-memory-data";
+import type { MemoryView } from "@/types/memory";
 import { useSamples } from "@/stores/samples";
-import type { SampleMemory } from "@/types/memory";
-
-const categories = [
-  { id: "all", label: "All moments" },
-  { id: "travel", label: "Little adventures" },
-  { id: "everyday", label: "Everyday magic" },
-  { id: "together", label: "Together" },
-  { id: "favorites", label: "Favorites" },
-];
 
 export function TimelinePage() {
-  const { memories, isSample } = useMemoryData();
+  const { memories, collections, isSample, isLoading } = useMemoryData();
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [selected, setSelected] = useState<SampleMemory | null>(null);
-  const favorites = useSamples((state) => state.favorites);
+  const [selected, setSelected] = useState<MemoryView | null>(null);
+  const sampleFavorites = useSamples((state) => state.favorites);
   const category = params.get("category") ?? "all";
   const query = params.get("q") ?? "";
+  const mood = params.get("mood") ?? "";
+  const collectionId = params.get("collection") ?? "";
+  const fromDate = params.get("from") ?? "";
+  const toDate = params.get("to") ?? "";
+  const notice =
+    typeof location.state === "object" &&
+    location.state !== null &&
+    "notice" in location.state &&
+    typeof location.state.notice === "string"
+      ? location.state.notice
+      : "";
+
   function updateParam(key: string, value: string) {
     setParams(
       (previous) => {
@@ -45,17 +50,37 @@ export function TimelinePage() {
       { replace: true },
     );
   }
-  const filtered = memories.filter(
-    (memory) =>
-      (category === "all" ||
-        (category === "favorites"
-          ? favorites.includes(memory.id)
-          : category === memory.category)) &&
+
+  const filtered = memories.filter((memory) => {
+    const categoryMatches =
+      category === "all" ||
+      (category === "favorites"
+        ? memory.source === "sample"
+          ? sampleFavorites.includes(memory.id)
+          : memory.favorite
+        : memory.source === "personal" || memory.category === category);
+    const collectionMatches = !collectionId
+      ? true
+      : memory.source === "personal"
+        ? memory.collectionId === collectionId
+        : collections.some(
+            (collection) =>
+              collection.id === collectionId &&
+              collection.source === "sample" &&
+              collection.category === memory.category,
+          );
+    return (
+      categoryMatches &&
+      collectionMatches &&
+      (!mood || memory.mood === mood) &&
+      (!fromDate || memory.date >= fromDate) &&
+      (!toDate || memory.date <= toDate) &&
       `${memory.title} ${memory.story} ${memory.location}`
         .toLowerCase()
-        .includes(query.toLowerCase().trim()),
-  );
-  const groups = filtered.reduce<Record<string, SampleMemory[]>>(
+        .includes(query.toLowerCase().trim())
+    );
+  });
+  const groups = filtered.reduce<Record<string, MemoryView[]>>(
     (months, memory) => {
       const month = memory.date.slice(0, 7);
       (months[month] ??= []).push(memory);
@@ -78,6 +103,11 @@ export function TimelinePage() {
           </Link>
         </Button>
       </PageHeading>
+      {notice && (
+        <p className="save-success" role="status">
+          {notice}
+        </p>
+      )}
       {isSample && (
         <div className="sample-notice">
           <span className="sample-dot" />
@@ -90,7 +120,17 @@ export function TimelinePage() {
       )}
       <div className="timeline-toolbar">
         <div className="filter-chips" aria-label="Filter memories">
-          {categories.map((item) => (
+          {[
+            { id: "all", label: "All moments" },
+            ...(isSample
+              ? [
+                  { id: "travel", label: "Little adventures" },
+                  { id: "everyday", label: "Everyday magic" },
+                  { id: "together", label: "Together" },
+                ]
+              : []),
+            { id: "favorites", label: "Favorites" },
+          ].map((item) => (
             <button
               key={item.id}
               className={`filter-chip ${category === item.id ? "selected" : ""}`}
@@ -127,8 +167,8 @@ export function TimelinePage() {
         <label className="timeline-search">
           <Search size={17} />
           <input
-            placeholder="A place, a person, a little moment…"
-            aria-label="Filter the timeline by keyword"
+            placeholder="Search titles, stories, and places…"
+            aria-label="Search memories by title or description"
             value={query}
             onChange={(event) => updateParam("q", event.target.value)}
           />
@@ -146,8 +186,78 @@ export function TimelinePage() {
           {filtered.length === 1 ? "memory" : "memories"}
         </span>
       </div>
-      {!memories.length ? (
-        <EmptyState title="Your story is just beginning" />
+      {!isSample && (
+        <div className="timeline-filters" aria-label="Filter memories">
+          <label>
+            Mood
+            <select
+              aria-label="Filter by mood"
+              value={mood}
+              onChange={(event) => updateParam("mood", event.target.value)}
+            >
+              <option value="">Any mood</option>
+              {["grateful", "happy", "peaceful", "nostalgic", "adventurous"].map(
+                (value) => (
+                  <option key={value} value={value}>
+                    {value.charAt(0).toUpperCase() + value.slice(1)}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+          <label>
+            Collection
+            <select
+              aria-label="Filter by collection"
+              value={collectionId}
+              onChange={(event) =>
+                updateParam("collection", event.target.value)
+              }
+            >
+              <option value="">Every collection</option>
+              {collections.map((collection) => (
+                <option key={collection.id} value={collection.id}>
+                  {collection.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            From
+            <input
+              aria-label="Filter from date"
+              type="date"
+              value={fromDate}
+              max={toDate || undefined}
+              onChange={(event) => updateParam("from", event.target.value)}
+            />
+          </label>
+          <label>
+            To
+            <input
+              aria-label="Filter to date"
+              type="date"
+              value={toDate}
+              min={fromDate || undefined}
+              onChange={(event) => updateParam("to", event.target.value)}
+            />
+          </label>
+          {(mood || collectionId || fromDate || toDate) && (
+            <Button variant="ghost" size="sm" onClick={() => setParams({})}>
+              Clear filters
+            </Button>
+          )}
+        </div>
+      )}
+      {isLoading ? (
+        <p className="memory-loading" role="status">
+          Opening your private journal…
+        </p>
+      ) : !memories.length ? (
+        <EmptyState
+          title="Your story is just beginning"
+          description="Save your first memory and it will find a home in this timeline."
+        />
       ) : !filtered.length ? (
         <div className="no-results">
           <Search size={25} />
@@ -173,11 +283,11 @@ export function TimelinePage() {
                       year: "numeric",
                     }).format(new Date(`${month}-01T12:00:00`))}
                   </h2>
-                  <span>{items?.length} moments</span>
+                  <span>{items.length} moments</span>
                   <span className="month-line" />
                 </div>
                 <div className="masonry-grid">
-                  {items?.map((memory, index) => (
+                  {items.map((memory, index) => (
                     <MemoryCard
                       memory={memory}
                       key={memory.id}

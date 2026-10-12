@@ -16,13 +16,14 @@ import { MemoryDialog } from "@/components/memory-dialog";
 import { CollectionCard } from "@/components/collection-card";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryJar, ScrapbookCollage } from "@/components/scrapbook";
-import type { SampleMemory } from "@/types/memory";
+import type { MemoryView } from "@/types/memory";
 import { localDate } from "@/lib/utils";
+import { LocalMediaImage } from "@/components/local-media-image";
 
 export function HomePage() {
   const { name, setSampleMode } = usePreferences();
-  const { memories, collections, isSample } = useMemoryData();
-  const [selected, setSelected] = useState<SampleMemory | null>(null);
+  const { memories, collections, isSample, isLoading } = useMemoryData();
+  const [selected, setSelected] = useState<MemoryView | null>(null);
   const today = localDate();
   const anniversary = memories.find(
     (memory) =>
@@ -117,7 +118,11 @@ export function HomePage() {
               <ArrowRight size={15} />
             </Link>
           </div>
-          {memories.length ? (
+          {isLoading ? (
+            <p className="memory-loading" role="status">
+              Opening your private journal…
+            </p>
+          ) : memories.length ? (
             <div className="recent-grid">
               {memories.slice(0, 3).map((memory, index) => (
                 <MemoryCard
@@ -141,12 +146,23 @@ export function HomePage() {
               <h2>On this day</h2>
               <Sparkles size={15} />
             </div>
-            {nostalgic ? (
+            {isLoading ? (
+              <p className="memory-loading" role="status">
+                Opening your memories…
+              </p>
+            ) : nostalgic ? (
               <button
                 className="nostalgia-content"
                 onClick={() => setSelected(nostalgic)}
               >
-                <img src={nostalgic.image} alt={nostalgic.alt} />
+                <LocalMediaImage
+                  source={nostalgic.image}
+                  alt={
+                    nostalgic.source === "sample"
+                      ? nostalgic.alt
+                      : `Photo for ${nostalgic.title}`
+                  }
+                />
                 <span>
                   <span className="nostalgia-date">
                     {anniversary
@@ -155,7 +171,9 @@ export function HomePage() {
                   </span>
                   <strong>{nostalgic.title}</strong>
                   <span className="nostalgia-cta">
-                    Revisit a sample moment
+                    {nostalgic.source === "sample"
+                      ? "Revisit a sample moment"
+                      : "Revisit this memory"}
                     <ArrowRight size={12} />
                   </span>
                 </span>

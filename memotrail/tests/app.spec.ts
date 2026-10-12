@@ -98,7 +98,7 @@ for (const theme of ["light", "dark"]) {
   }
 }
 
-test("sample search, filters, albums, favorites, and jar work without a memory database", async ({
+test("sample search, filters, albums, favorites, and jar remain demo-only", async ({
   page,
 }) => {
   await page.goto("/");
@@ -124,13 +124,13 @@ test("sample search, filters, albums, favorites, and jar work without a memory d
   await expect(page.locator(".memory-card")).toHaveCount(4);
   await page
     .getByRole("button", {
-      name: "Unfavorite sample memory: A little closer to nature",
+      name: "Unfavorite memory: A little closer to nature",
     })
     .click();
   await expect(page.locator(".memory-card")).toHaveCount(3);
   await page.getByRole("button", { name: "All moments" }).click();
   await page
-    .getByRole("textbox", { name: "Filter the timeline by keyword" })
+    .getByRole("textbox", { name: "Search memories by title or description" })
     .fill("no-such-memory");
   await expect(page.getByText("No moments found, just yet.")).toBeVisible();
   await page.getByRole("button", { name: "Show all moments" }).click();
@@ -143,12 +143,24 @@ test("sample search, filters, albums, favorites, and jar work without a memory d
   );
   await expect(page.locator(".memory-card")).toHaveCount(3);
   const databases = await page.evaluate(() => indexedDB.databases());
-  expect(databases.some((database) => database.name === "memotrail")).toBe(
-    false,
+  expect(databases.some((database) => database.name === "memotrail")).toBe(true);
+  const storedMemoryCount = await page.evaluate(
+    () =>
+      new Promise<number>((resolve, reject) => {
+        const request = indexedDB.open("memotrail");
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          const transaction = request.result.transaction("memories", "readonly");
+          const count = transaction.objectStore("memories").count();
+          count.onsuccess = () => resolve(count.result);
+          count.onerror = () => reject(count.error);
+        };
+      }),
   );
+  expect(storedMemoryCount).toBe(0);
 });
 
-test("personalization and empty states persist, while the draft stays in memory only", async ({
+test("personalization and personal memory persistence work independently of samples", async ({
   page,
 }) => {
   await page.goto("/settings");
@@ -188,24 +200,22 @@ test("personalization and empty states persist, while the draft stays in memory 
   await page.getByRole("button", { name: "Keep my draft" }).click();
   await expect(page.locator(".uploaded-photo")).toHaveCount(1);
   await page
-    .getByRole("button", { name: "Preview memory", exact: true })
+    .getByRole("button", { name: "Preview", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText("Our lovely afternoon");
   await expect(page.getByRole("dialog")).toContainText(
-    "This is a preview, not a saved memory.",
+    "not saved until you choose Save memory",
   );
   await page.keyboard.press("Escape");
-  await page
-    .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "Home", exact: true })
-    .click();
-  await page.locator(".sidebar-add").click();
-  await expect(page.getByLabel("Give this moment a title")).toHaveValue(
+  await page.getByRole("button", { name: "Save memory" }).click();
+  await expect(page).toHaveURL(/\/timeline$/);
+  await expect(page.locator(".memory-card")).toContainText(
     "Our lovely afternoon",
   );
   await page.reload();
-  await expect(page.getByLabel("Give this moment a title")).toHaveValue("");
-  await expect(page.locator(".uploaded-photo")).toHaveCount(0);
+  await expect(page.locator(".memory-card")).toContainText(
+    "Our lovely afternoon",
+  );
   const storage = await page.evaluate(() =>
     Object.values(localStorage).join(" "),
   );
@@ -214,7 +224,124 @@ test("personalization and empty states persist, while the draft stays in memory 
     (await page.evaluate(() => indexedDB.databases())).some(
       (database) => database.name === "memotrail",
     ),
-  ).toBe(false);
+  ).toBe(true);
+});
+
+test("collections, memory editing, filters, favorites, and confirmed deletion work", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/collections");
+  await page.getByRole("button", { name: "New collection" }).click();
+  await page.getByLabel("Collection name").fill("Summer walks");
+  await page
+    .getByLabel("A little description")
+    .fill("Slow afternoons by the water.");
+  await page.getByRole("button", { name: "Create collection" }).click();
+  await expect(page.locator(".collection-card")).toContainText("Summer walks");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByLabel("Collection name").fill("Summer walk collection");
+  await page.getByRole("button", { name: "Save changes" }).click();
+  await expect(page.locator(".collection-card")).toContainText(
+    "Summer walk collection",
+  );
+
+  await page.goto("/add");
+  await page.getByLabel("Give this moment a title").fill("The blue lake");
+  await page
+    .getByLabel("What made it special?")
+    .fill("A long walk beside the lake.");
+  await page.getByLabel("Where were you?").fill("Lake Louise");
+  await page.getByRole("button", { name: "Create a collection" }).click();
+  await page.getByLabel("Collection name").fill("Lake chapters");
+  await page
+    .getByLabel("A little description")
+    .fill("Quiet moments by the water.");
+  await page.getByRole("button", { name: "Create collection" }).click();
+  await expect(page.getByLabel("Give this moment a title")).toHaveValue(
+    "The blue lake",
+  );
+  await page.getByLabel("Add to a collection").selectOption({
+    label: "Lake chapters",
+  });
+  await page.getByRole("button", { name: /Happy/ }).click();
+  await page.locator("input[type=file]").setInputFiles([
+    path.resolve("public/photos/lake-weekend.jpg"),
+    path.resolve("public/photos/wildflowers.jpg"),
+  ]);
+  await expect(page.locator(".uploaded-photo")).toHaveCount(2);
+  await page.getByRole("button", { name: "Save memory" }).click();
+  await expect(page).toHaveURL(/\/timeline$/);
+  await expect(page.locator(".memory-card")).toContainText("The blue lake");
+
+  await page
+    .getByRole("button", { name: "Favorite memory: The blue lake" })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Unfavorite memory: The blue lake" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByLabel("Filter by mood").selectOption("happy");
+  await page
+    .getByLabel("Filter by collection")
+    .selectOption({ label: "Lake chapters" });
+  await page.getByLabel("Filter from date").fill("2025-01-01");
+  await page.getByLabel("Filter to date").fill("2026-12-31");
+  await expect(page.locator(".memory-card")).toHaveCount(1);
+  await page.getByLabel("Filter by mood").selectOption("");
+  await page.getByLabel("Filter by collection").selectOption("");
+  await page.getByLabel("Filter from date").fill("");
+  await page.getByLabel("Filter to date").fill("");
+
+  await page
+    .locator(".memory-card h3 button")
+    .filter({ hasText: "The blue lake" })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText(
+    "A long walk beside the lake.",
+  );
+  await page.getByRole("link", { name: "Edit memory" }).click();
+  await expect(page.getByLabel("Give this moment a title")).toHaveValue(
+    "The blue lake",
+  );
+  await page.getByLabel("Give this moment a title").fill("The quiet blue lake");
+  await page.getByRole("button", { name: "Save changes" }).click();
+  await expect(page.getByRole("status")).toContainText(
+    "Memory changes saved privately on this device.",
+  );
+  await page.goto("/timeline");
+  await expect(page.locator(".memory-card")).toContainText(
+    "The quiet blue lake",
+  );
+  await page.reload();
+  await expect(page.locator(".memory-card")).toContainText(
+    "The quiet blue lake",
+  );
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(() => !!navigator.serviceWorker.controller),
+    )
+    .toBe(true);
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator(".memory-card")).toContainText(
+    "The quiet blue lake",
+  );
+  await context.setOffline(false);
+
+  await page
+    .locator(".memory-card h3 button")
+    .filter({ hasText: "The quiet blue lake" })
+    .click();
+  await page.getByRole("button", { name: "Delete" }).click();
+  await page.getByRole("button", { name: "Delete memory" }).click();
+  await expect(page.locator(".memory-card")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Your story is just beginning" }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/\/timeline$/);
 });
 
 test("production caches every screen, font, and photograph for offline navigation", async ({

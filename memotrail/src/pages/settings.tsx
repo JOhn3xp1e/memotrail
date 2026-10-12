@@ -26,6 +26,7 @@ import {
 import { Brand } from "@/components/brand";
 import { usePreferences, type Theme } from "@/stores/preferences";
 import { usePwa } from "@/hooks/use-pwa";
+import { useStoragePersistence } from "@/stores/storage-persistence";
 
 const themes = [
   {
@@ -66,6 +67,7 @@ export function SettingsPage() {
   );
   const [installError, setInstallError] = useState(false);
   const pwa = usePwa();
+  const persistence = useStoragePersistence();
   function saveName(event: FormEvent) {
     event.preventDefault();
     setName(nameInput.trim());
@@ -227,6 +229,27 @@ export function SettingsPage() {
               <WifiOff size={16} />
               Room for life, even offline
             </div>
+            <p className="fine-print" role={persistence.status === "error" ? "alert" : "status"}>
+              {persistence.status === "granted"
+                ? "The browser is protecting your local journal from automatic storage cleanup."
+                : persistence.status === "not-granted"
+                  ? "The browser may clear local data when storage is low."
+                  : persistence.status === "unsupported"
+                    ? "This browser does not offer persistent storage protection."
+                    : persistence.status === "error"
+                      ? persistence.error
+                      : "Requesting protected local storage…"}
+            </p>
+            {(persistence.status === "not-granted" ||
+              persistence.status === "error") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void persistence.request()}
+              >
+                Ask browser to protect data
+              </Button>
+            )}
             <button className="text-link" onClick={() => setInfo("privacy")}>
               Our promise to you
               <ArrowUpRight size={14} />
@@ -277,7 +300,7 @@ export function SettingsPage() {
       <div className="settings-signoff">
         <Brand />
         <p>A home for the things that matter.</p>
-        <span>Phase 1 preview · Made with a little love</span>
+        <span>Offline-first journal · Made with a little love</span>
       </div>
       <Dialog
         open={info !== null}
@@ -302,10 +325,10 @@ export function SettingsPage() {
                   uploaded.
                 </p>
                 <p>
-                  Only your display preferences and chosen name are saved
-                  locally in this preview. Memory drafts and sample favorites
-                  last for the current session. The memory database is not yet
-                  active.
+                  Your memories, collections, and photos are stored in a local
+                  IndexedDB database on this device. Browser storage may still
+                  be cleared by you or by the browser; persistent storage is
+                  requested when supported.
                 </p>
                 <p>
                   The app caches its own files, fonts, and sample photos for

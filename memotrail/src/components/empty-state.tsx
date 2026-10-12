@@ -22,7 +22,7 @@ export function EmptyState({
       <p>{description}</p>
       <Button asChild>
         <Link to="/add">
-          <span>Create your first preview</span>
+          <span>Create your first memory</span>
           <ArrowRight size={16} />
         </Link>
       </Button>

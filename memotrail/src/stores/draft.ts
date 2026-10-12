@@ -8,6 +8,7 @@ export interface MemoryDraft {
   date: string;
   location: string;
   mood: Mood;
+  collectionId: string;
   photos: File[];
 }
 const blankDraft = (): MemoryDraft => ({
@@ -16,6 +17,7 @@ const blankDraft = (): MemoryDraft => ({
   date: localDate(),
   location: "",
   mood: "grateful",
+  collectionId: "",
   photos: [],
 });
 interface DraftStore {

@@ -1,6 +1,6 @@
 ﻿# MemoTrail — Your Life, Your Stories
 
-A private, offline-first scrapbook PWA. Phase 1 implements the complete application shell and an interactive design preview; memory database operations are intentionally deferred.
+A private, offline-first scrapbook PWA. Memories, photos, and collections are stored locally with Dexie.js and IndexedDB; no personal content is sent to a server.
 
 ## Run locally
 
@@ -27,7 +27,10 @@ Browser tests use locally installed Google Chrome. Production preview defaults t
 - Desktop sidebar and mobile floating navigation with safe-area spacing.
 - Shared ivory/lavender design, serif headings, polaroids, photo albums, and dark/system themes.
 - Working sample search, category/favorite filters, journal/grid layouts, sample details, album browsing, and Memory Jar picks.
-- Photo selection/drop, validation, mood selection, and a live memory preview. Drafts stay in memory until reload/close; there is no misleading save action.
+- Photo selection/drop, validation, optional image compression, memory previews, and explicit local saves.
+- Persistent memory and collection CRUD, favorites, title/story search, mood/date/collection filters, and a year/month timeline.
+- Multi-photo Blob storage in IndexedDB, with object-URL cleanup and graceful fallbacks for unavailable media.
+- A browser persistent-storage request where supported; browser/site-data cleanup can still remove local records.
 - Personalized greetings, persistent display preferences, reduced motion, accessible Radix dialogs and switches.
 - Local photographs/fonts, PNG install icons, an offline app shell, and an explicit update prompt.
 
@@ -38,18 +41,18 @@ Browser tests use locally installed Google Chrome. Production preview defaults t
 | `src/pages/` | The five initial screens and not-found route |
 | `src/components/` | Shared shell, scrapbook, cards, dialogs, and local shadcn/ui primitives |
 | `src/styles/` | Shared tokens, page styling, and responsive layouts |
-| `src/hooks/` | Theme, PWA lifecycle, object URLs, and presentation data |
-| `src/stores/` | Zustand preferences, ephemeral drafts, and ephemeral sample favorites |
+| `src/hooks/` | Theme, PWA lifecycle, object URLs, and live Dexie queries |
+| `src/stores/` | Zustand preferences, ephemeral composer drafts, and sample-only favorites |
 | `src/lib/` | Helpers and explicitly separate sample fixtures |
-| `src/services/` | Lazy Dexie schema and Phase 2 repository interface |
+| `src/services/` | Versioned Dexie schema and transactional local repository |
 | `src/types/` | Typed personal and sample entities |
 | `public/` | Bundled sample photographs, source credits, and app icons |
 | `tests/` | Playwright production, accessibility, data-isolation, and offline checks |
 
 ## Local data and sample mode
 
-The sample scrapbook is clearly labeled and enabled initially for design review. Turn it off in Settings or with the home sample badge to see first-time empty states. Samples and sample favorites are never saved to IndexedDB. Only the chosen name and display preferences are persisted to localStorage.
+The sample scrapbook is clearly labeled and enabled initially for design review. Turn it off in Settings or with the home sample badge to see your personal journal. Samples and sample favorites are never saved to IndexedDB. Personal memories, photos, and collections persist in the `memotrail` IndexedDB database; only the chosen name and display preferences are persisted to localStorage.
 
-There is no authentication, online database, analytics, or media upload. Selected files stay on the device. The Dexie memory schema is defined but never opened in Phase 1.
+There is no authentication, online database, analytics, or media upload. Selected files stay on the device. Browser storage is device- and origin-specific and can be cleared by the user or browser, so keep independent backups of irreplaceable originals.
 
-See [the Phase 2 handoff](docs/PHASE-2.md) for repository boundaries, storage lifetime, hosting requirements, and next steps. Sample photo sources are documented in [public/photo-credits.txt](public/photo-credits.txt).
+See [the Phase 2 implementation notes](docs/PHASE-2.md) for the local schema and storage boundaries. Sample photo sources are documented in [public/photo-credits.txt](public/photo-credits.txt).

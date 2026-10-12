@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { MotionConfig } from "motion/react";
 import { AppShell } from "@/components/layout/app-shell";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { PwaProvider } from "@/hooks/use-pwa";
 import { useTheme } from "@/hooks/use-theme";
 import { usePreferences } from "@/stores/preferences";
+import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
 const TimelinePage = lazy(() =>
@@ -30,6 +31,12 @@ const SettingsPage = lazy(() =>
 );
 export default function App() {
   useTheme();
+  const requestPersistentStorage = useStoragePersistence(
+    (state) => state.request,
+  );
+  useEffect(() => {
+    void requestPersistentStorage();
+  }, [requestPersistentStorage]);
   const reduceMotion = usePreferences((state) => state.reduceMotion);
   return (
     <ErrorBoundary>

@@ -111,27 +111,36 @@ export const sampleMemories: SampleMemory[] = [
 
 export const sampleCollections: SampleCollection[] = [
   {
+    source: "sample",
     id: "sample-travel",
     title: "Little adventures",
     subtitle: "Places that stay with you",
     category: "travel",
     cover: "/photos/italian-summer.jpg",
     color: "peach",
+    memoryCount: sampleMemories.filter((memory) => memory.category === "travel")
+      .length,
   },
   {
+    source: "sample",
     id: "sample-everyday",
     title: "The everyday magic",
     subtitle: "Beauty in the ordinary",
     category: "everyday",
     cover: "/photos/wildflowers.jpg",
     color: "lavender",
+    memoryCount: sampleMemories.filter((memory) => memory.category === "everyday")
+      .length,
   },
   {
+    source: "sample",
     id: "sample-together",
     title: "My kind of people",
     subtitle: "Better, together",
     category: "together",
     cover: "/photos/our-kind-of-day.jpg",
     color: "rose",
+    memoryCount: sampleMemories.filter((memory) => memory.category === "together")
+      .length,
   },
 ];

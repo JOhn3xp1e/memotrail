@@ -669,6 +669,131 @@
 .dark .form-error {
   color: #ffb4c3;
 }
+.field-select {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+  background: var(--background);
+  font-size: 12px;
+}
+.composer-submit-actions,
+.collection-actions,
+.album-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.save-success {
+  padding: 12px 14px;
+  border-radius: 9px;
+  background: var(--sage);
+  color: var(--foreground);
+  font-size: 11px;
+}
+.save-success a {
+  color: var(--primary-strong);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.memory-loading {
+  padding: 20px 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.memory-photo-empty {
+  display: grid;
+  width: 100%;
+  min-height: 190px;
+  aspect-ratio: 1.04;
+  place-items: center;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.detail-photo-empty {
+  min-height: 280px;
+  aspect-ratio: auto;
+  padding: 24px;
+  text-align: center;
+}
+.timeline-filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -13px 0 27px;
+}
+.timeline-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.timeline-filters select,
+.timeline-filters input {
+  min-width: 145px;
+  height: 36px;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 10px;
+}
+.managed-collection {
+  position: relative;
+}
+.collection-edit-button {
+  margin-top: 9px;
+}
+.collection-form {
+  margin-top: 20px;
+}
+.collection-form .field textarea {
+  min-height: 80px;
+}
+.album-banner-actions {
+  flex-shrink: 0;
+}
+.nostalgia-content > .memory-photo-empty {
+  width: 71px;
+  height: 84px;
+  min-height: 84px;
+  aspect-ratio: auto;
+  flex: 0 0 71px;
+  border: 4px solid white;
+  box-shadow: 0 2px 5px #5943291a;
+  transform: rotate(-5deg);
+}
+.album-cover .album-cover-media {
+  position: absolute;
+  width: 42%;
+  height: 116px;
+  top: 23px;
+  right: 17px;
+  object-fit: cover;
+  border: 5px solid #fffaf4;
+  border-bottom-width: 18px;
+  box-shadow: 0 4px 7px #5b40351a;
+  transform: rotate(8deg);
+}
+.album-cover .memory-photo-empty {
+  aspect-ratio: auto;
+  min-height: 0;
+}
+.memory-detail-photo .detail-photo-empty {
+  display: grid;
+  width: 100%;
+  max-height: 320px;
+  min-height: 180px;
+  aspect-ratio: 1.5;
+  place-items: center;
+  border-radius: 11px 11px 2px 2px;
+}
 .draft-cover {
   width: 100%;
   max-height: 330px;

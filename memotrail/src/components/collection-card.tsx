@@ -1,16 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { SampleCollection } from "@/types/memory";
-import { sampleMemories } from "@/lib/sample-data";
+import type { CollectionView } from "@/types/memory";
+import { LocalMediaImage } from "@/components/local-media-image";
 
 export function CollectionCard({
   collection,
 }: {
-  collection: SampleCollection;
+  collection: CollectionView;
 }) {
-  const count = sampleMemories.filter(
-    (memory) => memory.category === collection.category,
-  ).length;
   return (
     <Link
       to={`/collections?album=${collection.id}`}
@@ -18,19 +15,31 @@ export function CollectionCard({
     >
       <div className="album-cover">
         <span className="album-spine" />
-        <img
-          src={collection.cover}
-          alt={`Sample ${collection.title.toLowerCase()} album cover`}
-          loading="lazy"
-        />
-        <span className="album-label">A LITTLE COLLECTION OF</span>
+        {collection.cover && (
+          <LocalMediaImage
+            source={collection.cover}
+            alt={`${collection.source === "sample" ? "Sample " : ""}${collection.title.toLowerCase()} album cover`}
+            className="album-cover-media"
+          />
+        )}
+        <span className="album-label">
+          {collection.source === "sample"
+            ? "A LITTLE COLLECTION OF"
+            : "A LITTLE CHAPTER OF"}
+        </span>
         <span className="album-title">{collection.title}</span>
-        <span className="album-sample">SAMPLE ALBUM</span>
+        {collection.source === "sample" && (
+          <span className="album-sample">SAMPLE ALBUM</span>
+        )}
       </div>
       <div className="collection-card-footer">
         <div>
           <h3>{collection.title}</h3>
-          <span>{count} sample memories</span>
+          <span>
+            {collection.memoryCount}{" "}
+            {collection.source === "sample" ? "sample " : ""}
+            {collection.memoryCount === 1 ? "memory" : "memories"}
+          </span>
         </div>
         <ArrowUpRight size={17} />
       </div>

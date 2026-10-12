@@ -1,48 +1,38 @@
-# MemoTrail: Phase 2 handoff
+# MemoTrail: Phase 2 local journal
 
-## What exists
+## Local-first storage
 
-Five routed pages share one responsive shell, tokens, typography, and light/dark themes. The home collage, chronological photo grid/list, sample albums, photo/story preview composer, settings, empty states, and not-found screen are implemented. Components use local shadcn-style Radix primitives, Lucide icons, Tailwind v4, and Motion.
+MemoTrail keeps personal content in the browser's `memotrail` IndexedDB database through Dexie.js and `dexie-react-hooks`. It does not send memories, collection details, or photo blobs to a server.
 
-`src/lib/sample-data.ts` is an explicitly labeled presentation fixture. `useMemoryData` is the only page-level source switch. The sample mode preference is initially enabled to demonstrate the design; disabling it shows all first-use states.
-
-## Storage boundaries
-
-| State | Location | Lifetime |
+| Table | Primary key | Contents |
 | --- | --- | --- |
-| Name, theme, sample mode, motion preference | Zustand `persist`, localStorage | Until changed or site data is cleared |
-| Draft text and selected `File` objects | Zustand, memory only | SPA session; cleared on reload/close/reset |
-| Sample favorites | Zustand, memory only | SPA session |
-| Sample photos and fonts | Static assets + service-worker precache | Browser-controlled app cache |
-| Personal memories and albums | Dexie schema prepared, unopened | Not implemented in Phase 1 |
+| `memories` | UUID `id` | Title, description, memory date, mood, favorite state, optional collection/location/coordinates, and timestamps |
+| `media` | UUID `id` | Image/video Blob, MIME type, byte size, creation time, and display order |
+| `collections` | UUID `id` | Name, description, optional cover-media reference, and timestamps |
+| `tags` | UUID `id` | Unique tag names |
+| `memoryTags` | `[memoryId, tagId]` | Indexed memory-to-tag links |
 
-`getDatabase()` lazily defines schema version 1. No UI imports it, opens it, seeds it, or writes personal/sample memories to it. Workbox may create its own browser cache metadata; that is distinct from the `memotrail` database. No network database, account, analytics, upload endpoint, or authentication exists.
+Schema version 2 migrates the earlier unused Phase 1 table names and fields. Memory/photo saves, memory deletion, tag-link replacement, and collection deletion use IndexedDB transactions. Deleting a memory removes its media and tag links; removing a collection clears its memory assignments.
 
-## Implementation seams
+## Screens and workflows
 
-- `src/types/memory.ts`: persistent `Memory`, `MemoryPhoto`, and `Collection` entities. Sample entities are deliberately separate types.
-- `src/services/database.ts`: Dexie schema and lazy factory, indexed for dates, tags, collections, and ordered photos.
-- `src/services/memory-repository.ts`: repository contract for local CRUD.
-- `src/hooks/use-memory-data.ts`: replace the empty personal branch with live repository reads. Keep samples as a separate presentation source.
-- `src/stores/draft.ts`: compose draft state. Add a validated explicit save transaction before exposing a “Save memory” action.
-- `src/hooks/use-object-urls.ts`: owns and revokes temporary photo URLs on replacement/unmount.
+- The Add Memory composer validates image formats and sizes, decodes selected files, and downsizes large high-resolution photos where supported. Save writes the memory and all selected Blob media atomically.
+- Timeline uses live Dexie queries, groups memories by month and year, searches title/description/location, and filters personal records by date range, mood, collection, and favorite state.
+- Memory details support favorite toggling, editing, and confirmed deletion. Collections can be created, renamed, described, and assigned to memories.
+- The Home page reads recent and anniversary memories from the selected data source.
+- Image object URLs are revoked on replacement/unmount. Missing or invalid Blob media is excluded from queries; image decode failures show a local-media placeholder.
+- The browser's persistent-storage API is requested where available. It is best-effort protection, not a backup guarantee.
 
-## Suggested next work
+## Sample data and privacy
 
-1. Implement and test Dexie transactions for memory + photo saves, updates, deletion, and collection membership. Never install a populate hook with demo content.
-2. Add image decoding validation, orientation handling, thumbnail generation, storage quotas, and persistence permission handling before accepting large libraries.
-3. Connect the composer to explicit saves with loading, failure, and success feedback. Decide on an explicit recoverable draft policy; current drafts are not durable.
-4. Connect favorites, album creation/renaming, dates, search, and On This Day to user records. Derive album covers/counts from those records.
-5. Implement user-initiated export/import and tested schema migrations. Browser storage is device/origin-specific and can be cleared; there is no cloud backup.
+Sample memories and sample collections remain separate presentation fixtures. Their favorites are session-only and no sample record is written to IndexedDB. Turning sample mode off displays only device-owned records. Name, theme, and display preferences remain in localStorage; composer drafts are session-only.
 
-## PWA and hosting
+This is device- and origin-specific browser storage. Clearing site data, losing the device, or browser quota eviction can remove memories. Export/restore and cloud synchronization are not part of Phase 2.
 
-`vite.config.ts` precaches every route bundle, local font, icon, and sample photo. The service worker uses a user-confirmed update prompt so a new version does not silently discard a draft. The manifest includes normal and maskable PNG icons and standalone launch behavior. Install requires HTTPS or localhost, and offline access requires a completed initial cache installation.
+## PWA behavior
 
-Serve `dist/` with SPA rewrites to `index.html` for direct URLs. Serve `/sw.js` and `/manifest.webmanifest` with revalidation instead of long-lived immutable caching. Hashed `/assets/` can be cached immutably. No runtime calls to photo/font hosts are needed.
+The production service worker caches the app shell and local assets for offline reopening. Install requires HTTPS or localhost, and the initial application load must complete before the app can be reopened offline. No online database or media upload endpoint is configured.
 
 ## Verification
 
-Run `npm run build`, then `npm run test:e2e`. Tests launch the production preview and use a local Chrome installation. They cover all screens at desktop/mobile sizes and both themes, automated WCAG A/AA checks, small/tablet layouts, search/filter/favorite interactions, album navigation, draft preview and lifetime, personal/empty states, sample database isolation, and offline route reloads. Screenshots are generated under ignored `artifacts/` for visual review.
-
-Native installation flows on actual iOS/Android devices are a separate release check; desktop browser emulation does not verify those operating-system dialogs.
+Run `npm run build` and `npm run test:e2e` from the app directory. Browser coverage checks responsive screens and accessibility, keeps samples out of personal tables, and exercises personal collection creation, memory save/edit/search/filter/favorite/delete, reload persistence, and offline reopening.
