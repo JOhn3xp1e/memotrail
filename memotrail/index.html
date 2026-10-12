@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#FAF7F2" />
+    <script>
+      try {
+        const preferences = JSON.parse(localStorage.getItem('memotrail-preferences') || '{}').state;
+        const dark = preferences?.theme === 'dark' || (preferences?.theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', !!dark);
+        document.documentElement.toggleAttribute('data-reduce-motion', !!preferences?.reduceMotion);
+      } catch { /* Defaults stay available when local storage is unavailable. */ }
+    </script>
+    <meta
+      name="description"
+      content="A private little home for your beautiful moments. MemoTrail — Your Life, Your Stories."
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>MemoTrail — Your Life, Your Stories</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript
+      >MemoTrail needs JavaScript to open your private scrapbook. Please enable
+      it in your browser.</noscript
+    >
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
