@@ -5,6 +5,7 @@
 @import "./styles/responsive.css";
 @import "./styles/memory-details.css";
 @import "./styles/memory-jar.css";
+@import "./styles/capsules.css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --color-background: var(--background);

@@ -15,6 +15,7 @@ import {
   House,
   LockKeyhole,
   Moon,
+  Mail,
   Plus,
   Search,
   Settings2,
@@ -59,7 +60,7 @@ export function AppShell() {
     }
     const title =
       destinations.find((item) => item.to === location.pathname)?.label ??
-      "Page not found";
+      (location.pathname.startsWith("/capsules") ? "Time Capsule" : "Page not found");
     document.title = `${title} · MemoTrail`;
   }, [location.pathname]);
 
@@ -82,7 +83,7 @@ export function AppShell() {
         </Link>
         <div className="sidebar-nav-label">YOUR LITTLE WORLD</div>
         <nav aria-label="Main navigation" className="desktop-nav">
-          {destinations
+          {[...destinations, { to: "/capsules", label: "Time Capsule", icon: Mail }]
             .filter((item) => item.to !== "/add")
             .map(({ to, label, icon: Icon }) => (
               <NavLink

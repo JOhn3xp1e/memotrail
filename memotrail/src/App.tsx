@@ -9,6 +9,9 @@ import { usePreferences } from "@/stores/preferences";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
+const CapsulesPage = lazy(() => import("@/pages/capsules").then((m) => ({ default: m.CapsulesPage })));
+const CapsuleCreatePage = lazy(() => import("@/pages/capsule-create").then((m) => ({ default: m.CapsuleCreatePage })));
+const CapsuleDetailsPage = lazy(() => import("@/pages/capsule-details").then((m) => ({ default: m.CapsuleDetailsPage })));
 const MemoryJarPage = lazy(() => import("@/pages/memory-jar").then((module) => ({ default: module.MemoryJarPage })));
 const TimelinePage = lazy(() =>
   import("@/pages/timeline").then((module) => ({
@@ -49,6 +52,9 @@ export default function App() {
               <Routes>
                 <Route element={<AppShell />}>
                   <Route index element={<HomePage />} />
+                  <Route path="capsules" element={<CapsulesPage />} />
+                  <Route path="capsules/new" element={<CapsuleCreatePage />} />
+                  <Route path="capsules/:id" element={<CapsuleDetailsPage />} />
                   <Route path="jar" element={<MemoryJarPage />} />
                   <Route path="timeline" element={<TimelinePage />} />
                   <Route path="memories/:id" element={<MemoryDetailsPage />} />

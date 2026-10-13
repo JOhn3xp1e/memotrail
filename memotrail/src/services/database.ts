@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable, type Table } from "dexie";
+import type { TimeCapsule, TimeCapsuleMedia } from "@/types/capsule";
 import type {
   Collection,
   Media,
@@ -8,6 +9,8 @@ import type {
 } from "@/types/memory";
 
 export class MemoTrailDatabase extends Dexie {
+  timeCapsules!: EntityTable<TimeCapsule, "id">;
+  timeCapsuleMedia!: EntityTable<TimeCapsuleMedia, "id">;
   memories!: EntityTable<Memory, "id">;
   media!: EntityTable<Media, "id">;
   collections!: EntityTable<Collection, "id">;
@@ -75,6 +78,10 @@ export class MemoTrailDatabase extends Dexie {
           delete item.title;
         });
       });
+    this.version(3).stores({
+      timeCapsules: "id, createdAt, unlockAt, status",
+      timeCapsuleMedia: "id, capsuleId, [capsuleId+order]",
+    });
   }
 }
 
