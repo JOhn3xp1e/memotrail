@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -12,11 +11,9 @@ import { usePreferences } from "@/stores/preferences";
 import { useMemoryData } from "@/hooks/use-memory-data";
 import { Button } from "@/components/ui/button";
 import { MemoryCard } from "@/components/memory-card";
-import { MemoryDialog } from "@/components/memory-dialog";
 import { CollectionCard } from "@/components/collection-card";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryJar, ScrapbookCollage } from "@/components/scrapbook";
-import type { MemoryView } from "@/types/memory";
 import { useLocalToday } from "@/hooks/use-local-today";
 import { onThisDay } from "@/lib/anniversaries";
 import { memoryPath } from "@/lib/memory-path";
@@ -25,14 +22,9 @@ import { LocalMediaImage } from "@/components/local-media-image";
 export function HomePage() {
   const { name, setSampleMode } = usePreferences();
   const { memories, collections, isSample, isLoading } = useMemoryData();
-  const [selected, setSelected] = useState<MemoryView | null>(null);
   const today = useLocalToday();
   const anniversaries = onThisDay(memories, today);
 
-  function openJar() {
-    const pool = memories.filter((memory) => memory.id !== selected?.id);
-    setSelected(pool[Math.floor(Math.random() * pool.length)] ?? null);
-  }
 
   return (
     <>
@@ -190,19 +182,9 @@ export function HomePage() {
                 <br />
                 picked just for you.
               </p>
-              {memories.length ? (
-                <button className="text-link" onClick={openJar}>
-                  Pick a memory
-                  <ArrowRight size={14} />
-                </button>
-              ) : (
-                <Link to="/add" className="text-link">
-                  Start filling your jar
-                  <ArrowRight size={14} />
-                </Link>
-              )}
+              <Link className="text-link" to="/jar">Pick a memory<ArrowRight size={14} /></Link>
             </div>
-            <MemoryJar empty={!memories.length} />
+            <Link to="/jar" aria-label="Open your memory jar"><MemoryJar empty={!memories.length} /></Link>
           </section>
         </aside>
       </div>
@@ -238,7 +220,6 @@ export function HomePage() {
         </span>
         <Heart size={15} />
       </div>
-      <MemoryDialog memory={selected} onClose={() => setSelected(null)} />
     </>
   );
 }

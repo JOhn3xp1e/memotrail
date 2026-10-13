@@ -9,6 +9,7 @@ import { usePreferences } from "@/stores/preferences";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
+const MemoryJarPage = lazy(() => import("@/pages/memory-jar").then((module) => ({ default: module.MemoryJarPage })));
 const TimelinePage = lazy(() =>
   import("@/pages/timeline").then((module) => ({
     default: module.TimelinePage,
@@ -48,6 +49,7 @@ export default function App() {
               <Routes>
                 <Route element={<AppShell />}>
                   <Route index element={<HomePage />} />
+                  <Route path="jar" element={<MemoryJarPage />} />
                   <Route path="timeline" element={<TimelinePage />} />
                   <Route path="memories/:id" element={<MemoryDetailsPage />} />
                   <Route path="add" element={<AddMemoryPage />} />

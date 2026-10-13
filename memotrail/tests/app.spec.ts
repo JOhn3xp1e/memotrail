@@ -98,16 +98,15 @@ for (const theme of ["light", "dark"]) {
   }
 }
 
-test("sample search, filters, albums, favorites, and jar remain demo-only", async ({
+test("sample browsing stays separate from the personal memory jar", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Pick a memory" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("link", { name: "Pick a memory" }).click();
+  await expect(page.getByRole("heading", { name: "Good things start with one memory." })).toBeVisible();
   const dialogAccessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
   expect(dialogAccessibility.violations).toEqual([]);
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await page.getByRole("link", { name: "Back home" }).click();
   await page
     .getByRole("textbox", { name: "Search memories", exact: true })
     .fill("coffee");

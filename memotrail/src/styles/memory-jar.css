@@ -1,0 +1,46 @@
+.jar-heading { text-align: center; margin: 16px auto 32px; }
+.jar-heading h1 { font-family: var(--serif); font-size: clamp(38px, 5vw, 64px); line-height: 1.1; margin: 12px 0; }
+.jar-heading p, .jar-waiting p { color: var(--muted-foreground); font-size: 13px; line-height: 1.8; }
+.jar-experience { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 40px; max-width: 1000px; margin: auto; }
+.jar-stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 12px 0 30px; isolation: isolate; }
+.jar-stage::before { content: ""; position: absolute; inset: 70px -10px 65px; background: radial-gradient(ellipse, color-mix(in srgb, var(--primary), transparent 82%), transparent 68%); z-index: -1; }
+.jar-favorites { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted-foreground); }
+.glass-jar-button { display: block; position: relative; width: min(280px, 100%); height: 330px; margin: 32px 0 10px; background: transparent; border: 0; border-radius: 32px; cursor: pointer; }
+.glass-jar-button:disabled { cursor: default; }
+.glass-jar-button:focus-visible { outline: 2px solid var(--primary); outline-offset: 6px; }
+.glass-jar { position: absolute; inset: 50px 20px 24px; overflow: hidden; border-radius: 55px 55px 48px 48px; border: 2px solid #c1b2d680; background: linear-gradient(100deg, #fff7, #ffffff0a 18%, #c0a3e619 55%, #ffffff05 80%, #d9c2f666); box-shadow: inset 5px 0 10px #fff5, inset -7px -5px 16px #a38ab940, 0 12px 24px #41315316; }
+.dark .glass-jar { border-color: #c9b7e15c; box-shadow: inset 4px 0 12px #daceff60, inset -6px -5px 16px #c5b0f04d, 0 12px 26px #0003; }
+.jar-lid { position: absolute; top: 35px; left: 30px; right: 30px; height: 34px; border-radius: 12px 12px 9px 9px; z-index: 2; border: 1px solid #d4c4e9b3; background: linear-gradient(#f1e8fcaa, #baa4d659 50%, #f6edff99); box-shadow: inset 0 3px 5px #fff9, 0 3px 7px #54426322; }
+.jar-lid::after { content: ""; position: absolute; inset: 9px 10px; border-top: 1px solid #fff7; border-bottom: 1px solid #76638640; }
+.jar-glass-shine { position: absolute; inset: 32px auto 28px 13px; width: 9px; border-radius: 50%; background: linear-gradient(#fff8, #ffffff05 45%, #fff5); filter: blur(1px); }
+.jar-ground-shadow { position: absolute; bottom: 12px; left: 36px; right: 36px; height: 18px; border-radius: 50%; background: #6a507624; filter: blur(6px); z-index: -1; }
+.jar-paper { position: absolute; width: 64px; height: 40px; border-radius: 3px; display: grid; place-items: center; color: #76578c; background: #e2cef4; border: 1px solid #fff8; box-shadow: 1px 4px 8px #48315326; }
+.jar-paper::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, #fff5 49%, #826e9318 50%, transparent 52%); }
+.jar-paper-1 { background: #f2d8bf; color: #966b56; }
+.jar-paper-2 { background: #f0cbd8; color: #a46a80; }
+.jar-paper-3 { background: #cfddd0; color: #6d886e; }
+.jar-flying-note { position: absolute; top: 170px; width: 110px; height: 70px; background: #ecddf8; color: #9774b2; box-shadow: 0 10px 30px #0002; border-radius: 5px; display: grid; place-items: center; z-index: 3; pointer-events: none; }
+.jar-count { font-size: 11px; color: var(--muted-foreground); margin: 0 0 20px; }
+.jar-result { min-width: 0; }
+.jar-waiting { text-align: center; padding: 40px 20px; }
+.jar-waiting > svg { color: var(--primary-strong); margin: 0 auto 18px; }
+.jar-waiting h2 { font-family: var(--serif); font-size: 34px; line-height: 1.1; margin-bottom: 16px; }
+.jar-waiting .button { margin-top: 20px; }
+.jar-reveal-card { position: relative; padding: 12px; border: 1px solid var(--border); border-radius: 8px 14px 14px 8px; background: var(--card); box-shadow: 0 14px 36px #271a3820; }
+.jar-reveal-card > img, .jar-reveal-card > .memory-photo-empty, .jar-word-memory { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
+.jar-word-memory { background: var(--secondary); color: var(--primary-strong); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+.jar-word-memory .handwritten { font-size: 27px; }
+.jar-reveal-copy { padding: 20px 10px 12px; }
+.jar-reveal-copy time { color: var(--muted-foreground); font-size: 11px; }
+.jar-reveal-copy h2 { font-family: var(--serif); font-size: 32px; line-height: 1.1; margin: 10px 0; overflow-wrap: anywhere; }
+.jar-reveal-copy p { color: var(--muted-foreground); font-size: 12px; line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.jar-reveal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.jar-reveal-actions .button { flex: 1 1 auto; }
+@media (max-width: 767px) {
+  .jar-experience { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .jar-heading { margin-bottom: 20px; }
+  .glass-jar-button { height: 295px; width: 250px; margin-top: 20px; }
+  .jar-stage { padding-bottom: 18px; }
+  .jar-waiting { padding: 20px 12px; }
+  .jar-reveal-card { margin-top: 12px; }
+}
