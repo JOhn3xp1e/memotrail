@@ -16,35 +16,59 @@
 .rewind-home-preview h2 { font: 30px var(--serif); margin: 8px 0; }
 .rewind-home-preview p { font-size: 12px; color: var(--muted-foreground); }
 .rewind-home-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
-.dialog-content.rewind-player { width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; border-radius: 0; padding: max(16px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); background: #15121c; color: #fff7ef; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; overflow: hidden; }
+.dialog-content.rewind-player { box-sizing: border-box; width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; border-radius: 0; padding: max(16px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); background: #15121c; color: #fff7ef; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px, 1.2dvh, 10px); overflow: hidden; }
 .rewind-player > .dialog-title, .rewind-player > .dialog-description { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.rewind-player .dialog-close { background: transparent; border: 0; color: white; width: 44px; height: 44px; right: max(8px, env(safe-area-inset-right)); top: max(8px, env(safe-area-inset-top)); }
-.rewind-progress { display: flex; gap: 4px; width: min(420px, calc(100% - 70px)); height: 3px; margin-top: 8px; }
+.rewind-player .dialog-close { z-index: 5; background: #15121c80; border: 0; color: white; width: 44px; height: 44px; right: max(8px, env(safe-area-inset-right)); top: max(8px, env(safe-area-inset-top)); }
+.rewind-progress { display: flex; flex: 0 0 3px; gap: 4px; width: min(420px, calc(100% - 70px)); height: 3px; margin-top: 8px; }
 .rewind-progress > span { background: #ffffff40; height: 3px; flex: 1; overflow: hidden; border-radius: 2px; }
 .rewind-progress > span > span { display: block; height: 100%; background: #d2b6f1; transform-origin: left; }
-.rewind-stage { width: min(440px, calc((100dvh - 155px) * 9 / 16), 100%); aspect-ratio: 9 / 16; touch-action: pan-y; cursor: pointer; flex-shrink: 0; }
+.rewind-stage { width: min(440px, calc((100dvh - 190px) * 9 / 16), calc(100vw - 24px)); aspect-ratio: 9 / 16; max-height: calc(100dvh - 190px); min-width: 0; touch-action: pan-y; cursor: pointer; flex: 0 1 auto; }
 .rewind-stage > div { width: 100%; height: 100%; }
-.rewind-slide { position: relative; width: 100%; height: 100%; overflow: hidden; background: linear-gradient(155deg, #473355, #241a35 55%, #7a4b65); color: #fff7ee; border-radius: 12px; container-type: inline-size; }
+.rewind-slide { position: relative; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; overflow: hidden; background: linear-gradient(155deg, #473355, #241a35 55%, #7a4b65); color: #fff7ee; border-radius: 12px; container-type: inline-size; isolation: isolate; }
 .rewind-slide::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 10% 10%, #dac3fa22, transparent 60%); pointer-events: none; }
 .rewind-backdrop { position: absolute; inset: 0; }
-.rewind-backdrop img, .rewind-backdrop .memory-photo-empty { width: 100%; height: 100%; object-fit: cover; }
-.rewind-backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#17101c77, #17101c15 30%, #17101cd9 80%); }
-.rewind-brand, .rewind-signature { position: absolute; left: 8%; right: 8%; z-index: 1; font-size: clamp(8px, 2.4cqw, 12px); letter-spacing: 1px; }
+.rewind-backdrop img, .rewind-backdrop .memory-photo-empty, .rewind-featured-photo img, .rewind-featured-photo .memory-photo-empty { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rewind-backdrop::after, .rewind-featured-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#17101c55, #17101c05 27%, #17101ce8 84%); pointer-events: none; }
+.rewind-brand, .rewind-signature { position: absolute; left: 8%; right: 8%; z-index: 2; font-size: clamp(8px, 2.4cqw, 12px); letter-spacing: 1px; }
 .rewind-brand { top: 7%; }
 .rewind-signature { bottom: 5%; font-family: var(--serif); letter-spacing: 0.3px; }
-.rewind-slide-copy { position: absolute; z-index: 1; inset: auto 8% 13%; }
-.rewind-slide-copy h2 { font-family: var(--serif); font-size: 11cqw; line-height: 1.06; margin: 12px 0 18px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
-.rewind-slide-copy p { font-size: 3.6cqw; line-height: 1.65; }
-.rewind-slide-copy .eyebrow { color: #e5c8ff; font-size: 2.4cqw; }
-.rewind-slide-copy ul { list-style: none; padding: 0; margin: 18px 0 0; }
-.rewind-slide-copy li { font-size: 3.7cqw; line-height: 1.5; padding: 6px 0; border-bottom: 1px solid #ffffff26; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rewind-collage { position: absolute; inset: 15% 8% 36%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 10px; }
-.rewind-collage img, .rewind-collage .memory-photo-empty { width: 100%; height: 100%; object-fit: cover; border: 5px solid #fff5e7; border-bottom-width: 15px; transform: rotate(-4deg); box-shadow: 0 5px 14px #0004; }
-.rewind-collage > :nth-child(even) { transform: rotate(5deg); }
-.rewind-collage + .rewind-brand + .rewind-slide-copy h2 { font-size: 7.8cqw; }
-.rewind-controls { display: flex; gap: 9px; align-items: center; }
+.rewind-slide-copy { position: absolute; z-index: 2; inset: auto 8% 12%; max-height: 48%; overflow: hidden; }
+.rewind-slide-copy h2 { font-family: var(--serif); font-size: clamp(20px, 10cqw, 42px); line-height: 1.04; margin: 8px 0 10px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.rewind-slide-copy p { font-size: clamp(10px, 3.3cqw, 14px); line-height: 1.45; }
+.rewind-slide-copy .eyebrow { color: #e5c8ff; font-size: clamp(8px, 2.4cqw, 10px); }
+.rewind-slide-copy ul { list-style: none; padding: 0; margin: 10px 0 0; max-height: 38cqw; overflow: hidden; }
+.rewind-slide-copy li { font-size: clamp(10px, 3.1cqw, 13px); line-height: 1.35; padding: 4px 0; border-bottom: 1px solid #ffffff26; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rewind-photo-strip, .rewind-photo-grid, .rewind-collage, .rewind-collection-grid { position: absolute; min-width: 0; min-height: 0; display: grid; }
+.rewind-photo-strip { inset: 16% 7% auto; height: 24%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(5px, 1.8cqw, 10px); }
+.rewind-photo-grid { inset: 15% 7% 49%; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); gap: clamp(6px, 2cqw, 11px); }
+.rewind-photo-split { bottom: 43%; }
+.rewind-photo-card { grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.rewind-photo-card > :first-child { grid-row: 1 / 3; }
+.rewind-photo-card > :nth-child(2) { grid-column: 2; grid-row: 2; }
+.rewind-collage { inset: 14% 7% 49%; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(5px, 1.8cqw, 9px); }
+.rewind-photo-tile { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; overflow: hidden; padding: clamp(4px, 1.3cqw, 7px); padding-bottom: clamp(21px, 5.2cqw, 27px); border: 1px solid #fff9; border-radius: 4px; background: #fff4e5; box-shadow: 0 4px 12px #0004; color: #352b37; }
+.rewind-photo-tile > img, .rewind-photo-tile > .memory-photo-empty { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: cover; overflow: hidden; border-radius: 2px; }
+.rewind-photo-caption { position: absolute; left: 6px; right: 6px; bottom: 3px; display: flex; justify-content: space-between; align-items: baseline; gap: 4px; overflow: hidden; font-size: clamp(7px, 1.8cqw, 9px); line-height: 1.1; }
+.rewind-photo-caption strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.rewind-photo-caption time { flex: 0 0 auto; font-size: .85em; color: #716876; }
+.rewind-favorite-mark { position: absolute; top: 8px; right: 8px; padding: 2px 5px; border-radius: 12px; background: #fff8; color: #a8486e; font-size: 10px; }
+.rewind-collection-grid { inset: 15% 7% 49%; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(6px, 2cqw, 10px); }
+.rewind-collection-card { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; gap: 4px; padding: 5px; overflow: hidden; border: 1px solid #fff7; border-radius: 7px; background: #ffffff12; text-align: center; }
+.rewind-collection-card > .rewind-photo-tile { height: 100%; }
+.rewind-collection-card > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: clamp(9px, 2.5cqw, 12px) var(--serif); }
+.rewind-collection-empty { display: grid; place-items: center; min-height: 0; color: #f1d9ff; font-size: 25px; }
+.rewind-featured-photo { position: absolute; inset: 0; }
+.rewind-featured-copy { position: absolute; z-index: 2; inset: auto 8% 11%; max-height: 48%; overflow: hidden; }
+.rewind-featured-copy .eyebrow { color: #f4d5ff; font-size: clamp(9px, 2.5cqw, 12px); }
+.rewind-featured-copy h2 { margin: 9px 0 4px; font: clamp(24px, 10cqw, 44px)/1.02 var(--serif); overflow-wrap: anywhere; }
+.rewind-featured-copy time, .rewind-featured-subtitle { color: #fff4ed; font-size: clamp(10px, 3cqw, 13px); }
+.rewind-featured-story { margin-top: 8px; font: clamp(11px, 3.3cqw, 15px)/1.45 var(--serif); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.rewind-memory-date { display: block; margin-top: 5px; color: #e5c8ff; font-size: clamp(9px, 2.6cqw, 11px); }
+.rewind-memory-story { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.rewind-controls { display: flex; flex: 0 0 auto; gap: clamp(3px, 1.2vw, 9px); align-items: center; justify-content: center; max-width: 100%; }
 .rewind-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; background: transparent; color: #fff3ff; min-width: 44px; height: 44px; border: 0; border-radius: 8px; font-size: 12px; padding: 0 8px; }
 .rewind-controls button:disabled { opacity: 0.45; }
 .rewind-controls button:focus-visible { outline: 2px solid #c8a0ec; }
 .rewind-player-note, .rewind-export-error { font-size: 10px; color: #decaeb; text-align: center; max-width: 400px; }
 @media (max-width: 767px) { .rewind-home-preview { padding: 22px; gap: 15px; } .rewind-home-preview h2 { font-size: 27px; } }
+@media (max-height: 680px) { .dialog-content.rewind-player { gap: 5px; } .rewind-progress { margin-top: 0; } .rewind-stage { width: min(390px, calc((100dvh - 160px) * 9 / 16), calc(100vw - 24px)); max-height: calc(100dvh - 160px); } .rewind-controls button { height: 40px; } .rewind-player-note, .rewind-export-error { margin: 0; } }
