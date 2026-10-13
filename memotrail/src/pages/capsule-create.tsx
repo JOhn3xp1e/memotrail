@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useMimo } from "@/stores/mimo";
 import { Link, useNavigate } from "react-router-dom";
 import { useReducedMotion } from "motion/react";
 import { usePreferences } from "@/stores/preferences";
@@ -60,7 +59,6 @@ export function CapsuleCreatePage() {
     try {
       const id = await capsuleRepository.seal({ title, message, recipientName: recipientName.trim() || undefined, mood: mood || undefined, unlockAt }, photos);
       setConfirm(false); setSavedId(id);
-      useMimo.getState().play("envelope");
     } catch (cause) { setError(capsuleError(cause)); }
     finally { setBusy(false); }
   }

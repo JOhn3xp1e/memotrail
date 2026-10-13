@@ -1,4 +1,3 @@
-import { useMimo } from "@/stores/mimo";
 import {
   useEffect,
   useRef,
@@ -206,7 +205,6 @@ export function AddMemoryPage() {
         draft.photos,
       );
       setSampleMode(false);
-      useMimo.getState().play("camera");
       reset();
       navigate("/timeline", {
         state: {

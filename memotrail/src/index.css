@@ -7,8 +7,6 @@
 @import "./styles/memory-jar.css";
 @import "./styles/capsules.css";
 @import "./styles/rewind.css";
-@import "./styles/mimo.css";
-@import "./styles/mimo-assistant.css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --color-background: var(--background);

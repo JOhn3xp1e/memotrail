@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useMimo } from "@/stores/mimo";
 import { useLiveQuery } from "dexie-react-hooks";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
@@ -33,14 +32,6 @@ export function MemoryJarPage() {
     return () => window.clearTimeout(timer);
   }, [phase, reduced]);
   const selected = pool.find((memory) => memory.id === selectedId);
-  const revealCount = useRef(0);
-  const [pickCount, setPickCount] = useState(0);
-  useEffect(() => {
-    if (phase === "reveal" && selected && revealCount.current !== pickCount) {
-      revealCount.current = pickCount;
-      useMimo.getState().play("happy");
-    }
-  }, [phase, selected, pickCount]);
 
   function pick() {
     if (busy || !pool.length) return;
@@ -49,8 +40,6 @@ export function MemoryJarPage() {
     if (!next) return;
     previous.current = next.id;
     setSelectedId(next.id);
-    useMimo.getState().play("memory_jar");
-    setPickCount((count) => count + 1);
     setPhase(reduced ? "reveal" : "shake");
   }
 

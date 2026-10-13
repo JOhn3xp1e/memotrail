@@ -61,9 +61,6 @@ test("jar completes shake and paper animation with motion enabled", async ({ pag
   await expect(page).toHaveURL(/\/timeline$/);
   await page.goto("/jar");
   await page.getByRole("button", { name: "Shake the Jar" }).click();
-  await expect(page.locator(".mimo-companion")).toHaveAttribute("data-state", "memory_jar");
   await expect(page.locator(".jar-reveal-card h2")).toHaveText("An animated keepsake");
-  await expect(page.locator(".mimo-companion")).toHaveAttribute("data-state", "happy");
-  await expect(page.locator(".mimo-sprite-player")).toHaveAttribute("data-asset", "strip");
   await expect(page.getByRole("button", { name: "Shake the Jar" })).toBeEnabled();
 });

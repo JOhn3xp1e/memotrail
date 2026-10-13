@@ -1,4 +1,4 @@
-Phase 7 adds a local, rule-based assistant. No generative model is installed.
+﻿The Mimo assistant is removed from the active website. The notes below describe its retained implementation; the panel is no longer mounted or bundled into the app. No generative model is installed.
 
 Tap the floating Mimo (or activate "Chat with Mimo" using the keyboard) to open
 the lavender/cream chat panel. Its mobile position stays above bottom navigation.

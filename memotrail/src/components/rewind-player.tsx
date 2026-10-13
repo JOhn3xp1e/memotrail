@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useMimo } from "@/stores/mimo";
-import { MimoMascot } from "@/components/mimo-mascot";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, Download, Pause, Play } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -66,21 +64,9 @@ export function RewindPlayer({ slides, period, onClose }: { slides: RewindSlide[
   const mounted = useRef(true);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(false);
-  const finished = useRef(false);
   const current = Math.min(index, slides.length - 1);
   const slide = slides[current]!;
   const stopped = paused || hidden || exporting;
-  useEffect(() => {
-    useMimo.getState().setRewindOpen(true);
-    return () => useMimo.getState().setRewindOpen(false);
-  }, []);
-  useEffect(() => {
-    // Reaching the closing slide also completes a manually advanced recap.
-    if (current === slides.length - 1 && !finished.current) {
-      finished.current = true;
-      useMimo.getState().play("celebrate");
-    }
-  }, [current, slides.length]);
 
   useEffect(() => {
     mounted.current = true;
@@ -171,7 +157,6 @@ export function RewindPlayer({ slides, period, onClose }: { slides: RewindSlide[
       <button onClick={exportSlide} disabled={exporting || renderedIndex !== current}><Download size={17} />{exporting ? "Exporting…" : "Export PNG"}</button>
     </div>
     {reduced && <p className="rewind-player-note">Reduced motion: animations off. Playback starts paused.</p>}
-    {current === slides.length - 1 && <div className="rewind-mimo"><MimoMascot inline /></div>}
     {error && <p className="rewind-export-error" role="alert">{error}</p>}
   </DialogContent></Dialog>;
 }

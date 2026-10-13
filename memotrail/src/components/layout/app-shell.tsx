@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
   NavLink,
@@ -27,7 +27,6 @@ import { Button } from "@/components/ui/button";
 import { usePreferences } from "@/stores/preferences";
 import { usePwa } from "@/hooks/use-pwa";
 import { useResolvedTheme } from "@/hooks/use-theme";
-import { MimoMascot } from "@/components/mimo-mascot";
 
 const destinations = [
   { to: "/", label: "Home", icon: House },
@@ -36,7 +35,6 @@ const destinations = [
   { to: "/collections", label: "Collections", icon: FolderHeart },
   { to: "/settings", label: "Settings", icon: Settings2 },
 ];
-const MimoAssistant = lazy(() => import("@/components/mimo-assistant").then((module) => ({ default: module.MimoAssistant })));
 
 export function AppShell() {
   const location = useLocation();
@@ -45,7 +43,6 @@ export function AppShell() {
   const mainRef = useRef<HTMLElement>(null);
   const previousPath = useRef(location.pathname);
   const [search, setSearch] = useState("");
-  const [assistantOpen, setAssistantOpen] = useState(false);
   const { name, setTheme, sampleMode, setSampleMode } = usePreferences();
   const dark = useResolvedTheme();
   const { online, offlineReady } = usePwa();
@@ -76,7 +73,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="app-shell" data-mimo-assistant-open={assistantOpen || undefined}>
+    <div className="app-shell">
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
@@ -231,8 +228,6 @@ export function AppShell() {
         </footer>
       </div>
 
-      {!assistantOpen && <MimoMascot onActivate={() => setAssistantOpen(true)} />}
-      {assistantOpen && <Suspense fallback={<div className="mimo-assistant-loading" role="status">Opening Mimo…<button onClick={() => setAssistantOpen(false)}>Cancel</button></div>}><MimoAssistant onClose={() => setAssistantOpen(false)} /></Suspense>}
       <nav className="bottom-nav" aria-label="Mobile navigation">
         {destinations.map(({ to, label, icon: Icon }) => (
           <NavLink

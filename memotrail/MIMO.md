@@ -1,4 +1,4 @@
-﻿Mimo now uses the supplied Mimo_Complete_Sprite_Pack, not the static preview.
+﻿Mimo is removed from the active website, including its assistant launcher and event hooks. The implementation and assets below are retained for reference; they are not loaded or precached by the app.
 
 Active assets: public/assets/mimo/manifest.json plus 14 transparent horizontal
 PNG strips. The original extracted pack and CODEX_PROMPT.md remain untouched in
