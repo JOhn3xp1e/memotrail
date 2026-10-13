@@ -25,6 +25,13 @@ test("memory details opens from every entry point and works offline", async ({ p
   await expect(page.locator(".details-story")).toContainText("Good friends and golden light.");
   await expect(page.locator(".details-metadata")).toContainText("Singapore");
   await expect(page.locator(".details-metadata")).toContainText("Together");
+  await expect(page.locator(".details-viewer-image img")).toHaveCSS("object-fit", "cover");
+  const controls = await page.locator(".gallery-control").evaluateAll((buttons) => buttons.map((button) => {
+    const bounds = button.getBoundingClientRect();
+    const style = getComputedStyle(button);
+    return { width: bounds.width, height: bounds.height, background: style.backgroundColor, border: style.borderWidth };
+  }));
+  expect(controls.every((button) => button.width >= 44 && button.height >= 44 && button.background === "rgba(0, 0, 0, 0)" && button.border === "0px")).toBe(true);
   await page.getByRole("button", { name: "Next photo", exact: true }).click();
   await expect(page.locator(".details-photo-count")).toHaveText("2 / 2");
   await page.getByRole("region", { name: "Memory photos" }).press("ArrowLeft");
@@ -36,6 +43,25 @@ test("memory details opens from every entry point and works offline", async ({ p
   await expect(page.locator(".details-photo-count")).toHaveText("2 / 2");
   await page.getByRole("button", { name: "View photos fullscreen" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog").locator(".details-viewer-image img")).toHaveCSS("object-fit", "contain");
+  const fullscreenViewer = page.getByRole("dialog").getByRole("region", { name: "Memory photos" });
+  await fullscreenViewer.evaluate((target) => {
+    const point = (identifier: number, clientX: number) => new Touch({ identifier, target, clientX, clientY: 100 });
+    target.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [point(1, 100), point(2, 200)] }));
+    target.dispatchEvent(new TouchEvent("touchmove", { bubbles: true, touches: [point(1, 50), point(2, 250)] }));
+    target.dispatchEvent(new TouchEvent("touchend", { bubbles: true, changedTouches: [point(1, 50), point(2, 250)] }));
+  });
+  await expect(page.getByRole("button", { name: "Reset photo zoom" })).toBeVisible();
+  await expect(fullscreenViewer.locator(".details-photo-surface")).toHaveCSS("transform", "matrix(2, 0, 0, 2, 0, 0)");
+  await fullscreenViewer.evaluate((target) => {
+    const point = (clientX: number) => new Touch({ identifier: 1, target, clientX, clientY: 100 });
+    target.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [point(100)] }));
+    target.dispatchEvent(new TouchEvent("touchmove", { bubbles: true, touches: [point(140)] }));
+    target.dispatchEvent(new TouchEvent("touchend", { bubbles: true, changedTouches: [point(140)] }));
+  });
+  await expect(fullscreenViewer.locator(".details-photo-surface")).toHaveCSS("transform", "matrix(2, 0, 0, 2, 40, 0)");
+  await page.getByRole("button", { name: "Reset photo zoom" }).click();
+  await expect(fullscreenViewer.locator(".details-photo-surface")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
   await page.getByRole("dialog").getByRole("button", { name: "Previous photo" }).click();
   await expect(page.getByRole("dialog").locator(".details-photo-count")).toHaveText("1 / 2");
   await page.keyboard.press("Escape");
@@ -63,7 +89,7 @@ test("memory details opens from every entry point and works offline", async ({ p
   await page.getByRole("button", { name: "Switch to dark theme" }).click();
   for (const width of [320, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
   await page.screenshot({ path: "artifacts/memory-details-dark.png", fullPage: true });
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
