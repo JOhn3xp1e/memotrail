@@ -1,121 +1,92 @@
-﻿Mimo's production pipeline uses individual transparent PNG frames (manifest v2).
-The static mascot and all existing interactions continue to work. Memory data
-and IndexedDB schemas are untouched.
+﻿Mimo now uses the supplied Mimo_Complete_Sprite_Pack, not the static preview.
 
-The two supplied PNGs are references only:
-- `MASCOTMIMO/mimo_pack/reference/mimo_concept_sheet.png`
-- `MIMOREFERRENCE/Mimo_Animation_Reference/Mimo_Animation_Reference/mimo_animation_reference.png`
+Active assets: public/assets/mimo/manifest.json plus 14 transparent horizontal
+PNG strips. The original extracted pack and CODEX_PROMPT.md remain untouched in
+public/mimospritesheet/Mimo_Complete_Sprite_Pack/Mimo_Complete_Sprite_Pack.
+The pack's README identifies these as simplified 2D illustrations with modest
+pose/expression changes; they are not identical to the earlier 3D/clay concept.
+Their upright ears and simplified props differ from that reference.
 
-Both contain backgrounds and labels. The newer board also has uneven spacing
-and repeated/inconsistent frame numbers. Neither is cropped, decoded as frames,
-or included in the PWA's offline cache. The displayed SVG is the existing labeled
-static preview, not production animation art.
+Verified strip names:
+idle, blink, wave, walk, happy, sad, cry, thinking, camera, celebrate, sleep,
+surprised, envelope and memory_jar.
 
-No production PNG frames are ready. All 13 requested states are pending:
-idle, blink, wave, walk, happy, thinking, camera, celebrate, sleep, sad,
-surprised, envelope and memoryJar. Speaking remains an optional future state.
-Counts and durations in the live manifest are provisional animation plans;
-adjust them to the artist-approved final exports instead of trusting board labels.
+Each source PNG is 2048 x 256: eight ordered 256 x 256 frames. The manifest's
+fps and loop settings are retained. Idle/sad/cry/thinking/sleep use 5 fps;
+the other actions use 9 fps. Idle, blink, walk and sleep loop. Other actions
+complete once, then the shared controller returns to idle. memoryJar remains a
+backward-compatible controller alias for memory_jar. Speaking has no delivered
+sprite and remains a future assistant extension.
 
-Production delivery:
-1. Export separate PNGs into `public/MASCOTMIMO/mimo_pack/frames/<action>/001.png`,
-   `002.png`, etc. Recommended common canvas: 256 x 256. Keep the same canvas
-   dimensions across every animation, character scale and ground alignment.
-   Include whole ears and props, clean alpha edges and a clear 1px outer border.
-   Do not trim canvases per pose, rescale poses independently or include captions.
-2. Edit `public/MASCOTMIMO/mimo_pack/animation_manifest.json`. Supply explicit
-   ordered filenames, exact frameCount, frameDurationMs and loop. Start with
-   status candidate. frameDurationMs is either one duration for all frames or an
-   array with one millisecond duration per listed frame.
-3. Run `npm run mimo:validate` (Node 22.18+ and the project's installed Chrome
-   Playwright channel). It checks metadata, PNG signatures, file existence,
-   dimensions, alpha transparency, nonempty content and the 3 MiB per-file PWA
-   cache limit. It writes `artifacts/mimo-asset-validation.json` and an offline
-   checkerboard contact sheet at `artifacts/mimo-frame-review.html`.
-4. Review every frame in the contact sheet for identity, scale, alignment, order
-   and labels/backgrounds. Bounds, center spread and baseline spread assist
-   review; they cannot distinguish an intentional jump or ear movement from
-   unintended drift. Automated transparency checks cannot prove a background-free
-   character silhouette. Do not mark visualReview until the art has been checked.
-5. Set visualReview to true and status to verified, run validation again, then
-   run `npm run build`. Rebuilding updates the installed PWA's offline cache.
+MimoSpritePlayer draws one native 256 x 256 crop to a fixed square canvas.
+It never displays the entire strip. CSS scales that canvas uniformly, with the
+floating mobile mascot about 75 CSS pixels and desktop at 88 pixels. All strips
+are preloaded, dimension/signature/alpha checked and decoded once per action.
+Cropping uses integer source offsets, while a timestamp clock selects frames at
+manifest speed. Cached strips prevent flicker when switching actions. Hidden
+documents pause clocks without accumulating hidden time. Reduced motion holds
+frame zero; reactions still finish. Minimizing removes the player and restores
+idle. Higher-priority save/envelope/celebration events override greetings; request
+IDs protect newer actions from stale completion callbacks.
 
-Example entry (files must actually exist; this is documentation only):
+Existing UI and IndexedDB schemas/data are preserved. Event connections:
+- Tapping Mimo waves and opens the existing local assistant.
+- Successful memory save: camera.
+- Memory Jar pick: memory_jar while unfolding; happy on reveal.
+- Successful Time Capsule seal: envelope.
+- Rewind closing slide: celebrate, including manual advancement.
+- Local assistant search: thinking, then happy or a friendly wave.
+- Writing tools keep their friendly reactions based on the saved non-sensitive
+  mood labels. No sad or cry reaction is inferred.
+- Assistant > Try a Mimo reaction lets the user explicitly choose all 14 actions.
+  Looping poses continue until another action, closing the assistant, or minimize.
+  The assistant's reaction toggle can disable its reactions.
 
-```json
-{
-  "version": 2,
-  "format": "individual-png-frames",
-  "character": "Mimo",
-  "frameWidth": 256,
-  "frameHeight": 256,
-  "animations": {
-    "wave": {
-      "status": "candidate",
-      "visualReview": false,
-      "frameCount": 3,
-      "frameDurationMs": [100, 150, 250],
-      "loop": false,
-      "frames": [
-        "frames/wave/001.png",
-        "frames/wave/002.png",
-        "frames/wave/003.png"
-      ]
-    }
-  }
-}
-```
+Workbox precaches the active manifest and all 14 PNGs. The original extracted
+pack, labeled concept/reference boards and pack preview are excluded from the
+offline cache so reference art is not confused with production sprites. The
+static SVG remains a clearly labeled fallback for missing/invalid assets.
+Rebuild after replacing production assets to update the installed PWA cache.
 
-pending entries have an empty frames array and a planned positive frameCount.
-candidate entries contain exports available for validation, but are not played.
-verified entries require visualReview: true and still undergo runtime pixel checks.
-The original supplied strip-based template is retained as reference only.
-Legacy strip manifests are rejected by the v2 loader.
+npm run mimo:validate checks all strips and each of their 112 crops. It reports
+PNG dimensions, nonempty alpha content, a fully transparent outer border,
+frame counts/timing and per-file cache size. It produces:
+- artifacts/mimo-asset-validation.json
+- artifacts/mimo-frame-review.html (ordered checkerboard crops, not whole strips)
 
-MimoSpritePlayer loads and decodes every frame of an action before showing any,
-caches decoded images, and draws them on one fixed canvas. The square display box
-stays stable even for a different source aspect ratio; object-fit preserves that
-ratio. A timestamp-based frame clock supports uneven durations and loops without
-chained-timer drift. Idle and greeting are preloaded; returning to a successfully
-preloaded idle uses the cached frames. Missing/invalid assets fall back atomically
-to the static preview. Requests time out after ten seconds. Individual frames
-must be 16–1024 pixels per side; each animation is capped at 120 frames and 64 MiB
-of decoded pixels. A manifest error keeps the whole manifest on fallback.
+Pixel checks do not certify pose quality. All delivered action illustrations are
+usable, but some motions are subtle and stylized, rather than full hand animation.
 
-Temporary actions complete once and return to idle. Hidden documents suspend the
-clock without accumulating hidden time; minimizing removes the player. OS and
-MemoTrail reduced-motion settings freeze frame zero, while reactions still finish.
-Thinking/sleep can remain active until a caller changes them; speaking has no AI
-or audio behavior.
+The earlier v2 individual-PNG pipeline is still supported for alternate manifests:
+version 2, format individual-png-frames, global frameWidth/frameHeight, and
+animations with status (pending/candidate/verified), frameCount, frameDurationMs,
+loop and an ordered frames array. Verified v2 entries require visualReview: true.
+Durations may be a scalar or per-frame array. Candidate/pending entries stay on
+fallback. Individual files must use frames/<action>/<file>.png paths. Global
+dimensions must be consistent, and bounds/scale/alignment still need visual
+review. The old reference templates are not the active manifest.
 
-MimoMascot accepts state, size, manifestUrl, inline, onComplete and onActivate. Explicit state
-is controlled: the caller uses onComplete to switch it. The shared controller:
+MimoMascot accepts state, size, manifestUrl, inline, onComplete and onActivate.
+Explicit state props are controlled: the caller changes state on completion.
+The default shared controller can play reactions or persistent loops:
 
 ```ts
-useMimo.getState().play('camera'); // One-shot, then idle
-useMimo.getState().play('memoryJar');
+useMimo.getState().play('camera'); // Once, then idle
 useMimo.getState().play('envelope');
-useMimo.getState().play('thinking', false); // Persistent state
-useMimo.getState().play('walk', false); // Explicit continuous loop
-useMimo.getState().play('idle'); // Explicit stop
+useMimo.getState().play('memory_jar');
+useMimo.getState().play('walk'); // Manifest loop
+useMimo.getState().play('sad'); // Explicit user choice only
+useMimo.getState().play('idle'); // Stop an action
 ```
 
-The floating companion now opens the Phase 7 local assistant on activation;
-its greeting animation is preserved. See MIMO_ASSISTANT.md for assistant details.
+No local generative model or cloud processing is added. See MIMO_ASSISTANT.md
+for the existing rule-based assistant.
 
-Priority and request IDs prevent greetings or stale completion callbacks from
-cancelling save/celebration reactions. Existing events remain: home greeting,
-camera after a successful memory save, happy after jar reveals, celebrate after
-capsule sealing and when rewind reaches its closing slide. Rewind suspends the
-background companion and presents Mimo inside its dialog.
-
-Verification commands:
-```sh
-npm run mimo:validate
-npm run build
-npx playwright test tests/mimo.spec.ts tests/mimo-assets.spec.ts
-```
-
-The colored squares in automated tests are synthetic fixtures under artifacts
-or mocked responses; they are never shipped as Mimo assets.
+Checks: npm run build; npm run mimo:validate; Playwright Mimo/assistant/strip
+and memory-flow tests. The real-strip tests compare every rendered frame pixel
+with an independent source crop and check speed, loop/one-shot behavior, pause,
+reduced motion, navigation clearance, minimize/restore and all states offline.
+Android-sized Chrome is emulated with a Pixel 7 viewport, touch and Android user
+agent; physical Android hardware and launcher installation are not available in
+this workspace.
 

@@ -11,6 +11,7 @@ import { memoryPath } from '@/lib/memory-path';
 import { useMimo } from '@/stores/mimo';
 import type { Memory } from '@/types/memory';
 import type { MimoState } from '@/lib/mimo';
+import { mimoPackStates } from '@/lib/mimo';
 
 interface Exchange { id: number; query: string; response: string; results: Memory[]; shown: number }
 const prompts = ['Show my beach memories', 'Show my favorite memories', 'Show all memories'];
@@ -28,6 +29,7 @@ export function MimoAssistant({ onClose }: { onClose: () => void }) {
   const [checking, setChecking] = useState(false);
   const [reactions, setReactions] = useState(true);
   const reactionsEnabled = useRef(true);
+  const [previewReaction, setPreviewReaction] = useState<MimoState>('wave');
   const mounted = useRef(true);
   const request = useRef(0);
   const reaction = useRef<number | null>(null);
@@ -142,6 +144,7 @@ export function MimoAssistant({ onClose }: { onClose: () => void }) {
         <details className="mimo-model-options"><summary>Optional on-device AI</summary><p>No local model is installed or tested. Search and writing templates work offline without one.</p><p>A future model must show its download size and required storage before asking your consent. Nothing is downloaded by this panel.</p><Button variant="ghost" size="sm" disabled={checking} onClick={() => void checkSupport()}>{checking ? 'Checking…' : 'Check browser capabilities'}</Button>
           {support && <p role="status">WebGPU adapter: {support.webGpu ? 'available' : 'unavailable'}. WebAssembly: {support.wasm ? 'available' : 'unavailable'}. Estimated free site storage: {support.storageAvailableBytes === null ? 'unknown' : `${Math.round(support.storageAvailableBytes / 1024 / 1024)} MB`}. These checks do not validate a language model or guarantee installation space.</p>}
         </details>
+        <details className="mimo-reaction-options"><summary>Try a Mimo reaction</summary><p>Choose a pose yourself. Mimo never infers sadness or how you feel.</p><label htmlFor="mimo-reaction">Mimo pose</label><select id="mimo-reaction" value={previewReaction} onChange={(event) => setPreviewReaction(event.target.value as MimoState)}>{mimoPackStates.map((state) => <option key={state} value={state}>{state.replace('_', ' ')}</option>)}</select><Button size="sm" variant="secondary" disabled={!reactions || busy} onClick={() => { useMimo.getState().play('idle', false); react(previewReaction, !['idle', 'blink', 'walk', 'sleep'].includes(previewReaction)); }}>Play reaction</Button></details>
       </div>
     </DialogContent>
   </Dialog>;

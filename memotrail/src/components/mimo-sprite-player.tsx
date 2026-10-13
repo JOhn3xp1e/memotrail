@@ -1,6 +1,6 @@
 ﻿import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { mimoFrameAt, type MimoAnimation } from '@/lib/mimo-manifest';
-import { cachedMimoFrames, mimoFramesKey, preloadMimoFrames, type LoadedMimoFrames } from '@/lib/mimo-frames';
+import { cachedMimoFrames, drawMimoFrame, mimoFramesKey, preloadMimoFrames, type LoadedMimoFrames } from '@/lib/mimo-frames';
 import { useMimoReducedMotion } from '@/hooks/use-mimo-reduced-motion';
 
 interface Props {
@@ -47,15 +47,14 @@ export function MimoSpritePlayer({ animation, size = 96, paused = false, reduced
     const canvas = node.current;
     if (!canvas || !asset) return;
     const ctx = canvas.getContext('2d');
-    ctx?.clearRect(0, 0, animation.frameWidth, animation.frameHeight);
-    ctx?.drawImage(asset.images[0]!, 0, 0);
+    if (ctx) drawMimoFrame(ctx, asset, animation, 0);
     canvas.dataset.frame = '0';
-  }, [asset, animation.frameWidth, animation.frameHeight]);
+  }, [asset, animation]);
   useEffect(() => {
     const canvas = node.current;
     if (reduced && canvas && asset) {
       const ctx = canvas.getContext('2d');
-      ctx?.clearRect(0, 0, canvas.width, canvas.height); ctx?.drawImage(asset.images[0]!, 0, 0); canvas.dataset.frame = '0';
+      if (ctx) drawMimoFrame(ctx, asset, animation, 0); canvas.dataset.frame = '0';
     }
     if (paused || hidden || !ready || completed.current) return;
     const once = playOnce || !animation.loop;
@@ -67,7 +66,7 @@ export function MimoSpritePlayer({ animation, size = 96, paused = false, reduced
       elapsed.current += now - previous; previous = now;
       const frame = reduced ? 0 : mimoFrameAt(animation, elapsed.current, once);
       if (canvas && ctx && asset && frame !== lastFrame) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(asset.images[frame]!, 0, 0);
+        drawMimoFrame(ctx, asset, animation, frame);
         canvas.dataset.frame = String(frame); lastFrame = frame;
       }
       if (once && elapsed.current >= animation.durationMs) { completed.current = true; callback.current?.(); return; }
@@ -76,7 +75,7 @@ export function MimoSpritePlayer({ animation, size = 96, paused = false, reduced
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [paused, hidden, ready, asset, reduced, animation, playOnce]);
-  return <span className="mimo-sprite-player" data-asset={asset ? 'frames' : 'static-preview'} style={{ width: size, height: size }}>
+  return <span className="mimo-sprite-player" data-asset={asset ? animation.format === 'horizontal-strip' ? 'strip' : 'frames' : 'static-preview'} style={{ width: size, height: size }}>
     {asset ? <canvas ref={node} className="mimo-sprite" aria-hidden="true" width={animation.frameWidth} height={animation.frameHeight} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : fallback}
   </span>;
 }

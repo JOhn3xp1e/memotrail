@@ -10,7 +10,7 @@ test('controller switches every state, guards stale completions, and keeps persi
     useMimo.getState().play('idle', false);
     useMimo.getState().play(state);
     expect(useMimo.getState().state).toBe(state);
-    expect(useMimo.getState().temporary).toBe(!['idle', 'thinking', 'speaking', 'sleep'].includes(state));
+    expect(useMimo.getState().temporary).toBe(!['idle', 'blink', 'walk', 'speaking', 'sleep'].includes(state));
   }
   useMimo.getState().play('camera');
   const previous = useMimo.getState().requestId;
@@ -30,10 +30,11 @@ test('Mimo supports Android screens, both themes, keyboard minimize/restore and 
   await page.goto('/');
   const mimo = page.locator('.mimo-companion');
   await expect(mimo).toHaveAttribute('data-state', 'idle');
-  await expect(mimo).toContainText('Static preview');
-  await expect(page.locator('.mimo-preview')).toHaveJSProperty('complete', true);
-  await expect(page.locator('.mimo-preview')).toHaveJSProperty('naturalWidth', 256);
-  expect(await page.locator('.mimo-preview').evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await expect(page.locator('.mimo-sprite-player')).toHaveAttribute('data-asset', 'strip');
+  await expect(mimo).toContainText('Companion');
+  await expect(page.locator('.mimo-preview')).toHaveCount(0);
+  await expect(page.locator('.mimo-sprite')).toHaveJSProperty('width', 256);
+  await expect(page.locator('.mimo-sprite')).toHaveAttribute('data-frame', '0');
   const bounds = await mimo.boundingBox();
   const navigation = await page.locator('.bottom-nav').boundingBox();
   expect(bounds!.y + bounds!.height).toBeLessThan(navigation!.y);
@@ -59,14 +60,14 @@ test('Mimo supports Android screens, both themes, keyboard minimize/restore and 
   await page.screenshot({ path: 'artifacts/mimo-dark-android.png' });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await expect.poll(() => page.locator('.mimo-preview').evaluate((el) => getComputedStyle(el).animationName)).toBe('mimo-breathe');
+  await expect(page.locator('.mimo-sprite')).toHaveAttribute('data-frame', '1');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect.poll(() => page.locator('.mimo-preview').evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await expect(page.locator('.mimo-sprite')).toHaveAttribute('data-frame', '0');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/settings');
   await page.getByRole('switch', { name: 'A little less motion' }).click();
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-reduced', 'true');
-  expect(await page.locator('.mimo-preview').evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await expect(page.locator('.mimo-sprite')).toHaveAttribute('data-frame', '0');
 });
 
 test('successful memory save and jar reveal trigger camera and happy, returning to idle', async ({ page }) => {
@@ -92,7 +93,7 @@ test('successful memory save and jar reveal trigger camera and happy, returning 
 test('verified individual PNG frames advance in order, pause while hidden, and complete', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   // Synthetic transparent test frames, never production mascots or reference crops.
-  await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: {
+  await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: {
     version: 2, format: 'individual-png-frames',
     frameWidth: 16, frameHeight: 16,
     animations: { wave: { status: 'verified', visualReview: true, frames: ['frames/wave/001.png', 'frames/wave/002.png', 'frames/wave/003.png', 'frames/wave/004.png'], frameCount: 4, frameDurationMs: 1000, loop: false } },
@@ -127,14 +128,14 @@ test('verified individual PNG frames advance in order, pause while hidden, and c
 });
 
 test('missing frames and invalid metadata fall back to a labeled static preview', async ({ page }) => {
-  await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: { version: 2, format: 'individual-png-frames', frameWidth: 256, frameHeight: 256, animations: { wave: { status: 'verified', visualReview: true, frames: ['frames/missing.png'], frameCount: 1, frameDurationMs: 800, loop: false } } } }));
+  await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: { version: 2, format: 'individual-png-frames', frameWidth: 256, frameHeight: 256, animations: { wave: { status: 'verified', visualReview: true, frames: ['frames/missing.png'], frameCount: 1, frameDurationMs: 800, loop: false } } } }));
   await page.route('**/missing.png', (route) => route.fulfill({ status: 404 }));
   await page.goto('/');
   await page.getByRole('button', { name: 'Chat with Mimo' }).click();
   await closeMimoChat(page);
   await expect(page.locator('.mimo-companion')).toContainText('Static preview');
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'idle');
-  await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: { animations: { idle: { fps: 0 } } } }));
+  await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: { animations: { idle: { fps: 0 } } } }));
   await page.reload();
   await expect(page.locator('.mimo-preview')).toBeVisible();
 });
@@ -153,7 +154,7 @@ test('manifest rejects reference atlases, incomplete reviews and bad timing; var
   }
 });
 
-test('capsule sealing celebrates and rewind celebrates inside the closing dialog', async ({ page }) => {
+test('capsule sealing plays envelope and rewind celebrates inside the closing dialog', async ({ page }) => {
   await page.goto('/capsules/new');
   await page.getByLabel('Capsule title').fill('A letter with Mimo');
   await page.getByLabel('Your letter').fill('Keep the good bits.');
@@ -164,7 +165,7 @@ test('capsule sealing celebrates and rewind celebrates inside the closing dialog
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Seal Capsule', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm and Seal' }).click();
-  await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'celebrate');
+  await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'envelope');
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'idle');
   await page.goto('/add');
   await page.getByLabel('Give this moment a title').fill('Recap with Mimo');

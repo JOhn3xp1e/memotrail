@@ -2,18 +2,19 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve, relative, dirname } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
-import { parseMimoManifest, inspectMimoPixels, mimoStates } from '../src/lib/mimo-manifest.ts';
+import { parseMimoManifest, inspectMimoPixels, mimoStates, mimoPackStates } from '../src/lib/mimo-manifest.ts';
 
 // Local files and a local headless browser only. No server, asset edits or DB access.
 const publicRoot = fileURLToPath(new URL('../public/', import.meta.url));
-const manifestPath = process.argv[2] ? resolve(process.argv[2]) : resolve(publicRoot, 'MASCOTMIMO/mimo_pack/animation_manifest.json');
+const manifestPath = process.argv[2] ? resolve(process.argv[2]) : resolve(publicRoot, 'assets/mimo/manifest.json');
 const artifactRoot = fileURLToPath(new URL('../artifacts/', import.meta.url));
-const report = { format: 'individual-png-frames', ready: [], pending: [], candidate: [], errors: [], animations: {} };
+const report = { format: '', ready: [], pending: [], candidate: [], errors: [], animations: {} };
 let browser;
 const sections = [];
 try {
   const raw = JSON.parse((await readFile(manifestPath, 'utf8')).replace(/^\uFEFF/, ''));
   const manifest = parseMimoManifest(raw, pathToFileURL(manifestPath).href);
+  report.format = raw.format;
   const production = Object.entries(manifest).filter(([, animation]) => animation.status !== 'pending');
   if (production.length) {
     browser = await chromium.launch({ channel: 'chrome', headless: true });
@@ -32,16 +33,16 @@ try {
           if (![137, 80, 78, 71, 13, 10, 26, 10].every((byte, i) => bytes[i] === byte)) throw new Error(`Not PNG: ${within}`);
           if (bytes.length > 3 * 1024 * 1024) throw new Error(`Frame exceeds PWA's 3 MiB cache limit: ${within}`);
           const data = `data:image/png;base64,${bytes.toString('base64')}`;
-          const metric = await page.evaluate(async ({ data, width, height }) => {
+          const { preview, ...metric } = await page.evaluate(async ({ data, width, height, count, sourceX }) => {
             const image = new Image(); image.src = data; await image.decode();
-            if (image.naturalWidth !== width || image.naturalHeight !== height) throw new Error('Inconsistent frame dimensions');
+            if (image.naturalWidth !== width * count || image.naturalHeight !== height) throw new Error('Inconsistent frame dimensions');
             const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            ctx.drawImage(image, 0, 0);
-            return window.inspectMimoPixels(ctx.getImageData(0, 0, width, height).data, width, height);
-          }, { data, width: animation.frameWidth, height: animation.frameHeight });
+            ctx.drawImage(image, sourceX, 0, width, height, 0, 0, width, height);
+            return { ...window.inspectMimoPixels(ctx.getImageData(0, 0, width, height).data, width, height), preview: canvas.toDataURL('image/png') };
+          }, { data, width: animation.frameWidth, height: animation.frameHeight, count: animation.format === 'horizontal-strip' ? animation.frameCount : 1, sourceX: frame.sourceX ?? 0 });
           metrics.push({ file: within, durationMs: frame.durationMs, ...metric });
-          frames.push(`<figure><div class="frame"><img src="${data}" width="${animation.frameWidth}" height="${animation.frameHeight}" alt="${name} frame ${index + 1}"></div><figcaption>${index + 1}: ${within} (${frame.durationMs} ms)<br>Bounds: ${metric.minX},${metric.minY} – ${metric.maxX},${metric.maxY}</figcaption></figure>`);
+          frames.push(`<figure><div class="frame"><img src="${preview}" width="${animation.frameWidth}" height="${animation.frameHeight}" alt="${name} frame ${index + 1}"></div><figcaption>${index + 1}: ${within} (${frame.durationMs} ms)<br>Bounds: ${metric.minX},${metric.minY} – ${metric.maxX},${metric.maxY}</figcaption></figure>`);
         }
         report[animation.status === 'verified' ? 'ready' : 'candidate'].push(name);
         const spread = (key) => Math.max(...metrics.map((m) => m[key])) - Math.min(...metrics.map((m) => m[key]));
@@ -50,7 +51,7 @@ try {
       } catch (error) { report.errors.push(`${name}: ${error.message}`); }
     }
   }
-  report.pending = mimoStates.filter((name) => !manifest[name] || manifest[name].status === 'pending');
+  report.pending = (raw.format === 'horizontal-strip' ? mimoPackStates : mimoStates).filter((name) => !manifest[name] || manifest[name].status === 'pending');
 } catch (error) { report.errors.push(error.message); }
 finally { await browser?.close(); }
 

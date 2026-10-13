@@ -1,0 +1,121 @@
+{
+  "name": "Mimo \u2014 MemoTrail",
+  "version": "1.0.0",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "format": "horizontal-strip",
+  "animations": {
+    "idle": {
+      "file": "idle.png",
+      "frames": 8,
+      "fps": 5,
+      "loop": true,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "blink": {
+      "file": "blink.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": true,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "wave": {
+      "file": "wave.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "walk": {
+      "file": "walk.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": true,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "happy": {
+      "file": "happy.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "sad": {
+      "file": "sad.png",
+      "frames": 8,
+      "fps": 5,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "cry": {
+      "file": "cry.png",
+      "frames": 8,
+      "fps": 5,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "thinking": {
+      "file": "thinking.png",
+      "frames": 8,
+      "fps": 5,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "camera": {
+      "file": "camera.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "celebrate": {
+      "file": "celebrate.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "sleep": {
+      "file": "sleep.png",
+      "frames": 8,
+      "fps": 5,
+      "loop": true,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "surprised": {
+      "file": "surprised.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "envelope": {
+      "file": "envelope.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    },
+    "memory_jar": {
+      "file": "memory_jar.png",
+      "frames": 8,
+      "fps": 9,
+      "loop": false,
+      "frameWidth": 256,
+      "frameHeight": 256
+    }
+  }
+}

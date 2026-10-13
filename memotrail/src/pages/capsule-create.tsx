@@ -60,7 +60,7 @@ export function CapsuleCreatePage() {
     try {
       const id = await capsuleRepository.seal({ title, message, recipientName: recipientName.trim() || undefined, mood: mood || undefined, unlockAt }, photos);
       setConfirm(false); setSavedId(id);
-      useMimo.getState().play("celebrate");
+      useMimo.getState().play("envelope");
     } catch (cause) { setError(capsuleError(cause)); }
     finally { setBusy(false); }
   }

@@ -28,7 +28,7 @@ test('all frames preload before playback; fallback and canvas occupy the same bo
   const image = Buffer.from(await png(page), 'base64');
   let release!: () => void;
   const gate = new Promise<void>((resolve) => { release = resolve; });
-  await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ wave: action(['frames/wave/001.png', 'frames/wave/002.png']) }) }));
+  await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: manifest({ wave: action(['frames/wave/001.png', 'frames/wave/002.png']) }) }));
   await page.route('**/frames/wave/*.png', async (route) => {
     if (route.request().url().endsWith('002.png')) await gate;
     await route.fulfill({ contentType: 'image/png', body: image });
@@ -53,7 +53,7 @@ for (const kind of ['opaque', 'dimensions', 'empty', 'not-png']) {
   test(`rejects ${kind} production frames without exposing partial animation`, async ({ page }) => {
     await page.goto('/');
     const image = kind === 'not-png' ? Buffer.from('not a PNG') : Buffer.from(await png(page, kind), 'base64');
-    await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ wave: { ...action(['frames/wave/001.png']), frameDurationMs: 800 } }) }));
+    await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: manifest({ wave: { ...action(['frames/wave/001.png']), frameDurationMs: 800 } }) }));
     await page.route('**/frames/wave/*.png', (route) => route.fulfill({ contentType: 'image/png', body: image }));
     await page.reload();
     await page.getByRole('button', { name: 'Chat with Mimo' }).click();
@@ -73,7 +73,7 @@ for (const viewport of [{ width: 360, height: 800 }, { width: 1440, height: 1000
     const image = Buffer.from(await png(page), 'base64');
     const files = ['frames/idle/001.png', 'frames/idle/002.png'];
     let requests = 0;
-    await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ idle: action(files, true) }) }));
+    await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: manifest({ idle: action(files, true) }) }));
     await page.route('**/frames/idle/*.png', (route) => { requests++; return route.fulfill({ contentType: 'image/png', body: image }); });
     await page.reload();
     const sprite = page.locator('.mimo-sprite');
@@ -98,7 +98,7 @@ test('candidate frames stay in preview; local validator generates ordered review
   const image = Buffer.from(await png(page), 'base64');
   const animation = { ...action(['frames/wave/001.png'], false, 'candidate'), visualReview: false };
   let requested = false;
-  await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ wave: animation }) }));
+  await page.route('**/assets/mimo/manifest.json', (route) => route.fulfill({ json: manifest({ wave: animation }) }));
   await page.route('**/frames/wave/*.png', (route) => { requested = true; return route.fulfill({ contentType: 'image/png', body: image }); });
   await page.reload();
   await page.getByRole('button', { name: 'Chat with Mimo' }).click();

@@ -53,8 +53,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}", "MASCOTMIMO/**/animation_manifest.json"],
-        globIgnores: ["**/mimo_concept_sheet.png", "MIMOREFERRENCE/**"],
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}", "MASCOTMIMO/**/animation_manifest.json", "assets/mimo/manifest.json"],
+        globIgnores: ["**/mimo_concept_sheet.png", "MIMOREFERRENCE/**", "mimospritesheet/**"],
         navigateFallback: "/index.html",
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,

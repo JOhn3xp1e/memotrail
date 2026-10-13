@@ -66,9 +66,20 @@ test('future model initialization requires consent, tested runtime, backend and 
 test('chat searches multiple saved memories and empty results; links open personal details', async ({ page }) => {
   await seed(page); await open(page);
   await expect(page.getByLabel('Ask Mimo to find memories')).toBeFocused();
+  await page.evaluate(() => {
+    const states: string[] = [];
+    const observer = new MutationObserver((records) => { for (const record of records) { if (record.oldValue) states.push(record.oldValue); states.push((record.target as HTMLElement).dataset.state ?? ''); } });
+    observer.observe(document.querySelector('.mimo-companion')!, { attributes: true, attributeFilter: ['data-state'], attributeOldValue: true });
+    (window as Window & { mimoReactionHistory?: { states: string[]; observer: MutationObserver } }).mimoReactionHistory = { states, observer };
+  });
   await search(page, 'Show my beach memories');
   await expect(page.locator('.mimo-result-card')).toHaveCount(2);
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'happy');
+  const history = await page.evaluate(() => {
+    const history = (window as Window & { mimoReactionHistory?: { states: string[]; observer: MutationObserver } }).mimoReactionHistory!;
+    history.observer.disconnect(); return history.states;
+  });
+  expect(history).toContain('thinking');
   await search(page, 'Find memories from August 2026');
   await expect(page.locator('.mimo-exchange').last().locator('.mimo-result-card')).toHaveCount(2);
   await search(page, 'Show my favorite memories');

@@ -38,8 +38,9 @@ export function MimoMascot({ state: controlledState, manifestUrl = mimoManifestU
   useEffect(() => {
     if (manifestResult?.url !== manifestUrl) return;
     // Idle must be ready when a reaction ends; greeting is the common first action.
-    for (const state of ['idle', 'wave'] as const) {
-      const animation = manifestResult.value[state];
+    const strips = Object.values(manifestResult.value).filter((animation) => animation?.format === 'horizontal-strip');
+    const animations = strips.length ? strips : [manifestResult.value.idle, manifestResult.value.wave];
+    for (const animation of animations) {
       if (animation?.status === 'verified') void preloadMimoFrames(animation).catch(() => undefined);
     }
   }, [manifestResult, manifestUrl]);
@@ -48,7 +49,7 @@ export function MimoMascot({ state: controlledState, manifestUrl = mimoManifestU
     document.addEventListener('visibilitychange', visibility);
     return () => document.removeEventListener('visibilitychange', visibility);
   }, []);
-  const animation = manifest[state] ?? mimoFallback[state];
+  const animation = manifest[state === 'memoryJar' ? 'memory_jar' : state] ?? manifest[state] ?? mimoFallback[state];
   const requestId = controller.requestId;
   return <aside className={`mimo-companion${inline ? ' mimo-inline' : ''}`} aria-label="Mimo memory companion" data-state={state} data-paused={paused || controller.minimized} data-reduced={reduced} hidden={!inline && controller.rewindOpen}>
     {controller.minimized ? <button ref={restoreButton} className="mimo-restore" onClick={() => minimize(false)} aria-label="Restore Mimo">Mimo</button> : <>

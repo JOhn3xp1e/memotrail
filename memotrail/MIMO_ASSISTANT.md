@@ -36,8 +36,11 @@ celebrate for a user-saved adventurous mood, or a warm wave for saved peaceful/
 nostalgic moods. These are presentation choices, not emotional diagnoses.
 "Mimo reactions" can turn off assistant-specific reactions for this session.
 Visibility pausing, minimizing and both reduced-motion settings still apply.
-There are still no verified production PNG animations: actions use the existing
-labeled static preview until the separate animation pipeline receives frames.
+The supplied Complete Sprite Pack now provides 14 verified transparent 2D strip
+animations from public/assets/mimo. "Try a Mimo reaction" exposes every pose,
+including explicit-only sad and cry; neither is inferred from saved mood or text.
+The static preview is only a missing/invalid-asset fallback. Speaking remains an
+optional future state without its own sprite. See MIMO.md for playback details.
 
 Optional on-device AI is an interface only, in mimo-local-model.ts. The browser
 check requests an actual WebGPU adapter and reads WebAssembly availability,

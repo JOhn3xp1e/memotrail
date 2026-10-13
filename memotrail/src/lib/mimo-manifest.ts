@@ -1,16 +1,36 @@
-export const mimoStates = ['idle', 'blink', 'wave', 'walk', 'happy', 'thinking', 'camera', 'celebrate', 'sleep', 'sad', 'surprised', 'envelope', 'memoryJar', 'speaking'] as const;
+export const mimoPackStates = ['idle', 'blink', 'wave', 'walk', 'happy', 'sad', 'cry', 'thinking', 'camera', 'celebrate', 'sleep', 'surprised', 'envelope', 'memory_jar'] as const;
+export const mimoStates = [...mimoPackStates, 'memoryJar', 'speaking'] as const;
 export type MimoState = typeof mimoStates[number];
-export interface MimoFrame { file: string; durationMs: number }
+export interface MimoFrame { file: string; durationMs: number; sourceX?: number }
 export interface MimoAnimation {
   status: 'pending' | 'candidate' | 'verified'; frames: MimoFrame[]; frameCount: number;
   durationMs: number; loop: boolean; frameWidth: number; frameHeight: number;
+  format?: 'horizontal-strip' | 'individual-png-frames';
 }
 export type MimoManifest = Partial<Record<MimoState, MimoAnimation>>;
 
-/** v2 uses explicit, ordered individual files. Legacy atlas metadata is rejected. */
+function parseStripManifest(raw: Record<string, unknown>, url: string): MimoManifest {
+  if (raw.version !== '1.0.0' || raw.frameWidth !== 256 || raw.frameHeight !== 256 || !raw.animations || typeof raw.animations !== 'object') throw new Error('Invalid Mimo horizontal-strip manifest');
+  const result: MimoManifest = {};
+  for (const name of Object.keys(raw.animations)) if (!(mimoPackStates as readonly string[]).includes(name)) throw new Error(`Unknown strip animation: ${name}`);
+  for (const state of mimoPackStates) {
+    const value = (raw.animations as Record<string, unknown>)[state];
+    if (!value || typeof value !== 'object') throw new Error(`Missing Mimo strip: ${state}`);
+    const a = value as Record<string, unknown>;
+    if (a.frames !== 8 || a.frameWidth !== 256 || a.frameHeight !== 256 || typeof a.fps !== 'number' || !Number.isFinite(a.fps) || a.fps < 1 || a.fps > 60 || typeof a.loop !== 'boolean' || typeof a.file !== 'string' || !/^[a-z_]+\.png$/.test(a.file)) throw new Error(`Invalid Mimo strip metadata: ${state}`);
+    if (state === 'idle' && !a.loop) throw new Error('Idle must loop');
+    const file = new URL(a.file, url).href;
+    const durationMs = 1000 / a.fps;
+    result[state] = { status: 'verified', format: 'horizontal-strip', frameWidth: 256, frameHeight: 256, frameCount: 8, durationMs: durationMs * 8, loop: a.loop, frames: Array.from({ length: 8 }, (_, i) => ({ file, durationMs, sourceX: i * 256 })) };
+  }
+  return result;
+}
+
+/** Both production strip v1 and explicit individual-frame v2 normalize to timed crops. */
 export function parseMimoManifest(value: unknown, url: string): MimoManifest {
   if (!value || typeof value !== 'object') throw new Error('Invalid Mimo manifest');
   const raw = value as Record<string, unknown>;
+  if (raw.format === 'horizontal-strip') return parseStripManifest(raw, url);
   if (raw.version !== 2 || raw.format !== 'individual-png-frames') throw new Error('Expected Mimo v2 individual PNG frames');
   if (![raw.frameWidth, raw.frameHeight].every((n) => typeof n === 'number' && Number.isInteger(n) && n >= 16 && n <= 1024)) throw new Error('Mimo canvases must be 16–1024 pixels per side');
   if (!raw.animations || typeof raw.animations !== 'object' || Array.isArray(raw.animations)) throw new Error('Missing Mimo animations');

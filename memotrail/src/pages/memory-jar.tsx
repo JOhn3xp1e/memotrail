@@ -49,6 +49,7 @@ export function MemoryJarPage() {
     if (!next) return;
     previous.current = next.id;
     setSelectedId(next.id);
+    useMimo.getState().play("memory_jar");
     setPickCount((count) => count + 1);
     setPhase(reduced ? "reveal" : "shake");
   }

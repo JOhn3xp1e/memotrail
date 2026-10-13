@@ -48,6 +48,11 @@
 .mimo-model-options { font-size: 10px; color: var(--muted-foreground); margin-top: 9px; }
 .mimo-model-options summary { cursor: pointer; padding: 5px 0; }
 .mimo-model-options p { margin: 8px 0; }
+.mimo-reaction-options { margin-top: 6px; font-size: 10px; color: var(--muted-foreground); }
+.mimo-reaction-options summary { cursor: pointer; padding: 5px 0; }
+.mimo-reaction-options p { margin: 8px 0; }
+.mimo-reaction-options label { display: block; margin: 6px 0; }
+.mimo-reaction-options select { background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: 8px; min-height: 44px; padding: 6px; margin-right: 8px; max-width: 55%; }
 .mimo-assistant-error { margin: 0; padding: 9px 16px; color: var(--foreground); background: var(--rose); font-size: 11px; }
 .mimo-assistant-loading { position: fixed; right: 20px; bottom: 140px; z-index: 62; background: var(--card); border: 1px solid var(--border); padding: 16px; border-radius: 14px; }
 .mimo-assistant-loading button { margin-left: 12px; background: var(--secondary); border: 0; border-radius: 6px; padding: 8px; }
