@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { usePreferences } from "@/stores/preferences";
 import { usePwa } from "@/hooks/use-pwa";
 import { useResolvedTheme } from "@/hooks/use-theme";
+import { MimoMascot } from "@/components/mimo-mascot";
 
 const destinations = [
   { to: "/", label: "Home", icon: House },
@@ -228,6 +229,7 @@ export function AppShell() {
         </footer>
       </div>
 
+      <MimoMascot />
       <nav className="bottom-nav" aria-label="Mobile navigation">
         {destinations.map(({ to, label, icon: Icon }) => (
           <NavLink

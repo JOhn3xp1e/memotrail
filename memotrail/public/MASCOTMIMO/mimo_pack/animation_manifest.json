@@ -1,0 +1,107 @@
+﻿{
+  "version": 2,
+  "format": "individual-png-frames",
+  "character": "Mimo",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "idle": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 125,
+      "loop": true,
+      "frames": []
+    },
+    "blink": {
+      "status": "pending",
+      "frameCount": 6,
+      "frameDurationMs": 125,
+      "loop": false,
+      "frames": []
+    },
+    "wave": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 100,
+      "loop": false,
+      "frames": []
+    },
+    "walk": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 83.333,
+      "loop": true,
+      "frames": []
+    },
+    "happy": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 83.333,
+      "loop": false,
+      "frames": []
+    },
+    "thinking": {
+      "status": "pending",
+      "frameCount": 6,
+      "frameDurationMs": 125,
+      "loop": true,
+      "frames": []
+    },
+    "camera": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 100,
+      "loop": false,
+      "frames": []
+    },
+    "celebrate": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 83.333,
+      "loop": false,
+      "frames": []
+    },
+    "sleep": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 166.667,
+      "loop": true,
+      "frames": []
+    },
+    "sad": {
+      "status": "pending",
+      "frameCount": 6,
+      "frameDurationMs": 125,
+      "loop": false,
+      "frames": []
+    },
+    "surprised": {
+      "status": "pending",
+      "frameCount": 6,
+      "frameDurationMs": 100,
+      "loop": false,
+      "frames": []
+    },
+    "envelope": {
+      "status": "pending",
+      "frameCount": 6,
+      "frameDurationMs": 125,
+      "loop": false,
+      "frames": []
+    },
+    "memoryJar": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 100,
+      "loop": false,
+      "frames": []
+    },
+    "speaking": {
+      "status": "pending",
+      "frameCount": 8,
+      "frameDurationMs": 100,
+      "loop": true,
+      "frames": []
+    }
+  }
+}

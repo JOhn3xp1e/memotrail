@@ -1,0 +1,16 @@
+{
+  "character": "Mimo",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "animations": {
+    "idle": {"file":"idle.png","frames":8,"fps":8,"loop":true},
+    "blink": {"file":"blink.png","frames":4,"fps":8,"loop":false},
+    "wave": {"file":"wave.png","frames":8,"fps":10,"loop":false},
+    "walk": {"file":"walk.png","frames":8,"fps":12,"loop":true},
+    "happy": {"file":"happy.png","frames":8,"fps":12,"loop":false},
+    "thinking": {"file":"thinking.png","frames":6,"fps":8,"loop":true},
+    "camera": {"file":"camera.png","frames":8,"fps":10,"loop":false},
+    "celebrate": {"file":"celebrate.png","frames":10,"fps":12,"loop":false},
+    "sleep": {"file":"sleep.png","frames":6,"fps":6,"loop":true}
+  }
+}
