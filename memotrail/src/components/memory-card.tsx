@@ -1,4 +1,4 @@
-import { Heart, MapPin } from "lucide-react";
+import { Heart, MapPin, Images } from "lucide-react";
 import { motion } from "motion/react";
 import { formatDate } from "@/lib/utils";
 import type { MemoryView } from "@/types/memory";
@@ -69,6 +69,7 @@ export function MemoryCard({
             <span className="photo-sample-label">SAMPLE</span>
           )}
         </button>
+        {memory.source === "personal" && memory.photos.length > 1 && <span className="memory-photo-count" aria-label={`${memory.photos.length} photos`}><Images size={12} />{memory.photos.length}</span>}
         <button
           className={`favorite-button ${favorite ? "is-favorite" : ""}`}
           onClick={onToggleFavorite}

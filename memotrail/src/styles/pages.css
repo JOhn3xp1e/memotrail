@@ -145,9 +145,17 @@
   outline: 5px solid var(--secondary);
   margin: 0 5px;
 }
-.month-heading h2 {
+.month-heading h2,
+.month-heading h3 {
   font-size: 27px;
 }
+.timeline-year { font-family: var(--serif); color: var(--primary-strong); font-size: 40px; margin: 26px 0 18px; }
+.timeline-results-anchor { scroll-margin-top: 24px; }
+.timeline-load-more { display: flex; margin: 24px auto; }
+.memory-photo-count { position: absolute; bottom: 12px; right: 12px; display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 8px; color: #fff; background: #241d32b8; font-size: 11px; pointer-events: none; }
+.anniversary-list { display: grid; gap: 16px; max-height: 420px; overflow-y: auto; }
+.anniversary-list .nostalgia-content { width: 100%; }
+.timeline-filters { flex-wrap: wrap; }
 .month-heading > span:nth-child(3) {
   color: var(--muted-foreground);
   font-size: 9px;

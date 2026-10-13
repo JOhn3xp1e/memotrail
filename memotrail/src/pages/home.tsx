@@ -17,23 +17,17 @@ import { CollectionCard } from "@/components/collection-card";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryJar, ScrapbookCollage } from "@/components/scrapbook";
 import type { MemoryView } from "@/types/memory";
-import { localDate } from "@/lib/utils";
+import { useLocalToday } from "@/hooks/use-local-today";
+import { onThisDay } from "@/lib/anniversaries";
+import { memoryPath } from "@/lib/memory-path";
 import { LocalMediaImage } from "@/components/local-media-image";
 
 export function HomePage() {
   const { name, setSampleMode } = usePreferences();
   const { memories, collections, isSample, isLoading } = useMemoryData();
   const [selected, setSelected] = useState<MemoryView | null>(null);
-  const today = localDate();
-  const anniversary = memories.find(
-    (memory) =>
-      memory.date.slice(5) === today.slice(5) &&
-      memory.date.slice(0, 4) < today.slice(0, 4),
-  );
-  const nostalgic = anniversary ?? memories.at(-1);
-  const anniversaryYears = anniversary
-    ? Number(today.slice(0, 4)) - Number(anniversary.date.slice(0, 4))
-    : 0;
+  const today = useLocalToday();
+  const anniversaries = onThisDay(memories, today);
 
   function openJar() {
     const pool = memories.filter((memory) => memory.id !== selected?.id);
@@ -149,10 +143,10 @@ export function HomePage() {
               <p className="memory-loading" role="status">
                 Opening your memories…
               </p>
-            ) : nostalgic ? (
-              <button
+            ) : anniversaries.length ? (
+              <div className="anniversary-list">{anniversaries.map((nostalgic) => (
+              <Link key={nostalgic.id} to={memoryPath(nostalgic)}
                 className="nostalgia-content"
-                onClick={() => setSelected(nostalgic)}
               >
                 <LocalMediaImage
                   source={nostalgic.image}
@@ -164,9 +158,7 @@ export function HomePage() {
                 />
                 <span>
                   <span className="nostalgia-date">
-                    {anniversary
-                      ? `${anniversaryYears} ${anniversaryYears === 1 ? "year" : "years"} ago today`
-                      : "A little look back"}
+                    {nostalgic.date.slice(0, 4)} &middot; {Number(today.slice(0, 4)) - Number(nostalgic.date.slice(0, 4))} {Number(today.slice(0, 4)) - Number(nostalgic.date.slice(0, 4)) === 1 ? "year" : "years"} ago today
                   </span>
                   <strong>{nostalgic.title}</strong>
                   <span className="nostalgia-cta">
@@ -176,7 +168,8 @@ export function HomePage() {
                     <ArrowRight size={12} />
                   </span>
                 </span>
-              </button>
+              </Link>
+              ))}</div>
             ) : (
               <div className="nostalgia-empty">
                 <p>
@@ -184,7 +177,7 @@ export function HomePage() {
                   <br />
                   Tomorrow’s lovely surprises.
                 </p>
-                <span>Your memories will find their way back here.</span>
+                <span>No memories from this day in past years yet.</span>
               </div>
             )}
           </section>

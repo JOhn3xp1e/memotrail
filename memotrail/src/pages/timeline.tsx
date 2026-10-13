@@ -1,5 +1,5 @@
 import type { MemoryView } from "@/types/memory";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryCard } from "@/components/memory-card";
 import { useMemoryData } from "@/hooks/use-memory-data";
+import { usePreferences } from "@/stores/preferences";
 import { useSamples } from "@/stores/samples";
 
 export function TimelinePage() {
@@ -23,6 +24,16 @@ export function TimelinePage() {
   const location = useLocation();
   const [view, setView] = useState<"grid" | "list">("grid");
   const sampleFavorites = useSamples((state) => state.favorites);
+  const year = params.get("year") ?? "";
+  const years = [...new Set(memories.map((memory) => memory.date.slice(0, 4)))].sort().reverse();
+  const resultAnchor = useRef<HTMLDivElement>(null);
+  const reduceMotion = usePreferences((state) => state.reduceMotion);
+  const filterKey = params.toString();
+  const [pageSize, setPageSize] = useState({ key: filterKey, count: 48 });
+  const visibleCount = pageSize.key === filterKey ? pageSize.count : 48;
+  useEffect(() => {
+    if (year) resultAnchor.current?.scrollIntoView({ behavior: reduceMotion || window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }, [year, reduceMotion]);
   const category = params.get("category") ?? "all";
   const query = params.get("q") ?? "";
   const mood = params.get("mood") ?? "";
@@ -38,6 +49,7 @@ export function TimelinePage() {
       : "";
 
   function updateParam(key: string, value: string) {
+    setPageSize({ key: "", count: 48 });
     setParams(
       (previous) => {
         const next = new URLSearchParams(previous);
@@ -68,6 +80,7 @@ export function TimelinePage() {
               collection.category === memory.category,
           );
     return (
+      (!year || memory.date.startsWith(`${year}-`)) &&
       categoryMatches &&
       collectionMatches &&
       (!mood || memory.mood === mood) &&
@@ -77,8 +90,8 @@ export function TimelinePage() {
         .toLowerCase()
         .includes(query.toLowerCase().trim())
     );
-  });
-  const groups = filtered.reduce<Record<string, MemoryView[]>>(
+  }).sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+  const groups = filtered.slice(0, visibleCount).reduce<Record<string, MemoryView[]>>(
     (months, memory) => {
       const month = memory.date.slice(0, 7);
       (months[month] ??= []).push(memory);
@@ -184,8 +197,12 @@ export function TimelinePage() {
           {filtered.length === 1 ? "memory" : "memories"}
         </span>
       </div>
-      {!isSample && (
-        <div className="timeline-filters" aria-label="Filter memories">
+      {(<div className="timeline-filters" aria-label="Filter memories">
+          <label>Year<select aria-label="Filter by year" value={year} onChange={(event) => updateParam("year", event.target.value)}>
+            <option value="">Every year</option>
+            {year && !years.includes(year) && <option value={year}>{year}</option>}
+            {years.map((value) => <option key={value} value={value}>{value}</option>)}
+          </select></label>
           <label>
             Mood
             <select
@@ -240,13 +257,14 @@ export function TimelinePage() {
               onChange={(event) => updateParam("to", event.target.value)}
             />
           </label>
-          {(mood || collectionId || fromDate || toDate) && (
+          {(year || query || category !== "all" || mood || collectionId || fromDate || toDate) && (
             <Button variant="ghost" size="sm" onClick={() => setParams({})}>
               Clear filters
             </Button>
           )}
         </div>
       )}
+      <div ref={resultAnchor} className="timeline-results-anchor" />
       {isLoading ? (
         <p className="memory-loading" role="status">
           Opening your private journal…
@@ -271,16 +289,17 @@ export function TimelinePage() {
         >
           {Object.entries(groups)
             .sort(([a], [b]) => b.localeCompare(a))
-            .map(([month, items]) => (
+            .map(([month, items], monthIndex, months) => (
               <section className="timeline-month" key={month}>
+                {(monthIndex === 0 || months[monthIndex - 1]?.[0].slice(0, 4) !== month.slice(0, 4)) && <h2 className="timeline-year">{month.slice(0, 4)}</h2>}
                 <div className="month-heading">
                   <span className="month-dot" />
-                  <h2>
+                  <h3>
                     {new Intl.DateTimeFormat("en", {
                       month: "long",
                       year: "numeric",
                     }).format(new Date(`${month}-01T12:00:00`))}
-                  </h2>
+                  </h3>
                   <span>{items.length} moments</span>
                   <span className="month-line" />
                 </div>
@@ -295,6 +314,7 @@ export function TimelinePage() {
                 </div>
               </section>
             ))}
+          {filtered.length > visibleCount && <Button className="timeline-load-more" variant="secondary" onClick={() => setPageSize({ key: filterKey, count: visibleCount + 48 })}>Show more memories ({filtered.length - visibleCount} remaining)</Button>}
         </div>
       )}
     </>
