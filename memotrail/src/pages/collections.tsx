@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CollectionCard } from "@/components/collection-card";
+import { CollectionCoverPicker } from "@/components/collection-cover-picker";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryCard } from "@/components/memory-card";
 import { MemoryDialog } from "@/components/memory-dialog";
@@ -132,6 +133,7 @@ export function CollectionsPage() {
               <p>{album.subtitle}</p>
             </div>
             <div className="album-banner-actions">
+              {album.source === "personal" && <CollectionCoverPicker key={album.id} collection={album} />}
               {album.source === "personal" && (
                 <Button
                   variant="secondary"

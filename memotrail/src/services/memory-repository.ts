@@ -23,6 +23,7 @@ export interface MemoryRepository {
   toggleFavorite(id: string): Promise<void>;
   listCollections(): Promise<Collection[]>;
   saveCollection(collection: Collection): Promise<void>;
+  setCollectionCover(collectionId: string, mediaId?: string): Promise<void>;
   deleteCollection(id: string): Promise<void>;
   replaceMemoryTags(memoryId: string, tagIds: string[]): Promise<void>;
 }
@@ -137,6 +138,27 @@ export const memoryRepository: MemoryRepository = {
 
   async saveCollection(collection) {
     await getDatabase().collections.put(collection);
+  },
+
+  async setCollectionCover(collectionId, mediaId) {
+    const database = getDatabase();
+    await database.transaction("rw", database.collections, database.memories, database.media, async () => {
+      if (!(await database.collections.get(collectionId))) {
+        throw new Error("This collection is no longer available.");
+      }
+      if (mediaId) {
+        const photo = await database.media.get(mediaId);
+        const memory = photo && await database.memories.get(photo.memoryId);
+        if (!photo || photo.type !== "image" || !(photo.blob instanceof Blob) || !photo.blob.size || memory?.collectionId !== collectionId) {
+          throw new Error("This photo is no longer in this collection. Choose another photo.");
+        }
+      }
+      await database.collections.update(collectionId, (collection) => {
+        if (mediaId) collection.coverMediaId = mediaId;
+        else delete collection.coverMediaId;
+        collection.updatedAt = Date.now();
+      });
+    });
   },
 
   async deleteCollection(id) {

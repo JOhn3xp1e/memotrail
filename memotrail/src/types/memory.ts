@@ -75,6 +75,7 @@ export interface PersonalCollectionView {
   subtitle: string;
   description: string;
   cover: Blob | null;
+  photos: Media[];
   coverMediaId?: string;
   color: string;
   memoryCount: number;

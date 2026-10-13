@@ -31,7 +31,6 @@ export function useMemoryData() {
       items.push(item);
       mediaByMemory.set(item.memoryId, items);
     }
-    const mediaById = new Map(validMedia.map((item) => [item.id, item]));
     const memoriesView: PersonalMemoryView[] = memories.map((memory) => {
       const photos = (mediaByMemory.get(memory.id) ?? []).sort(
         (left, right) => left.order - right.order,
@@ -51,23 +50,27 @@ export function useMemoryData() {
       };
     });
     const collectionsView: PersonalCollectionView[] = collections.map(
-      (collection, index) => ({
+      (collection, index) => {
+        const linkedMemories = memories.filter((memory) => memory.collectionId === collection.id);
+        const photos = linkedMemories.flatMap((memory) => mediaByMemory.get(memory.id) ?? [])
+          .filter((photo) => photo.type === "image" && photo.blob.size > 0)
+          .sort((a, b) => b.createdAt - a.createdAt || a.order - b.order || a.id.localeCompare(b.id));
+        const preferred = photos.find((photo) => photo.id === collection.coverMediaId);
+        return {
         source: "personal",
         id: collection.id,
         title: collection.name,
         subtitle: collection.description || "A little chapter of your life",
         description: collection.description,
-        coverMediaId: collection.coverMediaId,
-        cover: collection.coverMediaId
-          ? (mediaById.get(collection.coverMediaId)?.blob ?? null)
-          : null,
+        coverMediaId: preferred?.id,
+        cover: preferred?.blob ?? photos[0]?.blob ?? null,
+        photos,
         color: ["lavender", "peach", "rose"][index % 3] ?? "lavender",
-        memoryCount: memories.filter(
-          (memory) => memory.collectionId === collection.id,
-        ).length,
+        memoryCount: linkedMemories.length,
         createdAt: collection.createdAt,
         updatedAt: collection.updatedAt,
-      }),
+        };
+      },
     );
     return { memories: memoriesView, collections: collectionsView };
   }, []);
