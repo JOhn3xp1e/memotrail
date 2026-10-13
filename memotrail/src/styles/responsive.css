@@ -1416,9 +1416,23 @@
     flex: 1 1 130px;
     min-width: 0;
   }
-  .collection-actions,
-  .composer-submit-actions {
+  .collection-actions {
     flex-wrap: wrap;
+  }
+  .composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .composer-actions > .button {
+    align-self: flex-start;
+  }
+  .composer-submit-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .composer-submit-actions .button {
+    min-width: 0;
+    padding-inline: 10px;
   }
   .collection-actions .button {
     flex: 1;

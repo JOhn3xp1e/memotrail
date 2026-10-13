@@ -34,7 +34,7 @@ export async function preparePhoto(file: File): Promise<File> {
       canvas.toBlob(
         (result) =>
           result
-            ? resolve(result)
+            ? resolve(result) 
             : reject(new Error(`${file.name} could not be compressed.`)),
         "image/jpeg",
         0.86,
