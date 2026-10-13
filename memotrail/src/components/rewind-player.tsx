@@ -1,0 +1,102 @@
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ChevronLeft, ChevronRight, Download, Pause, Play } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { LocalMediaImage } from "@/components/local-media-image";
+import { usePreferences } from "@/stores/preferences";
+import type { RewindSlide } from "@/lib/rewind";
+
+export function RewindPlayer({ slides, period, onClose }: { slides: RewindSlide[]; period: string; onClose: () => void }) {
+  const systemReduced = useReducedMotion();
+  const reduced = usePreferences((state) => state.reduceMotion) || systemReduced;
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(!!reduced);
+  const [renderedIndex, setRenderedIndex] = useState(0);
+  const [hidden, setHidden] = useState(document.hidden);
+  const [elapsed, setElapsed] = useState(0);
+  const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState("");
+  const node = useRef<HTMLDivElement>(null);
+  const mounted = useRef(true);
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const swiped = useRef(false);
+  const current = Math.min(index, slides.length - 1);
+  const slide = slides[current]!;
+  const stopped = paused || hidden || exporting;
+  useEffect(() => {
+    mounted.current = true;
+    const visibility = () => setHidden(document.hidden);
+    document.addEventListener("visibilitychange", visibility);
+    return () => { mounted.current = false; document.removeEventListener("visibilitychange", visibility); };
+  }, []);
+  useEffect(() => {
+    if (stopped) return;
+    let last = performance.now();
+    const timer = setInterval(() => {
+      const now = performance.now();
+      setElapsed((previous) => previous + now - last);
+      last = now;
+    }, 80);
+    return () => clearInterval(timer);
+  }, [stopped, current]);
+  useEffect(() => {
+    if (elapsed < 6000 || stopped) return;
+    if (current === slides.length - 1) { setPaused(true); return; }
+    setIndex((value) => value + 1); setElapsed(0);
+  }, [elapsed, stopped, current, slides.length]);
+  function move(direction: number) {
+    if (exporting) return;
+    setIndex(Math.max(0, Math.min(slides.length - 1, current + direction)));
+    setElapsed(0); setError("");
+  }
+  async function exportSlide() {
+    if (!node.current || exporting || renderedIndex !== current) return;
+    setExporting(true); setError("");
+    try {
+      await document.fonts.ready;
+      await Promise.all(Array.from(node.current.querySelectorAll("img")).map((image) => image.decode().catch(() => undefined)));
+      const { toPng } = await import("html-to-image");
+      if (!mounted.current || !node.current) return;
+      const data = await toPng(node.current, { pixelRatio: 1080 / node.current.offsetWidth, preferredFontFormat: "woff2" });
+      if (!mounted.current) return;
+      const link = document.createElement("a");
+      link.download = `memotrail-rewind-${period}-${current + 1}.png`;
+      link.href = data; document.body.append(link); link.click(); link.remove();
+    } catch { if (mounted.current) setError("This slide couldn’t be exported. Please try again."); }
+    finally { if (mounted.current) setExporting(false); }
+  }
+  return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}><DialogContent className="rewind-player" onKeyDown={(event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); move(event.key === "ArrowRight" ? 1 : -1); }
+    if (event.code === "Space" && event.target === event.currentTarget) { event.preventDefault(); setPaused((value) => !value); }
+  }}>
+    <DialogTitle>Memory Rewind · {period}</DialogTitle><DialogDescription>Use arrow keys, swipe, or tap the left and right sides to navigate. Escape closes the rewind.</DialogDescription>
+    <div className="rewind-progress" aria-label={`Slide ${current + 1} of ${slides.length}`}>
+      {slides.map((_, position) => <span key={position}><span style={{ transform: `scaleX(${position < current ? 1 : position === current ? Math.min(elapsed / 6000, 1) : 0})` }} /></span>)}
+    </div>
+    <div className="rewind-stage" onTouchStart={(event) => { const point = event.touches[0]; touch.current = point ? { x: point.clientX, y: point.clientY } : null; swiped.current = false; }} onTouchCancel={() => { touch.current = null; }} onTouchEnd={(event) => {
+      const point = event.changedTouches[0]; const start = touch.current;
+      if (point && start && Math.abs(point.clientX - start.x) > 40 && Math.abs(point.clientX - start.x) > Math.abs(point.clientY - start.y)) { swiped.current = true; move(point.clientX < start.x ? 1 : -1); }
+      touch.current = null;
+    }} onClick={(event) => {
+      if (swiped.current) { swiped.current = false; return; }
+      const bounds = event.currentTarget.getBoundingClientRect(); move(event.clientX < bounds.left + bounds.width / 2 ? -1 : 1);
+    }}>
+      <AnimatePresence mode="wait" initial={false}><motion.div key={`${period}-${current}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.22 }} onAnimationComplete={() => setRenderedIndex(current)}>
+        <div ref={node} className={`rewind-slide rewind-${slide.kind}`}>
+          {!!slide.photos?.length && <div className={slide.kind === "collage" ? "rewind-collage" : "rewind-backdrop"}>{slide.photos.map((photo) => <LocalMediaImage key={photo.id} source={photo.blob} alt={photo.title} loading="eager" />)}</div>}
+          <span className="rewind-brand">MemoTrail. / YOUR REWIND</span>
+          <div className="rewind-slide-copy"><span className="eyebrow">{period}</span><h2>{slide.title}</h2><p>{slide.subtitle}</p>{!!slide.lines?.length && <ul>{slide.lines.map((line, position) => <li key={position}>{line}</li>)}</ul>}</div>
+          <span className="rewind-signature">the good bits, kept forever ♡</span>
+        </div>
+      </motion.div></AnimatePresence>
+    </div>
+    <div className="rewind-controls">
+      <button aria-label="Previous slide" disabled={current === 0 || exporting} onClick={() => move(-1)}><ChevronLeft size={20} /></button>
+      <button aria-label={paused ? "Resume rewind" : "Pause rewind"} disabled={exporting} onClick={() => setPaused((value) => !value)}>{paused ? <Play size={18} /> : <Pause size={18} />}</button>
+      <button aria-label="Next slide" disabled={current === slides.length - 1 || exporting} onClick={() => move(1)}><ChevronRight size={20} /></button>
+      <button onClick={exportSlide} disabled={exporting || renderedIndex !== current}><Download size={17} />{exporting ? "Exporting…" : "Export PNG"}</button>
+    </div>
+    {reduced && <p className="rewind-player-note">Reduced motion: animations off. Playback starts paused.</p>}
+    {error && <p className="rewind-export-error" role="alert">{error}</p>}
+  </DialogContent></Dialog>;
+}

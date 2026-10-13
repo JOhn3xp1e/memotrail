@@ -1,0 +1,50 @@
+.rewind-tabs { margin: 28px 0 14px; }
+.rewind-periods { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 22px; margin-top: 24px; }
+.rewind-period { min-width: 0; position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 30px; border-radius: 22px; border: 1px solid var(--border); background: linear-gradient(135deg, var(--secondary), var(--card)); color: var(--foreground); text-align: left; overflow: hidden; cursor: pointer; }
+.rewind-period::after { content: ""; position: absolute; width: 140px; height: 170px; right: -60px; top: -45px; border: 12px solid #c8a9d925; transform: rotate(25deg); pointer-events: none; }
+.rewind-period-1 { background: linear-gradient(145deg, var(--card), color-mix(in srgb, var(--card), #c58da4 20%)); }
+.rewind-period-2 { background: linear-gradient(145deg, var(--card), color-mix(in srgb, var(--card), #a99acf 22%)); }
+.rewind-period h2 { font: 36px var(--serif); }
+.rewind-period p { color: var(--muted-foreground); font-size: 12px; }
+.rewind-period-play { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-strong); font-size: 12px; }
+.rewind-empty { text-align: center; padding: 60px 15px; }
+.rewind-empty > svg { margin: auto; color: var(--primary-strong); }
+.rewind-empty h2 { font: 36px var(--serif); margin: 20px 0; }
+.rewind-empty p { max-width: 450px; margin: 0 auto 24px; color: var(--muted-foreground); }
+.rewind-home-preview { display: flex; gap: 24px; align-items: center; padding: 30px; border: 1px solid var(--border); border-radius: 20px; margin-top: 30px; background: linear-gradient(125deg, var(--secondary), var(--card)); }
+.rewind-home-preview > svg { flex-shrink: 0; color: var(--primary-strong); }
+.rewind-home-preview h2 { font: 30px var(--serif); margin: 8px 0; }
+.rewind-home-preview p { font-size: 12px; color: var(--muted-foreground); }
+.rewind-home-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
+.dialog-content.rewind-player { width: 100%; max-width: none; height: 100dvh; max-height: none; border: 0; border-radius: 0; padding: max(16px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); background: #15121c; color: #fff7ef; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; overflow: hidden; }
+.rewind-player > .dialog-title, .rewind-player > .dialog-description { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.rewind-player .dialog-close { background: transparent; border: 0; color: white; width: 44px; height: 44px; right: max(8px, env(safe-area-inset-right)); top: max(8px, env(safe-area-inset-top)); }
+.rewind-progress { display: flex; gap: 4px; width: min(420px, calc(100% - 70px)); height: 3px; margin-top: 8px; }
+.rewind-progress > span { background: #ffffff40; height: 3px; flex: 1; overflow: hidden; border-radius: 2px; }
+.rewind-progress > span > span { display: block; height: 100%; background: #d2b6f1; transform-origin: left; }
+.rewind-stage { width: min(440px, calc((100dvh - 155px) * 9 / 16), 100%); aspect-ratio: 9 / 16; touch-action: pan-y; cursor: pointer; flex-shrink: 0; }
+.rewind-stage > div { width: 100%; height: 100%; }
+.rewind-slide { position: relative; width: 100%; height: 100%; overflow: hidden; background: linear-gradient(155deg, #473355, #241a35 55%, #7a4b65); color: #fff7ee; border-radius: 12px; container-type: inline-size; }
+.rewind-slide::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 10% 10%, #dac3fa22, transparent 60%); pointer-events: none; }
+.rewind-backdrop { position: absolute; inset: 0; }
+.rewind-backdrop img, .rewind-backdrop .memory-photo-empty { width: 100%; height: 100%; object-fit: cover; }
+.rewind-backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#17101c77, #17101c15 30%, #17101cd9 80%); }
+.rewind-brand, .rewind-signature { position: absolute; left: 8%; right: 8%; z-index: 1; font-size: clamp(8px, 2.4cqw, 12px); letter-spacing: 1px; }
+.rewind-brand { top: 7%; }
+.rewind-signature { bottom: 5%; font-family: var(--serif); letter-spacing: 0.3px; }
+.rewind-slide-copy { position: absolute; z-index: 1; inset: auto 8% 13%; }
+.rewind-slide-copy h2 { font-family: var(--serif); font-size: 11cqw; line-height: 1.06; margin: 12px 0 18px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.rewind-slide-copy p { font-size: 3.6cqw; line-height: 1.65; }
+.rewind-slide-copy .eyebrow { color: #e5c8ff; font-size: 2.4cqw; }
+.rewind-slide-copy ul { list-style: none; padding: 0; margin: 18px 0 0; }
+.rewind-slide-copy li { font-size: 3.7cqw; line-height: 1.5; padding: 6px 0; border-bottom: 1px solid #ffffff26; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rewind-collage { position: absolute; inset: 15% 8% 36%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 10px; }
+.rewind-collage img, .rewind-collage .memory-photo-empty { width: 100%; height: 100%; object-fit: cover; border: 5px solid #fff5e7; border-bottom-width: 15px; transform: rotate(-4deg); box-shadow: 0 5px 14px #0004; }
+.rewind-collage > :nth-child(even) { transform: rotate(5deg); }
+.rewind-collage + .rewind-brand + .rewind-slide-copy h2 { font-size: 7.8cqw; }
+.rewind-controls { display: flex; gap: 9px; align-items: center; }
+.rewind-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; background: transparent; color: #fff3ff; min-width: 44px; height: 44px; border: 0; border-radius: 8px; font-size: 12px; padding: 0 8px; }
+.rewind-controls button:disabled { opacity: 0.45; }
+.rewind-controls button:focus-visible { outline: 2px solid #c8a0ec; }
+.rewind-player-note, .rewind-export-error { font-size: 10px; color: #decaeb; text-align: center; max-width: 400px; }
+@media (max-width: 767px) { .rewind-home-preview { padding: 22px; gap: 15px; } .rewind-home-preview h2 { font-size: 27px; } }

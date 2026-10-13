@@ -9,6 +9,7 @@ import { usePreferences } from "@/stores/preferences";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
+const RewindPage = lazy(() => import("@/pages/rewind").then((m) => ({ default: m.RewindPage })));
 const CapsulesPage = lazy(() => import("@/pages/capsules").then((m) => ({ default: m.CapsulesPage })));
 const CapsuleCreatePage = lazy(() => import("@/pages/capsule-create").then((m) => ({ default: m.CapsuleCreatePage })));
 const CapsuleDetailsPage = lazy(() => import("@/pages/capsule-details").then((m) => ({ default: m.CapsuleDetailsPage })));
@@ -52,6 +53,7 @@ export default function App() {
               <Routes>
                 <Route element={<AppShell />}>
                   <Route index element={<HomePage />} />
+                  <Route path="rewind" element={<RewindPage />} />
                   <Route path="capsules" element={<CapsulesPage />} />
                   <Route path="capsules/new" element={<CapsuleCreatePage />} />
                   <Route path="capsules/:id" element={<CapsuleDetailsPage />} />

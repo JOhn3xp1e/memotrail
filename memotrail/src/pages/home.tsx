@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { usePreferences } from "@/stores/preferences";
 import { useMemoryData } from "@/hooks/use-memory-data";
+import { RewindPreview } from "@/components/rewind-preview";
 import { CapsulePreview } from "@/components/capsule-preview";
 import { Button } from "@/components/ui/button";
 import { MemoryCard } from "@/components/memory-card";
@@ -191,6 +192,7 @@ export function HomePage() {
       </div>
 
       <CapsulePreview />
+      <RewindPreview />
       <section className="home-collections">
         <div className="section-heading">
           <div>
