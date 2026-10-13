@@ -1,12 +1,32 @@
 import { Heart, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, type ReactNode } from "react";
+import { useHeroPhotos } from "@/hooks/use-hero-photos";
+import { useObjectUrl } from "@/hooks/use-object-urls";
+
+function HeroPhoto({ blob, title, children }: {
+  blob: Blob;
+  title: string;
+  children: ReactNode;
+}) {
+  const url = useObjectUrl(blob);
+  const [failed, setFailed] = useState<Blob>();
+  return url && failed !== blob ? (
+    <img src={url} alt={title} fetchPriority="high" onError={() => setFailed(blob)} />
+  ) : children;
+}
 
 export function ScrapbookCollage({ sample }: { sample: boolean }) {
+  const photos = useHeroPhotos();
+  const left = photos?.left;
+  const right = photos?.right;
+  // Personal photos take priority even while the sample scrapbook is enabled.
+  sample = sample && !left;
   return (
     <div
       className={`scrapbook-collage ${!sample ? "collage-empty" : ""}`}
       aria-label={
-        sample
+        left ? "A collage of your saved memories" : sample
           ? "A collage of sample travel photographs"
           : "A little space for your future memories"
       }
@@ -33,16 +53,20 @@ export function ScrapbookCollage({ sample }: { sample: boolean }) {
       </svg>
       <div className="collage-orbit" aria-hidden="true" />
       <Link
-        to={sample ? "/timeline?category=travel" : "/add"}
+        to={right ? "/timeline" : sample ? "/timeline?category=travel" : "/add"}
         className="polaroid polaroid-back"
         aria-label={
-          sample
+          right ? `Explore memory: ${right.memory.title}` : sample
             ? "Explore sample travel memories"
             : "Preview your first memory"
         }
       >
         <div className="polaroid-image">
-          {sample ? (
+          {right ? (
+            <HeroPhoto blob={right.photo.blob} title={right.memory.title}>
+              <Heart size={35} />
+            </HeroPhoto>
+          ) : sample ? (
             <img
               src="/photos/italian-summer.jpg"
               alt="Sample photograph of an Italian coastal village"
@@ -55,15 +79,19 @@ export function ScrapbookCollage({ sample }: { sample: boolean }) {
         <span className="handwritten">a summer to keep</span>
       </Link>
       <Link
-        to={sample ? "/timeline?category=travel" : "/add"}
+        to={left ? "/timeline" : sample ? "/timeline?category=travel" : "/add"}
         className="polaroid polaroid-front"
         aria-label={
-          sample ? "Explore sample lake memories" : "Make room for a new memory"
+          left ? `Explore memory: ${left.memory.title}` : sample ? "Explore sample lake memories" : "Make room for a new memory"
         }
       >
         <span className="washi-tape" aria-hidden="true" />
         <div className="polaroid-image">
-          {sample ? (
+          {left ? (
+            <HeroPhoto blob={left.photo.blob} title={left.memory.title}>
+              <Sparkles size={35} />
+            </HeroPhoto>
+          ) : sample ? (
             <img
               src="/photos/lake-weekend.jpg"
               alt="Sample photograph of a peaceful lake in the mountains"
