@@ -128,7 +128,6 @@ export function HomePage() {
                 <MemoryCard
                   key={memory.id}
                   memory={memory}
-                  onOpen={setSelected}
                   index={index}
                 />
               ))}

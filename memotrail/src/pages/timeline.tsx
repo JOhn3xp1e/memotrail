@@ -1,3 +1,4 @@
+import type { MemoryView } from "@/types/memory";
 import { useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import {
@@ -13,9 +14,7 @@ import { PageHeading } from "@/components/page-heading";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryCard } from "@/components/memory-card";
-import { MemoryDialog } from "@/components/memory-dialog";
 import { useMemoryData } from "@/hooks/use-memory-data";
-import type { MemoryView } from "@/types/memory";
 import { useSamples } from "@/stores/samples";
 
 export function TimelinePage() {
@@ -23,7 +22,6 @@ export function TimelinePage() {
   const [params, setParams] = useSearchParams();
   const location = useLocation();
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [selected, setSelected] = useState<MemoryView | null>(null);
   const sampleFavorites = useSamples((state) => state.favorites);
   const category = params.get("category") ?? "all";
   const query = params.get("q") ?? "";
@@ -291,7 +289,6 @@ export function TimelinePage() {
                     <MemoryCard
                       memory={memory}
                       key={memory.id}
-                      onOpen={setSelected}
                       index={index}
                     />
                   ))}
@@ -300,7 +297,6 @@ export function TimelinePage() {
             ))}
         </div>
       )}
-      <MemoryDialog memory={selected} onClose={() => setSelected(null)} />
     </>
   );
 }

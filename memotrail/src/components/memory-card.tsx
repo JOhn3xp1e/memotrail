@@ -5,6 +5,8 @@ import type { MemoryView } from "@/types/memory";
 import { useSamples } from "@/stores/samples";
 import { memoryRepository } from "@/services/memory-repository";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { memoryPath } from "@/lib/memory-path";
 import { LocalMediaImage } from "@/components/local-media-image";
 
 export function MemoryCard({
@@ -13,9 +15,11 @@ export function MemoryCard({
   index = 0,
 }: {
   memory: MemoryView;
-  onOpen: (memory: MemoryView) => void;
+  onOpen?: (memory: MemoryView) => void;
   index?: number;
 }) {
+  const navigate = useNavigate();
+  const open = () => onOpen ? onOpen(memory) : navigate(memoryPath(memory));
   const sampleFavorite = useSamples((state) =>
     state.favorites.includes(memory.id),
   );
@@ -50,7 +54,7 @@ export function MemoryCard({
       <div className="memory-photo-wrap">
         <button
           className="memory-image-button"
-          onClick={() => onOpen(memory)}
+          onClick={open}
           aria-label={`Open ${memory.source} memory: ${memory.title}`}
         >
           <LocalMediaImage
@@ -82,7 +86,7 @@ export function MemoryCard({
       <div className="memory-card-body">
         <span className="memory-date">{formatDate(memory.date, true)}</span>
         <h3>
-          <button onClick={() => onOpen(memory)}>{memory.title}</button>
+          <button onClick={open}>{memory.title}</button>
         </h3>
         <div className="memory-meta">
           {memory.location && (

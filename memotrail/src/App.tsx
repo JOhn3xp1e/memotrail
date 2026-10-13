@@ -14,6 +14,7 @@ const TimelinePage = lazy(() =>
     default: module.TimelinePage,
   })),
 );
+const MemoryDetailsPage = lazy(() => import("@/pages/memory-details").then((module) => ({ default: module.MemoryDetailsPage })));
 const AddMemoryPage = lazy(() =>
   import("@/pages/add-memory").then((module) => ({
     default: module.AddMemoryPage,
@@ -48,6 +49,7 @@ export default function App() {
                 <Route element={<AppShell />}>
                   <Route index element={<HomePage />} />
                   <Route path="timeline" element={<TimelinePage />} />
+                  <Route path="memories/:id" element={<MemoryDetailsPage />} />
                   <Route path="add" element={<AddMemoryPage />} />
                   <Route path="collections" element={<CollectionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />

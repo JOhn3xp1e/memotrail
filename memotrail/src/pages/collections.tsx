@@ -13,17 +13,15 @@ import { CollectionCard } from "@/components/collection-card";
 import { CollectionCoverPicker } from "@/components/collection-cover-picker";
 import { EmptyState } from "@/components/empty-state";
 import { MemoryCard } from "@/components/memory-card";
-import { MemoryDialog } from "@/components/memory-dialog";
 import { useMemoryData } from "@/hooks/use-memory-data";
 import { usePreferences } from "@/stores/preferences";
 import { createId, memoryRepository } from "@/services/memory-repository";
-import type { MemoryView, PersonalCollectionView } from "@/types/memory";
+import type { PersonalCollectionView } from "@/types/memory";
 
 export function CollectionsPage() {
   const { collections, memories, isSample, isLoading } = useMemoryData();
   const setSampleMode = usePreferences((state) => state.setSampleMode);
   const [params, setParams] = useSearchParams();
-  const [selected, setSelected] = useState<MemoryView | null>(null);
   const [editing, setEditing] = useState<PersonalCollectionView | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState("");
@@ -152,7 +150,6 @@ export function CollectionsPage() {
                 <MemoryCard
                   key={memory.id}
                   memory={memory}
-                  onOpen={setSelected}
                   index={index}
                 />
               ))}
@@ -244,7 +241,6 @@ export function CollectionsPage() {
           )}
         </>
       )}
-      <MemoryDialog memory={selected} onClose={() => setSelected(null)} />
       <Dialog
         open={dialogOpen}
         onOpenChange={(open) => {

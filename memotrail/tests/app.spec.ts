@@ -296,7 +296,7 @@ test("collections, memory editing, filters, favorites, and confirmed deletion wo
     .locator(".memory-card h3 button")
     .filter({ hasText: "The blue lake" })
     .click();
-  await expect(page.getByRole("dialog")).toContainText(
+  await expect(page.locator(".details-story")).toContainText(
     "A long walk beside the lake.",
   );
   await page.getByRole("link", { name: "Edit memory" }).click();

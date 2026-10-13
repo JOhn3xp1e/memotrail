@@ -2,6 +2,7 @@ import { Heart, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, type ReactNode } from "react";
 import { useHeroPhotos } from "@/hooks/use-hero-photos";
+import { memoryPath } from "@/lib/memory-path";
 import { useObjectUrl } from "@/hooks/use-object-urls";
 
 function HeroPhoto({ blob, title, children }: {
@@ -53,7 +54,7 @@ export function ScrapbookCollage({ sample }: { sample: boolean }) {
       </svg>
       <div className="collage-orbit" aria-hidden="true" />
       <Link
-        to={right ? "/timeline" : sample ? "/timeline?category=travel" : "/add"}
+        to={right ? memoryPath(right.memory) : sample ? "/memories/sample-italy?sample=1" : "/add"}
         className="polaroid polaroid-back"
         aria-label={
           right ? `Explore memory: ${right.memory.title}` : sample
@@ -79,7 +80,7 @@ export function ScrapbookCollage({ sample }: { sample: boolean }) {
         <span className="handwritten">a summer to keep</span>
       </Link>
       <Link
-        to={left ? "/timeline" : sample ? "/timeline?category=travel" : "/add"}
+        to={left ? memoryPath(left.memory) : sample ? "/memories/sample-lake?sample=1" : "/add"}
         className="polaroid polaroid-front"
         aria-label={
           left ? `Explore memory: ${left.memory.title}` : sample ? "Explore sample lake memories" : "Make room for a new memory"
