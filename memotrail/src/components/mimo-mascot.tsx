@@ -6,8 +6,8 @@ import { useMimo } from '@/stores/mimo';
 import { useMimoReducedMotion } from '@/hooks/use-mimo-reduced-motion';
 import { preloadMimoFrames } from '@/lib/mimo-frames';
 
-interface Props { state?: MimoState; manifestUrl?: string; size?: number; inline?: boolean; onComplete?: () => void }
-export function MimoMascot({ state: controlledState, manifestUrl = mimoManifestUrl, size = 88, inline = false, onComplete }: Props) {
+interface Props { state?: MimoState; manifestUrl?: string; size?: number; inline?: boolean; onComplete?: () => void; onActivate?: () => void }
+export function MimoMascot({ state: controlledState, manifestUrl = mimoManifestUrl, size = 88, inline = false, onComplete, onActivate }: Props) {
   const controller = useMimo();
   const state = controlledState ?? controller.state;
   const reduced = useMimoReducedMotion();
@@ -53,7 +53,7 @@ export function MimoMascot({ state: controlledState, manifestUrl = mimoManifestU
   return <aside className={`mimo-companion${inline ? ' mimo-inline' : ''}`} aria-label="Mimo memory companion" data-state={state} data-paused={paused || controller.minimized} data-reduced={reduced} hidden={!inline && controller.rewindOpen}>
     {controller.minimized ? <button ref={restoreButton} className="mimo-restore" onClick={() => minimize(false)} aria-label="Restore Mimo">Mimo</button> : <>
       <button className="mimo-minimize" onClick={() => minimize(true)} aria-label="Minimize Mimo"><Minus size={16} /></button>
-      <button ref={greetButton} className="mimo-greet" aria-label="Wave to Mimo" aria-describedby={statusId} onClick={() => controller.play('wave')}>
+      <button ref={greetButton} className="mimo-greet" data-mimo-launcher={onActivate ? '' : undefined} aria-label={onActivate ? 'Chat with Mimo' : 'Wave to Mimo'} aria-haspopup={onActivate ? 'dialog' : undefined} aria-describedby={statusId} onClick={() => { controller.play('wave'); onActivate?.(); }}>
         <MimoSpritePlayer key={`${state}-${requestId}-${manifestUrl}`} animation={animation} size={size} paused={paused} reducedMotion={reduced} onAssetChange={setSpriteLoaded} playOnce={controlledState ? !animation.loop : controller.temporary} onComplete={() => { if (!controlledState) controller.finish(requestId); onComplete?.(); }} fallback={<img className="mimo-preview" src={`${import.meta.env.BASE_URL}MASCOTMIMO/mimo_pack/reference/mimo_static_preview.svg`} alt="Static Mimo preview: cream bunny with floppy ears, lavender scarf and Polaroid camera" draggable={false} />} />
       </button>
       <span className="mimo-name">Mimo <small>{spriteLoaded ? 'Companion' : 'Static preview'}</small></span>

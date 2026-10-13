@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState, type FormEvent } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Link,
   NavLink,
@@ -36,6 +36,7 @@ const destinations = [
   { to: "/collections", label: "Collections", icon: FolderHeart },
   { to: "/settings", label: "Settings", icon: Settings2 },
 ];
+const MimoAssistant = lazy(() => import("@/components/mimo-assistant").then((module) => ({ default: module.MimoAssistant })));
 
 export function AppShell() {
   const location = useLocation();
@@ -44,6 +45,7 @@ export function AppShell() {
   const mainRef = useRef<HTMLElement>(null);
   const previousPath = useRef(location.pathname);
   const [search, setSearch] = useState("");
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const { name, setTheme, sampleMode, setSampleMode } = usePreferences();
   const dark = useResolvedTheme();
   const { online, offlineReady } = usePwa();
@@ -74,7 +76,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-mimo-assistant-open={assistantOpen || undefined}>
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
@@ -229,7 +231,8 @@ export function AppShell() {
         </footer>
       </div>
 
-      <MimoMascot />
+      {!assistantOpen && <MimoMascot onActivate={() => setAssistantOpen(true)} />}
+      {assistantOpen && <Suspense fallback={<div className="mimo-assistant-loading" role="status">Opening Mimo…<button onClick={() => setAssistantOpen(false)}>Cancel</button></div>}><MimoAssistant onClose={() => setAssistantOpen(false)} /></Suspense>}
       <nav className="bottom-nav" aria-label="Mobile navigation">
         {destinations.map(({ to, label, icon: Icon }) => (
           <NavLink

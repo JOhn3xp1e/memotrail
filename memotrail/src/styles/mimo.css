@@ -23,11 +23,11 @@
 .mimo-restore { border-radius: 22px; min-width: 64px; min-height: 44px; font-size: 12px; }
 .mimo-companion[data-paused="true"] .mimo-preview { animation-play-state: paused; }
 .mimo-companion[data-reduced="true"] .mimo-preview { animation: none; }
-.app-shell:has(.mimo-companion) .app-footer { padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)); }
+.app-shell:is(:has(.mimo-companion), [data-mimo-assistant-open]) .app-footer { padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)); }
 @keyframes mimo-breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.015); } }
 @media (max-width: 767px) {
   .mimo-companion { right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(94px + max(15px, env(safe-area-inset-bottom, 0px))); width: 96px; }
   .mimo-greet .mimo-sprite-player { transform: scale(.85); margin: -6px; }
-  .app-shell:has(.mimo-companion) .app-footer { padding-bottom: calc(260px + env(safe-area-inset-bottom, 0px)); }
+  .app-shell:is(:has(.mimo-companion), [data-mimo-assistant-open]) .app-footer { padding-bottom: calc(260px + env(safe-area-inset-bottom, 0px)); }
 }
 @media (prefers-reduced-motion: reduce) { .mimo-preview { animation: none; } }

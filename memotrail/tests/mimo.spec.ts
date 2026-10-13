@@ -1,3 +1,4 @@
+﻿import { closeMimoChat } from './helpers/mimo-chat';
 import { test, expect } from '@playwright/test';
 import { useMimo } from '../src/stores/mimo';
 import { mimoStates, parseMimoManifest, mimoFrameAt } from '../src/lib/mimo-manifest';
@@ -36,19 +37,21 @@ test('Mimo supports Android screens, both themes, keyboard minimize/restore and 
   const bounds = await mimo.boundingBox();
   const navigation = await page.locator('.bottom-nav').boundingBox();
   expect(bounds!.y + bounds!.height).toBeLessThan(navigation!.y);
-  await page.getByRole('button', { name: 'Wave to Mimo' }).focus();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).focus();
   await page.keyboard.press('Enter');
+  await closeMimoChat(page);
   await expect(mimo).toHaveAttribute('data-state', 'wave');
   await expect(mimo).toHaveAttribute('data-state', 'idle');
   await page.getByRole('button', { name: 'Minimize Mimo' }).focus();
   await page.keyboard.press('Space');
   await expect(page.getByRole('button', { name: 'Restore Mimo' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Restore Mimo' })).toBeFocused();
-  await expect(page.getByRole('button', { name: 'Wave to Mimo' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Chat with Mimo' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Restore Mimo' }).click();
-  await expect(page.getByRole('button', { name: 'Wave to Mimo' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Chat with Mimo' })).toBeFocused();
   await expect(mimo).toHaveAttribute('data-state', 'idle');
-  await page.getByRole('button', { name: 'Wave to Mimo' }).tap();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).tap();
+  await closeMimoChat(page);
   await expect(mimo).toHaveAttribute('data-state', 'wave');
   await expect(mimo).toHaveAttribute('data-state', 'idle');
   await page.screenshot({ path: 'artifacts/mimo-light-android.png' });
@@ -73,7 +76,8 @@ test('successful memory save and jar reveal trigger camera and happy, returning 
   await expect(page).toHaveURL(/\/timeline$/);
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'camera');
   // A low-priority greeting must not interrupt the camera response.
-  await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'camera');
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'idle');
   await page.goto('/jar');
@@ -104,7 +108,8 @@ test('verified individual PNG frames advance in order, pause while hidden, and c
     await route.fulfill({ contentType: 'image/png', body: Buffer.from(data, 'base64') });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
   const sprite = page.locator('.mimo-sprite');
   await expect(sprite).toBeVisible();
   await expect(page.locator('.mimo-name')).toContainText('Companion');
@@ -125,7 +130,8 @@ test('missing frames and invalid metadata fall back to a labeled static preview'
   await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: { version: 2, format: 'individual-png-frames', frameWidth: 256, frameHeight: 256, animations: { wave: { status: 'verified', visualReview: true, frames: ['frames/missing.png'], frameCount: 1, frameDurationMs: 800, loop: false } } } }));
   await page.route('**/missing.png', (route) => route.fulfill({ status: 404 }));
   await page.goto('/');
-  await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
   await expect(page.locator('.mimo-companion')).toContainText('Static preview');
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'idle');
   await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: { animations: { idle: { fps: 0 } } } }));

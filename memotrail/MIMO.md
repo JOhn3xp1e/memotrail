@@ -88,7 +88,7 @@ MemoTrail reduced-motion settings freeze frame zero, while reactions still finis
 Thinking/sleep can remain active until a caller changes them; speaking has no AI
 or audio behavior.
 
-MimoMascot accepts state, size, manifestUrl, inline and onComplete. Explicit state
+MimoMascot accepts state, size, manifestUrl, inline, onComplete and onActivate. Explicit state
 is controlled: the caller uses onComplete to switch it. The shared controller:
 
 ```ts
@@ -99,6 +99,9 @@ useMimo.getState().play('thinking', false); // Persistent state
 useMimo.getState().play('walk', false); // Explicit continuous loop
 useMimo.getState().play('idle'); // Explicit stop
 ```
+
+The floating companion now opens the Phase 7 local assistant on activation;
+its greeting animation is preserved. See MIMO_ASSISTANT.md for assistant details.
 
 Priority and request IDs prevent greetings or stale completion callbacks from
 cancelling save/celebration reactions. Existing events remain: home greeting,

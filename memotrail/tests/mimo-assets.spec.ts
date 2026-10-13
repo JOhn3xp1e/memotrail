@@ -1,3 +1,4 @@
+﻿import { closeMimoChat } from './helpers/mimo-chat';
 import { test, expect, type Page } from '@playwright/test';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -33,7 +34,8 @@ test('all frames preload before playback; fallback and canvas occupy the same bo
     await route.fulfill({ contentType: 'image/png', body: image });
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
   const box = page.locator('.mimo-sprite-player');
   const before = await box.boundingBox();
   await page.waitForTimeout(1100);
@@ -54,7 +56,8 @@ for (const kind of ['opaque', 'dimensions', 'empty', 'not-png']) {
     await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ wave: { ...action(['frames/wave/001.png']), frameDurationMs: 800 } }) }));
     await page.route('**/frames/wave/*.png', (route) => route.fulfill({ contentType: 'image/png', body: image }));
     await page.reload();
-    await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+    await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
     await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'wave');
     await expect(page.locator('.mimo-companion')).toContainText('Static preview');
     await expect(page.locator('.mimo-sprite')).toHaveCount(0);
@@ -98,7 +101,8 @@ test('candidate frames stay in preview; local validator generates ordered review
   await page.route('**/animation_manifest.json', (route) => route.fulfill({ json: manifest({ wave: animation }) }));
   await page.route('**/frames/wave/*.png', (route) => { requested = true; return route.fulfill({ contentType: 'image/png', body: image }); });
   await page.reload();
-  await page.getByRole('button', { name: 'Wave to Mimo' }).click();
+  await page.getByRole('button', { name: 'Chat with Mimo' }).click();
+  await closeMimoChat(page);
   await expect(page.locator('.mimo-companion')).toHaveAttribute('data-state', 'idle');
   expect(requested).toBe(false);
   const root = resolve('artifacts/mimo-test-fixtures');
