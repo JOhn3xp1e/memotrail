@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { PageHeading } from "@/components/page-heading";
+import { ContextualHelp } from "@/components/contextual-help";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -277,6 +278,7 @@ export function AddMemoryPage() {
             : "A photo, a feeling, a few words. It doesn’t have to be perfect."
         }
       />
+      <ContextualHelp guide="add-memory" />
       <div className="composer-notice">
         <Feather size={17} />
         <p>

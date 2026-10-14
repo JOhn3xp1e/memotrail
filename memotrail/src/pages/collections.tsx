@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, FolderHeart, Pencil, Plus } from "lucide-react";
 import { PageHeading } from "@/components/page-heading";
+import { ContextualHelp } from "@/components/contextual-help";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -122,6 +123,7 @@ export function CollectionsPage() {
 
   return (
     <>
+      <ContextualHelp guide="collections">Learn about collections</ContextualHelp>
       {album ? (
         <>
           <button

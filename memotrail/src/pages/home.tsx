@@ -20,6 +20,7 @@ import { useLocalToday } from "@/hooks/use-local-today";
 import { onThisDay } from "@/lib/anniversaries";
 import { memoryPath } from "@/lib/memory-path";
 import { LocalMediaImage } from "@/components/local-media-image";
+import { GuidedTour } from "@/components/guided-tour";
 
 export function HomePage() {
   const { name, setSampleMode } = usePreferences();
@@ -30,7 +31,7 @@ export function HomePage() {
 
   return (
     <>
-      <header className="home-greeting">
+      <header className="home-greeting" data-tour="welcome">
         <div>
           <span className="eyebrow">A LITTLE SPACE, JUST FOR YOU</span>
           <h1>
@@ -90,7 +91,7 @@ export function HomePage() {
       </section>
 
       <div className="home-middle">
-        <section className="recent-section">
+        <section className="recent-section" data-tour="recent">
           <div className="section-heading">
             <div>
               <span className="eyebrow">THE GOOD BITS, LATELY</span>
@@ -224,6 +225,7 @@ export function HomePage() {
         </span>
         <Heart size={15} />
       </div>
+      <GuidedTour />
     </>
   );
 }

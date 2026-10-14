@@ -71,10 +71,10 @@ export function IntroductionPage() {
     } catch { setError("Your place could not be saved on this device. Please try again."); }
     finally { busyRef.current = false; setBusy(false); }
   }
-  async function finish() {
+  async function finish(destination?: "/help") {
     if (busyRef.current) return;
     busyRef.current = true; setBusy(true); setError("");
-    try { if (!replay) await controller.complete(); navigate(replay ? previous : "/", { replace: true }); }
+    try { if (!replay) await controller.complete(); navigate(destination ?? (replay ? previous : "/"), { replace: true }); }
     catch { setError("The introduction could not be saved as complete. Please try again; your journal is unchanged."); }
     finally { busyRef.current = false; setBusy(false); }
   }
@@ -106,6 +106,7 @@ export function IntroductionPage() {
       {error && <p role="alert" className="intro-error">{error}</p>}
       <div className="intro-navigation"><Button className="intro-back" variant="ghost" disabled={busy || step === 0} onClick={() => void move(step - 1)}><ArrowLeft size={17} />Back</Button><Button className="intro-next" disabled={busy} onClick={() => void (step === 4 ? finish() : move(step + 1))}>{busy ? "Saving…" : step === 0 ? "Begin Your Story" : step === 4 ? "Start Collecting Memories" : "Next"}<ArrowRight size={17} /></Button></div>
       <p className="intro-footnote">A private little home. No account needed.</p>
+      {step === 4 && <button className="intro-help-link" disabled={busy} onClick={() => void finish("/help")}>Open How to Use MemoTrail</button>}
     </footer>
   </main>;
 }

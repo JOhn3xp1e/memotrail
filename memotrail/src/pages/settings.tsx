@@ -87,6 +87,7 @@ export function SettingsPage() {
       <div className="settings-grid">
         <div className="settings-main">
           <StorageBackup />
+          <section className="settings-card introduction-setting"><div><h2>How to Use MemoTrail</h2><p className="fine-print">Real examples, friendly guides, and a little tour of your journal.</p></div><Button asChild variant="outline"><Link to="/help">Open Help &amp; Guides</Link></Button></section>
           <section className="settings-card introduction-setting"><div><h2>A little beginning</h2><p className="fine-print">Revisit the introduction whenever you like. Your journal stays just as it is.</p></div><Button asChild variant="outline"><Link to="/introduction" state={{ returnTo: location.pathname + location.search }}>View Introduction Again</Link></Button></section>
           <section className="settings-card">
             <div className="settings-section-heading">

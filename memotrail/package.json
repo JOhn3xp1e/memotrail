@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "docs:screenshots": "node scripts/docs-screenshots.mjs",
+    "prebuild": "tsx --tsconfig tsconfig.app.json scripts/verify-help-assets.ts",
     "icons:generate": "node scripts/generate-icons.mjs",
     "test:backup": "tsx --tsconfig tsconfig.app.json --test tests/backup.test.ts",
     "dev": "vite",

@@ -5,6 +5,7 @@ import { useCapsules, useCapsuleClock, capsuleDate, countdown } from "@/hooks/us
 import { CapsuleEnvelope } from "@/components/capsule-envelope";
 import { PageHeading } from "@/components/page-heading";
 import { Button } from "@/components/ui/button";
+import { ContextualHelp } from "@/components/contextual-help";
 
 export function CapsulesPage() {
   const [retry, setRetry] = useState(0);
@@ -13,7 +14,7 @@ export function CapsulesPage() {
   const [filter, setFilter] = useState("All");
   const capsules = data?.capsules ?? [];
   const status = (capsule: typeof capsules[number]) => capsule.status === "opened" ? "Opened" : Date.parse(capsule.unlockAt) <= now ? "Ready to Open" : "Sealed";
-  return <div className="capsules-page">
+  return <div className="capsules-page"><ContextualHelp guide="capsule-create">How time capsules work</ContextualHelp>
     <PageHeading eyebrow="A LITTLE LOVE, SENT FORWARD" title="Letters to Tomorrow" description="Some memories are meant to be opened later."><Button asChild><Link to="/capsules/new"><Plus size={16} />Create Capsule</Link></Button></PageHeading>
     <div className="capsule-stats">{[["Total Capsules", capsules.length], ["Sealed Capsules", capsules.filter((c) => c.status === "sealed").length], ["Opened Capsules", capsules.filter((c) => c.status === "opened").length], ["Upcoming Unlocks", capsules.filter((c) => c.status === "sealed" && Date.parse(c.unlockAt) > now).length]].map(([label, count]) => <div key={label}><strong>{count}</strong><span>{label}</span></div>)}</div>
     <div className="filter-chips capsule-filters" aria-label="Filter capsules">{["All", "Sealed", "Ready to Open", "Opened"].map((value) => <button className={`filter-chip ${filter === value ? "selected" : ""}`} aria-pressed={filter === value} key={value} onClick={() => setFilter(value)}>{value}</button>)}</div>

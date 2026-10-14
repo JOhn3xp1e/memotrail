@@ -21,6 +21,7 @@ import {
   Settings2,
   Sparkles,
   Sun,
+  CircleHelp,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,7 @@ export function AppShell() {
     }
     const title =
       destinations.find((item) => item.to === location.pathname)?.label ??
-      (location.pathname.startsWith("/capsules") ? "Time Capsule" : "Page not found");
+      (location.pathname === "/help" ? "How to Use" : location.pathname === "/jar" ? "Memory Jar" : location.pathname === "/rewind" ? "Memory Rewind" : location.pathname.startsWith("/memories/") ? "Memory" : location.pathname.startsWith("/capsules") ? "Time Capsule" : "Page not found");
     document.title = `${title} · MemoTrail`;
   }, [location.pathname]);
 
@@ -84,13 +85,14 @@ export function AppShell() {
         </Link>
         <div className="sidebar-nav-label">YOUR LITTLE WORLD</div>
         <nav aria-label="Main navigation" className="desktop-nav">
-          {[...destinations, { to: "/capsules", label: "Time Capsule", icon: Mail }]
+          {[...destinations, { to: "/capsules", label: "Time Capsule", icon: Mail }, { to: "/help", label: "Help & Guides", icon: CircleHelp }]
             .filter((item) => item.to !== "/add")
             .map(({ to, label, icon: Icon }) => (
               <NavLink
                 to={to}
                 end={to === "/"}
                 key={to}
+                data-tour={to.slice(1) || "home"}
                 className={({ isActive }) =>
                   `nav-item ${isActive ? "active" : ""}`
                 }
@@ -102,7 +104,7 @@ export function AppShell() {
             ))}
         </nav>
         <Button className="sidebar-add" asChild>
-          <Link to="/add">
+          <Link to="/add" data-tour="add">
             <Plus size={18} />
             Add a memory
           </Link>
@@ -174,6 +176,7 @@ export function AppShell() {
             >
               {dark ? <Sun size={19} /> : <Moon size={19} />}
             </Button>
+            <Link to="/help" className="topbar-help" aria-label="How to Use MemoTrail"><CircleHelp size={20} /></Link>
             <Link
               to="/settings"
               className="topbar-avatar avatar"
@@ -237,6 +240,7 @@ export function AppShell() {
             key={to}
             end={to === "/"}
             aria-label={label}
+            data-tour={to.slice(1) || "home"}
             className={({ isActive }) =>
               `bottom-nav-item ${to === "/add" ? "bottom-add" : ""} ${isActive ? "active" : ""}`
             }

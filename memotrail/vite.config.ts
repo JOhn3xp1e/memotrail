@@ -55,7 +55,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}", "help/annotated/**/*.webp"],
         globIgnores: ["MASCOTMIMO/**", "MIMOREFERRENCE/**", "mimospritesheet/**", "assets/mimo/**", "icons/memoicon.png"],
         // Only bundled, same-origin files are precached. Blob media stays in IndexedDB;
         // no runtime cache route handles user photos, backup files, or remote servers.

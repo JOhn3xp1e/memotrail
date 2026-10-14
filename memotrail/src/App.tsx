@@ -12,6 +12,7 @@ import { NotFoundPage } from "@/pages/not-found";
 import { MemoToastViewport } from "@/components/ui/memo-toast";
 import { FirstLaunchGate } from "@/components/first-launch-gate";
 const IntroductionPage = lazy(() => import("@/pages/introduction").then((m) => ({ default: m.IntroductionPage })));
+const HelpPage = lazy(() => import("@/pages/help").then((m) => ({ default: m.HelpPage })));
 const RewindPage = lazy(() => import("@/pages/rewind").then((m) => ({ default: m.RewindPage })));
 const CapsulesPage = lazy(() => import("@/pages/capsules").then((m) => ({ default: m.CapsulesPage })));
 const CapsuleCreatePage = lazy(() => import("@/pages/capsule-create").then((m) => ({ default: m.CapsuleCreatePage })));
@@ -78,6 +79,7 @@ export default function App() {
                   <Route path="add" element={<AddMemoryPage />} />
                   <Route path="collections" element={<CollectionsPage />} />
                   <Route path="settings" element={<SettingsPage />} />
+                  <Route path="help" element={<HelpPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Route>
                 </Route>

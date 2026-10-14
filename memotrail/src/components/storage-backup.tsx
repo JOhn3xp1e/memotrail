@@ -10,6 +10,7 @@ import { backupError, backupStatus, exportBackup, previewMerge, restoreBackup, s
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { useBackupOperation } from "@/stores/backup-operation";
 import { notify } from "@/stores/toasts";
+import { ContextualHelp } from "@/components/contextual-help";
 
 const fortnight = 14 * 24 * 60 * 60 * 1000;
 function bytes(value?: number) { return value === undefined ? "Unavailable" : `${(value / 1024 / 1024).toFixed(1)} MiB`; }
@@ -71,6 +72,7 @@ export function StorageBackup() {
   }
   return <section className="settings-card storage-backup" aria-busy={busy}>
     <div className="settings-section-heading"><span className="settings-icon lavender"><Archive size={19} /></span><div><h2>Storage &amp; Backup</h2><p>Keep a copy of the moments you care about.</p></div></div>
+    <ContextualHelp guide="backup">How backups work</ContextualHelp>
     <dl className="backup-stats">
       <div><dt>Memories</dt><dd>{stats?.memories ?? "…"}</dd></div><div><dt>Stored photos</dt><dd>{stats?.photos ?? "…"}</dd></div><div><dt>Time capsules</dt><dd>{stats?.capsules ?? "…"}</dd></div>
       <div><dt>Estimated storage used</dt><dd>{bytes(estimate?.usage)}</dd></div><div><dt>Available browser storage</dt><dd>{bytes(estimate?.quota === undefined || estimate.usage === undefined ? undefined : Math.max(0, estimate.quota - estimate.usage))}</dd></div>
