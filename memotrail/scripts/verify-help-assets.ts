@@ -6,6 +6,8 @@ import { captureMetadata } from "../src/data/help-captures";
 
 const variants = ["mobile-390", "mobile-360", "desktop"] as const;
 const expected = screenshotIds.length * variants.length;
+const report = JSON.parse(await readFile(fileURLToPath(new URL("../public/help/capture-report.json", import.meta.url)), "utf8"));
+if (report.captures !== expected || !Array.isArray(report.failures) || report.failures.length) throw new Error("The last screenshot run was incomplete. Run npm run docs:screenshots again before building.");
 if (captureMetadata.length !== expected) throw new Error(`Expected ${expected} help captures; found ${captureMetadata.length}. Run npm run docs:screenshots before building.`);
 for (const guide of helpGuides) if (!screenshotIds.includes(guide.screenshot)) throw new Error(`Unknown screenshot for ${guide.id}`);
 let bytes = 0;

@@ -119,6 +119,9 @@ try {
   if (failures.length) process.exitCode = 1;
 } catch (error) {
   console.error(`Screenshot generation failed: ${error.message}`);
+  failures.push(error.message);
+  await mkdir(output, { recursive: true });
+  await writeFile(resolve(output, "capture-report.json"), JSON.stringify({ generatedAt: new Date().toISOString(), captures: captures.length, imageFiles: captures.length * 2, failures }, null, 2));
   process.exitCode = 1;
 } finally {
   await browser?.close();

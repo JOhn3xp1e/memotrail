@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "./fixtures";
+import { test, expect, devices, type Page } from "./fixtures";
 import AxeBuilder from "@axe-core/playwright";
 import { helpGuides, screenshotIds } from "../src/data/help";
 import { captureMetadata } from "../src/data/help-captures";
@@ -91,6 +91,7 @@ for (const mobile of [true, false]) test(`tour highlights real controls, support
   await dialog.press("ArrowRight"); await expect(dialog).toContainText("The good bits, lately");
   await dialog.getByRole("button", { name: "Back", exact: true }).click(); await expect(dialog).toContainText("A little home for your story");
   await dialog.getByRole("button", { name: "Skip tour" }).click(); await expect(dialog).toHaveCount(0); await expect(page.locator(".tour-highlight")).toHaveCount(0);
+  await expect(page.locator("#main-content")).toBeFocused();
   await page.goto("/help"); await page.getByRole("button", { name: "Take a guided tour" }).click();
   for (let index = 0; index < 5; index++) {
     await expect(dialog).toContainText(`${index + 1} OF 6`);
@@ -114,6 +115,42 @@ test("help entry points and draft protection keep unsaved work usable", async ({
   await page.goto("/collections"); await page.getByRole("link", { name: "Learn about collections" }).click(); await expect(page).toHaveURL(/guide=collections/);
   await page.goto("/capsules"); await page.getByRole("link", { name: "How time capsules work" }).click(); await expect(page).toHaveURL(/guide=capsule-create/);
   await page.goto("/settings"); await page.getByRole("link", { name: "How backups work" }).click(); await expect(page).toHaveURL(/guide=backup/);
+});
+
+test("tour skips unavailable targets and Escape removes its overlays", async ({ page }) => {
+  await page.goto("/help");
+  await page.addStyleTag({ content: '[data-tour="recent"] { display: none !important; }' });
+  await page.getByRole("button", { name: "Take a guided tour" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("Start with a little moment");
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".tour-panel,.tour-highlight,.tour-overlay")).toHaveCount(0);
+});
+
+test("the last introduction screen opens help without restarting onboarding", async ({ page }) => {
+  await page.goto("/introduction");
+  await page.getByRole("button", { name: "Go to introduction step 5" }).click();
+  await page.getByRole("button", { name: "Open How to Use MemoTrail" }).click();
+  await expect(page).toHaveURL(/\/help$/);
+  await page.reload(); await expect(page.getByRole("heading", { level: 1 })).toHaveText("How to Use MemoTrail");
+});
+
+test.describe("Android installed-app help layout", () => {
+  test.use({ userAgent: devices["Pixel 7"].userAgent, isMobile: true, hasTouch: true, viewport: { width: 390, height: 844 } });
+  test("standalone phone keeps all five navigation items and loads annotated screenshots", async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = window.matchMedia.bind(window);
+      window.matchMedia = (query) => {
+        const result = original(query);
+        if (query === "(display-mode: standalone)") Object.defineProperty(result, "matches", { value: true });
+        return result;
+      };
+    });
+    await page.goto("/help?guide=mobile-navigation"); await loadedScreenshot(page);
+    await expect(page.getByRole("tab", { name: /Mobile Guide/ })).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".bottom-nav a")).toHaveCount(5);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
 });
 
 test("all guide text and both screenshot sets work offline without changing the journal", async ({ page, context }) => {
