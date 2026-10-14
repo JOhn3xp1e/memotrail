@@ -1,0 +1,30 @@
+.install-progress-dialog { max-width: 440px; padding: 32px; }
+.install-progress-emblem { position: relative; width: 76px; margin: 0 auto 22px; }
+.install-progress-emblem img { width: 76px; height: 76px; border-radius: 23px; border: 1px solid var(--border); box-shadow: 0 10px 30px #9c88c326; }
+.install-progress-emblem > span { position: absolute; right: -6px; bottom: -6px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: var(--primary-foreground); border: 3px solid var(--card); }
+.install-progress-dialog > .eyebrow { display: block; text-align: center; font-size: 10px; letter-spacing: .16em; }
+.install-progress-dialog .dialog-title { text-align: center; margin-top: 10px; font-family: var(--font-serif); font-size: 32px; line-height: 1.12; }
+.install-progress-dialog .dialog-description { text-align: center; margin-top: 12px; line-height: 1.65; }
+.install-progress-track { height: 6px; overflow: hidden; border-radius: 99px; background: var(--secondary); margin: 25px 0; }
+.install-progress-track > span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #bca6dc, #8b6cb0, #bca6dc); }
+.install-progress-track.is-waiting > span { width: 38%; animation: install-progress-slide 1.7s ease-in-out infinite; }
+.install-progress-track.is-accepted > span { width: 100%; }
+.install-progress-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.install-progress-steps li { display: flex; gap: 12px; align-items: center; }
+.install-progress-steps li > span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--secondary); color: var(--muted-foreground); flex-shrink: 0; }
+.install-progress-steps li.is-done > span { color: #80609f; background: #bca6dc28; }
+.install-progress-steps strong { display: block; font-size: 13px; font-weight: 500; }
+.install-progress-steps small { display: block; margin-top: 3px; color: var(--muted-foreground); font-size: 12px; }
+.install-progress-note { display: flex; gap: 8px; align-items: flex-start; margin: 24px 0 18px; color: var(--muted-foreground); font-size: 11px; line-height: 1.6; }
+.install-progress-note svg { flex-shrink: 0; margin-top: 2px; }
+@keyframes install-progress-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(365%); } }
+.install-progress-still .install-progress-track.is-waiting > span { animation: none; width: 100%; opacity: .6; }
+@media (prefers-reduced-motion: reduce) { .install-progress-track.is-waiting > span { animation: none; width: 100%; opacity: .6; } }
+@media (max-width: 480px) {
+  .install-progress-dialog { padding: 24px 22px 22px; }
+  .install-progress-emblem { margin-bottom: 16px; }
+  .install-progress-dialog .dialog-title { font-size: 28px; }
+  .install-progress-track { margin: 18px 0; }
+  .install-progress-steps { gap: 13px; }
+  .install-progress-note { margin: 18px 0 16px; }
+}

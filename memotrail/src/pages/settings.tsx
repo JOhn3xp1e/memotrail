@@ -69,7 +69,6 @@ export function SettingsPage() {
   const [info, setInfo] = useState<"privacy" | "install" | "credits" | null>(
     null,
   );
-  const [installError, setInstallError] = useState(false);
   const pwa = usePwa();
   const persistence = useStoragePersistence();
   function saveName(event: FormEvent) {
@@ -285,19 +284,20 @@ export function SettingsPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  if (pwa.canInstall)
-                    void pwa.install().catch(() => setInstallError(true));
+                  if (pwa.installStage === "prompting" || pwa.installStage === "requested")
+                    pwa.showInstallProgress();
+                  else if (pwa.canInstall)
+                    void pwa.install();
                   else setInfo("install");
                 }}
               >
                 <Download size={16} />
-                {pwa.canInstall ? "Install MemoTrail" : "How to install"}
+                {pwa.installStage === "prompting" || pwa.installStage === "requested" ? "View installation progress" : pwa.canInstall ? "Install MemoTrail" : "How to install"}
               </Button>
             )}
-            {installError && (
+            {(pwa.installStage === "failed" || pwa.installStage === "stalled") && (
               <p role="alert" className="fine-print">
-                Installation didn’t finish. Please try your browser’s install
-                menu.
+                The browser hasn’t confirmed installation. Check your apps or try your browser’s install menu.
               </p>
             )}
           </section>
