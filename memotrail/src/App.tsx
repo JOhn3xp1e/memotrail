@@ -9,6 +9,7 @@ import { usePreferences } from "@/stores/preferences";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
+import { MemoToastViewport } from "@/components/ui/memo-toast";
 const RewindPage = lazy(() => import("@/pages/rewind").then((m) => ({ default: m.RewindPage })));
 const CapsulesPage = lazy(() => import("@/pages/capsules").then((m) => ({ default: m.CapsulesPage })));
 const CapsuleCreatePage = lazy(() => import("@/pages/capsule-create").then((m) => ({ default: m.CapsuleCreatePage })));
@@ -36,6 +37,16 @@ const SettingsPage = lazy(() =>
   })),
 );
 export default function App() {
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const update = () => {
+      document.documentElement.style.setProperty("--memo-viewport-height", `${viewport.height}px`);
+      document.documentElement.style.setProperty("--memo-viewport-top", `${viewport.offsetTop}px`);
+    };
+    update(); viewport.addEventListener("resize", update); viewport.addEventListener("scroll", update);
+    return () => { viewport.removeEventListener("resize", update); viewport.removeEventListener("scroll", update); document.documentElement.style.removeProperty("--memo-viewport-height"); document.documentElement.style.removeProperty("--memo-viewport-top"); };
+  }, []);
   useTheme();
   const requestPersistentStorage = useStoragePersistence(
     (state) => state.request,
@@ -66,6 +77,7 @@ export default function App() {
                   <Route path="*" element={<NotFoundPage />} />
                 </Route>
               </Routes>
+              <MemoToastViewport />
             </BrowserRouter>
           </PwaProvider>
         </div>

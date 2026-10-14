@@ -17,6 +17,8 @@ import { useMemoryData } from "@/hooks/use-memory-data";
 import { usePreferences } from "@/stores/preferences";
 import { createId, memoryRepository } from "@/services/memory-repository";
 import type { PersonalCollectionView } from "@/types/memory";
+import { MemoConfirmDialog } from "@/components/ui/memo-confirm-dialog";
+import { notify } from "@/stores/toasts";
 
 export function CollectionsPage() {
   const { collections, memories, isSample, isLoading } = useMemoryData();
@@ -29,6 +31,8 @@ export function CollectionsPage() {
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const album = collections.find((item) => item.id === params.get("album"));
 
   useEffect(() => {
@@ -108,6 +112,13 @@ export function CollectionsPage() {
           : memory.collectionId === album.id,
       )
     : [];
+  async function deleteCollection() {
+    if (album?.source !== "personal" || deleting) return;
+    setDeleting(true); setError("");
+    try { await memoryRepository.deleteCollection(album.id); setConfirmDelete(false); setParams({}); notify("Collection removed. Your memories and photos are still in your vault.", "success"); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : "Could not remove this collection."); }
+    finally { setDeleting(false); }
+  }
 
   return (
     <>
@@ -141,6 +152,7 @@ export function CollectionsPage() {
                   Edit collection
                 </Button>
               )}
+              {album.source === "personal" && <Button variant="ghost" onClick={() => { setError(""); setConfirmDelete(true); }}>Delete collection</Button>}
               <FolderHeart size={48} strokeWidth={1} />
             </div>
           </div>
@@ -248,7 +260,7 @@ export function CollectionsPage() {
           if (!open) setError("");
         }}
       >
-        <DialogContent>
+        <DialogContent busy={saving}>
           <span className="eyebrow">
             {editing ? "A LITTLE EDIT" : "A NEW CHAPTER"}
           </span>
@@ -258,7 +270,7 @@ export function CollectionsPage() {
           <DialogDescription>
             Collections are saved privately on this device.
           </DialogDescription>
-          <form className="collection-form" onSubmit={saveCollection}>
+          <form className="collection-form" onSubmit={saveCollection} noValidate>
             <div className="field">
               <label htmlFor="collection-name">Collection name</label>
               <input
@@ -303,6 +315,7 @@ export function CollectionsPage() {
           </form>
         </DialogContent>
       </Dialog>
+      <MemoConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title="Let this collection go?" description="Only the collection will be removed. Its memories and photos stay in your vault, without a collection." cancelLabel="Keep collection" confirmLabel={deleting ? "Removing…" : "Confirm Delete Collection"} busy={deleting} onConfirm={() => void deleteCollection()}>{error && <p role="alert" className="form-error">{error}</p>}</MemoConfirmDialog>
     </>
   );
 }

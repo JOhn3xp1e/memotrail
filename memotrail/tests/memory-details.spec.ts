@@ -1,3 +1,4 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect } from "@playwright/test";
 import path from "node:path";
 
@@ -12,7 +13,7 @@ test("memory details opens from every entry point and works offline", async ({ p
   await page.getByLabel("Give this moment a title").fill("An afternoon to keep");
   await page.getByLabel("What made it special?").fill("Good friends and golden light.");
   await page.getByLabel("Where were you?").fill("Singapore");
-  await page.getByLabel("Add to a collection").selectOption({ label: "Together" });
+  await chooseOption(page, "Add to a collection", { label: "Together" });
   await page.locator("input[type=file]").setInputFiles([
     path.resolve("public/photos/wildflowers.jpg"), path.resolve("public/photos/lake-weekend.jpg"),
   ]);

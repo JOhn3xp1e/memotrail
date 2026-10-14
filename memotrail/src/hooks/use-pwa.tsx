@@ -9,6 +9,8 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import { Download, RefreshCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBackupOperation } from "@/stores/backup-operation";
+import { MemoConfirmDialog } from "@/components/ui/memo-confirm-dialog";
+import { notify } from "@/stores/toasts";
 
 interface InstallEvent extends Event {
   prompt(): Promise<void>;
@@ -32,6 +34,7 @@ const PwaContext = createContext<PwaState>({
 });
 
 export function PwaProvider({ children }: { children: ReactNode }) {
+  const [confirmUpdate, setConfirmUpdate] = useState(false);
   const backupBusy = useBackupOperation((state) => state.busy);
   useEffect(() => {
     if (!backupBusy) return;
@@ -105,6 +108,9 @@ export function PwaProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+      <MemoConfirmDialog open={confirmUpdate} onOpenChange={setConfirmUpdate} title="Ready for a fresh chapter?" description="Save your edits before updating. MemoTrail will reload; your saved journal stays on this device." cancelLabel="Keep working" confirmLabel="Update and reload" busy={backupBusy} onConfirm={() => {
+        if (!useBackupOperation.getState().busy) { setConfirmUpdate(false); void updateServiceWorker(true).catch(() => { setError(true); notify("The update could not finish. Your saved journal is still on this device.", "error"); }); }
+      }} />
       {needRefresh && (
         <div className="update-notice" role="status">
           <RefreshCw size={20} />
@@ -116,7 +122,7 @@ export function PwaProvider({ children }: { children: ReactNode }) {
             size="sm"
             disabled={backupBusy}
             onClick={() => {
-              if (!useBackupOperation.getState().busy && window.confirm("Have you saved your edits? Update now and reload MemoTrail?")) void updateServiceWorker(true).catch(() => setError(true));
+              if (!useBackupOperation.getState().busy) setConfirmUpdate(true);
             }}
           >
             <Download size={15} />

@@ -8,6 +8,7 @@
 @import "./styles/capsules.css";
 @import "./styles/rewind.css";
 @import "./styles/backup.css";
+@import "./styles/native-ui.css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --color-background: var(--background);

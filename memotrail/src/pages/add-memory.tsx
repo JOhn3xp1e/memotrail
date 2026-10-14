@@ -36,6 +36,9 @@ import { useMemoryData } from "@/hooks/use-memory-data";
 import { createId, memoryRepository } from "@/services/memory-repository";
 import { usePreferences } from "@/stores/preferences";
 import { preparePhoto } from "@/lib/photo";
+import { MemoSelect } from "@/components/ui/memo-select";
+import { MemoDateInput } from "@/components/ui/memo-date-input";
+import { validDate } from "@/lib/date-input";
 
 const moods: { value: Mood; label: string; symbol: string }[] = [
   { value: "grateful", label: "Grateful", symbol: "♡" },
@@ -176,7 +179,7 @@ export function AddMemoryPage() {
       setError("Give this moment a title before saving it.");
       return;
     }
-    if (!draft.date || draft.date > localDate()) {
+    if (!validDate(draft.date) || draft.date > localDate()) {
       setError("Choose a valid memory date that is not in the future.");
       return;
     }
@@ -275,7 +278,7 @@ export function AddMemoryPage() {
           only to this device. Nothing is uploaded.
         </p>
       </div>
-      <form onSubmit={onSave} className="composer-grid">
+      <form onSubmit={onSave} className="composer-grid" noValidate>
         <div className="composer-main">
           <section className="form-card">
             <div className="form-section-heading">
@@ -387,13 +390,13 @@ export function AddMemoryPage() {
             <div className="field-row">
               <div className="field">
                 <label htmlFor="memory-date">When was it?</label>
-                <input
+                <MemoDateInput
                   id="memory-date"
-                  type="date"
+                  label="When was it?"
                   required
                   value={draft.date}
                   max={localDate()}
-                  onChange={(event) => update({ date: event.target.value })}
+                  onValueChange={(date) => update({ date })}
                 />
               </div>
               <div className="field">
@@ -419,21 +422,14 @@ export function AddMemoryPage() {
                 Add to a collection{" "}
                 <span className="optional">optional</span>
               </label>
-              <select
+              <MemoSelect
                 id="memory-collection"
-                className="field-select"
+                label="Add to a collection"
                 value={draft.collectionId}
-                onChange={(event) =>
-                  update({ collectionId: event.target.value })
-                }
-              >
-                <option value="">No collection</option>
-                {personalCollections.map((collection) => (
-                  <option key={collection.id} value={collection.id}>
-                    {collection.title}
-                  </option>
-                ))}
-              </select>
+                onValueChange={(collectionId) => update({ collectionId })}
+                options={[{ value: "", label: "No collection" }, ...personalCollections.map((collection) => ({ value: collection.id, label: collection.title }))]}
+                onCreate={() => { setCollectionName(""); setCollectionDescription(""); setCollectionError(""); setCollectionDialog(true); }}
+              />
               <button
                 type="button"
                 className="text-link"
@@ -550,13 +546,13 @@ export function AddMemoryPage() {
         </aside>
       </form>
       <Dialog open={collectionDialog} onOpenChange={setCollectionDialog}>
-        <DialogContent>
+        <DialogContent busy={savingCollection}>
           <span className="eyebrow">A NEW CHAPTER</span>
           <DialogTitle>Name your collection.</DialogTitle>
           <DialogDescription>
             It will be created on this device and selected for this memory.
           </DialogDescription>
-          <form className="collection-form" onSubmit={onCreateCollection}>
+          <form className="collection-form" onSubmit={onCreateCollection} noValidate>
             <div className="field">
               <label htmlFor="composer-collection-name">Collection name</label>
               <input

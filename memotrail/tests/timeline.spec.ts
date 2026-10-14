@@ -1,3 +1,4 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect, type Page } from "@playwright/test";
 import { onThisDay } from "../src/lib/anniversaries";
 
@@ -40,14 +41,14 @@ test("timeline groups, filters, paginates, and links local memories", async ({ p
   await expect(page.locator(".timeline-year")).toHaveText(["2025", "2024", "2023"]);
   await page.getByRole("button", { name: /Show more memories/ }).click();
   await expect(page.locator(".memory-card")).toHaveCount(60);
-  await page.getByLabel("Filter by year").selectOption("2024");
+  await chooseOption(page, "Filter by year", "2024");
   await expect(page.locator(".memory-card")).toHaveCount(1);
-  await page.getByLabel("Filter by collection").selectOption("b");
-  await page.getByLabel("Filter by mood").selectOption("peaceful");
+  await chooseOption(page, "Filter by collection", "b");
+  await chooseOption(page, "Filter by mood", "peaceful");
   await page.getByRole("button", { name: "Favorites", exact: true }).click();
   await page.getByLabel("Search memories by title or description").fill("secret sunset");
   await expect(page.locator(".memory-card")).toContainText("Moment 1");
-  await page.getByLabel("Filter by collection").selectOption("a");
+  await chooseOption(page, "Filter by collection", "a");
   await expect(page.getByText("No moments found, just yet.")).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
   await expect(page.locator(".memory-card")).toHaveCount(48);

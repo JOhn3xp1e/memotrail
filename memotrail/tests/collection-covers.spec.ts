@@ -1,3 +1,4 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect } from "@playwright/test";
 import path from "node:path";
 
@@ -14,7 +15,7 @@ test("collection covers react to uploads, selection, moves, and deletion", async
   for (let count = 1; count <= 5; count++) {
     await editor.goto("/add");
     await editor.getByLabel("Give this moment a title").fill(`Photo memory ${count}`);
-    await editor.getByLabel("Add to a collection").selectOption({ label: "Tropa Time" });
+    await chooseOption(editor, "Add to a collection", { label: "Tropa Time" });
     await editor.locator("input[type=file]").setInputFiles(path.resolve(
       `public/photos/${count % 2 ? "wildflowers" : "lake-weekend"}.jpg`,
     ));
@@ -56,7 +57,7 @@ test("collection covers react to uploads, selection, moves, and deletion", async
   // Moving a memory removes its photos from the old collection immediately.
   await editor.locator(".memory-card h3 button").filter({ hasText: "Photo memory 5" }).click();
   await editor.getByRole("link", { name: "Edit memory" }).click();
-  await editor.getByLabel("Add to a collection").selectOption("");
+  await chooseOption(editor, "Add to a collection", "");
   await editor.getByRole("button", { name: "Save changes", exact: true }).click();
   await expect(card).toContainText("4 memories");
   for (const count of [4, 3, 2, 1]) {

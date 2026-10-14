@@ -1,0 +1,58 @@
+.memo-select-trigger { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 46px; padding: 11px 13px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--foreground); font: inherit; text-align: left; cursor: pointer; }
+.memo-select-trigger span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memo-select-trigger svg { flex-shrink: 0; color: var(--muted-foreground); }
+.memo-select-trigger:focus-visible, .memo-option:focus-visible, .calendar-grid button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.memo-select-trigger[aria-expanded=true] { border-color: var(--ring); }
+.memo-popover { z-index: 75; width: max(250px,var(--radix-popover-trigger-width)); max-width: calc(100vw - 32px); max-height: min(450px,var(--radix-popover-content-available-height)); overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: var(--card); color: var(--foreground); box-shadow: 0 12px 48px #0003; animation: fade-in .15s ease; }
+.picker-heading { font-family: var(--serif); font-size: 23px; margin: 0 0 12px; }
+.memo-option-list { display: flex; flex-direction: column; gap: 5px; max-height: 46dvh; overflow-y: auto; padding: 3px; overscroll-behavior: contain; }
+.memo-option { min-height: 46px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid transparent; border-radius: 10px; padding: 12px; text-align: left; font: inherit; background: transparent; color: var(--foreground); cursor: pointer; overflow-wrap: anywhere; }
+.memo-option:hover, .memo-option:focus-visible { background: var(--muted); }
+.memo-option[aria-selected=true] { background: var(--secondary); color: var(--primary-strong); border-color: var(--border); }
+.memo-option-indicator { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--border); border-radius: 50%; flex-shrink: 0; }
+.memo-option[aria-selected=true] .memo-option-indicator { background: var(--primary); color: var(--primary-foreground); }
+.picker-create { width: 100%; margin-top: 12px; }
+.sheet-handle { display: none; }
+.dialog-close { min-width: 44px; min-height: 44px; }
+.dialog-content { top: calc(var(--memo-viewport-top,0px) + var(--memo-viewport-height,100dvh) / 2); max-height: calc(var(--memo-viewport-height,100dvh) - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)); scroll-padding-block: 16px; }
+.dialog-actions { position: sticky; bottom: -1px; background: var(--card); padding: 14px 0 3px; flex-wrap: wrap; z-index: 1; }
+.dialog-actions > button { min-height: 44px; }
+.dialog-content .button,.memo-popover .button { min-height: 44px; }
+.timeline-filters .memo-select-trigger { font-size: 12px; min-width: 120px; }
+.brand-mark { object-fit: contain; }
+.memo-date-input { position: relative; display: flex; align-items: center; width: 100%; }
+.memo-date-input > input { width: 100%; min-height: 46px; padding-right: 48px !important; }
+.date-trigger { position: absolute; right: 2px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 9px; color: var(--primary-strong); background: transparent; cursor: pointer; }
+.date-trigger:focus-visible { outline: 2px solid var(--ring); }
+.calendar-picker.memo-popover { width: 370px; }
+.calendar-navigation { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; gap: 8px; }
+.calendar-navigation p { font-family: var(--serif); font-size: 22px; }
+.calendar-navigation button { width: 44px; height: 44px; }
+.calendar-jump { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; margin: 16px 0; }
+.calendar-grid [role=row] { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 2px; }
+.calendar-grid [role=columnheader] { text-align: center; font-size: 11px; padding: 8px 0; color: var(--muted-foreground); }
+.calendar-grid [role=gridcell] { min-width: 0; }
+.calendar-grid button { width: 100%; min-width: 44px; min-height: 44px; padding: 0; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--foreground); font: inherit; cursor: pointer; }
+.calendar-grid button:disabled { opacity: .35; cursor: default; }
+.calendar-grid button:not(:disabled):hover { background: var(--muted); }
+.calendar-grid [aria-selected=true] button { background: var(--primary); color: var(--primary-foreground); }
+.calendar-grid button[aria-current=date] { border-color: var(--primary); }
+.memo-toasts { position: fixed; right: max(16px,env(safe-area-inset-right,0px)); bottom: calc(22px + env(safe-area-inset-bottom,0px)); z-index: 95; width: min(390px,calc(100vw - 32px)); display: grid; gap: 10px; pointer-events: none; }
+.memo-toast { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 16px; background: var(--card); color: var(--foreground); box-shadow: 0 6px 30px #0003; pointer-events: auto; font-size: 12px; }
+.memo-toast > svg { flex-shrink: 0; color: var(--primary-strong); }
+.memo-toast p { flex: 1; line-height: 1.7; }
+.memo-toast button { min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: 12px; background: transparent; color: var(--foreground); }
+.toast-error,.toast-warning { border-color: var(--primary-strong); }
+@media(max-width:767px) {
+  .dialog-content { width: calc(100% - 24px); padding: 22px; }
+  .dialog-title { font-size: 29px; margin-right: 40px; }
+  .memo-bottom-sheet { top: auto; bottom: max(0px,calc(100dvh - var(--memo-viewport-height,100dvh) - var(--memo-viewport-top,0px))); left: 0; transform: none; width: 100%; border-radius: 24px 24px 0 0; padding: 10px 20px calc(20px + env(safe-area-inset-bottom,0px)); max-height: calc(var(--memo-viewport-height,100dvh) - max(20px,env(safe-area-inset-top,0px))); animation: memo-sheet-in .2s ease-out; z-index: 76; }
+  .memo-bottom-sheet .sheet-handle { display: block; width: 36px; height: 4px; border-radius: 10px; background: var(--muted-foreground); opacity: .45; margin: 0 auto 18px; }
+  .memo-bottom-sheet .dialog-title { font-size: 29px; }
+  .memo-bottom-sheet .dialog-description { margin-bottom: 16px; }
+  .memo-option-list { max-height: 48dvh; }
+  .memo-toasts { bottom: calc(100px + env(safe-area-inset-bottom,0px)); }
+}
+@keyframes memo-sheet-in { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@media(prefers-reduced-motion:reduce) { .dialog-content,.dialog-overlay,.memo-popover { animation: none !important; } }
+[data-reduce-motion] .dialog-content,[data-reduce-motion] .dialog-overlay,[data-reduce-motion] .memo-popover { animation: none !important; }

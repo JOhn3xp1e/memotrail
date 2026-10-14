@@ -13,6 +13,7 @@ import { formatDate } from "@/lib/utils";
 import { useSamples } from "@/stores/samples";
 import { memoryRepository } from "@/services/memory-repository";
 import { LocalMediaImage } from "@/components/local-media-image";
+import { MemoConfirmDialog } from "@/components/ui/memo-confirm-dialog";
 
 export function MemoryDialog({
   memory,
@@ -189,32 +190,13 @@ export function MemoryDialog({
           )}
         </DialogContent>
       </Dialog>
-      <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <DialogContent>
-          <DialogTitle>Let this memory go?</DialogTitle>
-          <DialogDescription>
-            This memory and its photos will be permanently removed from this
-            device.
-          </DialogDescription>
-          <div className="dialog-actions">
-            <Button
-              variant="ghost"
-              disabled={busy}
-              onClick={() => setConfirmDelete(false)}
-            >
-              Keep memory
-            </Button>
-            <Button disabled={busy} onClick={deleteMemory}>
-              {busy ? "Deleting…" : "Delete memory"}
-            </Button>
-          </div>
+      <MemoConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title="Let this memory go?" description="This memory and its photos will be permanently removed from this device." cancelLabel="Keep memory" confirmLabel={busy ? "Deleting…" : "Delete memory"} busy={busy} onConfirm={() => void deleteMemory()}>
           {visibleError && (
             <p className="form-error" role="alert">
               {visibleError}
             </p>
           )}
-        </DialogContent>
-      </Dialog>
+      </MemoConfirmDialog>
     </>
   );
 }

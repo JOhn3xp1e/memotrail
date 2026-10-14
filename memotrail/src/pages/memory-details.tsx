@@ -8,7 +8,7 @@ import { memoryRepository } from "@/services/memory-repository";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MemoryPhotoViewer } from "@/components/memory-photo-viewer";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { MemoConfirmDialog } from "@/components/ui/memo-confirm-dialog";
 
 export function MemoryDetailsPage() {
   const { id = "" } = useParams();
@@ -74,13 +74,8 @@ function MemoryDetails({ id, sample }: { id: string; sample: boolean }) {
         <p className="fine-print">{sample ? "A sample memory to spark a little inspiration." : "Just yours. Saved privately on this device."}</p>
       </section>
     </div>
-    <Dialog open={confirmDelete} onOpenChange={(open) => { if (!busy) setConfirmDelete(open); }}>
-      <DialogContent>
-        <DialogTitle>Let this memory go?</DialogTitle>
-        <DialogDescription>This memory and its photos will be permanently removed from this device.</DialogDescription>
-        <div className="dialog-actions"><Button variant="ghost" disabled={busy} onClick={() => setConfirmDelete(false)}>Keep memory</Button><Button disabled={busy} onClick={() => action(true)}>{busy ? "Deleting…" : "Delete memory"}</Button></div>
+    <MemoConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title="Let this memory go?" description="This memory and its photos will be permanently removed from this device." cancelLabel="Keep memory" confirmLabel={busy ? "Deleting…" : "Delete memory"} busy={busy} onConfirm={() => void action(true)}>
         {error && <p className="form-error" role="alert">{error}</p>}
-      </DialogContent>
-    </Dialog>
+    </MemoConfirmDialog>
   </motion.article>;
 }

@@ -76,7 +76,7 @@ for (const mobile of [false, true]) {
     await expect.poll(() => page.locator(".details-viewer-image img").evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await page.goto("/add?id=m1"); await page.getByLabel("What made it special?").fill("Edited offline"); await page.getByRole("button", { name: "Save changes" }).click();
     await expect(page).toHaveURL(/\/timeline$/); await page.goto("/memories/m1"); await expect(page.locator(".details-story")).toContainText("Edited offline");
-    await page.goto("/settings"); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.goto("/settings"); await expect(page.getByRole("heading", { level: 1 })).toBeVisible(); await expect(page.locator("main > div").last()).toHaveCSS("opacity", "1"); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
     await page.screenshot({ path: `artifacts/phase7-${mobile ? "mobile" : "desktop"}.png`, fullPage: true });
   });

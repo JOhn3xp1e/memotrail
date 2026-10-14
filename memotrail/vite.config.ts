@@ -13,9 +13,11 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       includeAssets: [
-        "favicon.svg",
+        "favicon.png",
         "apple-touch-icon.png",
-        "icons/*.png",
+        "icons/icon-192.png",
+        "icons/icon-512.png",
+        "icons/maskable-512.png",
         "photos/*.jpg",
         "photo-credits.txt",
       ],
@@ -54,7 +56,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}"],
-        globIgnores: ["MASCOTMIMO/**", "MIMOREFERRENCE/**", "mimospritesheet/**", "assets/mimo/**"],
+        globIgnores: ["MASCOTMIMO/**", "MIMOREFERRENCE/**", "mimospritesheet/**", "assets/mimo/**", "icons/memoicon.png"],
         // Only bundled, same-origin files are precached. Blob media stays in IndexedDB;
         // no runtime cache route handles user photos, backup files, or remote servers.
         navigateFallback: "/index.html",

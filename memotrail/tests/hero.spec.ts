@@ -1,7 +1,11 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect, type Page } from "@playwright/test";
 import path from "node:path";
 
 async function expectPhoto(page: Page, side: "front" | "back", title: string) {
+  // Chrome can pause animation frames in background tabs. Inspect the journal
+  // as a user would after returning to it, without navigating or reloading it.
+  await page.bringToFront();
   const image = page.locator(`.polaroid-${side} img`);
   await expect(image).toHaveAttribute("alt", title);
   await expect(image).toHaveAttribute("src", /^blob:/);
@@ -37,8 +41,8 @@ test("hero uses persisted photos, collection memories, favorites, and live edits
   await editor.getByRole("link", { name: "Capture a moment" }).click();
   await editor.getByLabel("Give this moment a title").fill("Collection photo");
   // An older memory date must not override the newer creation timestamp.
-  await editor.locator('input[type="date"]').fill("2000-01-01");
-  await editor.getByLabel("Add to a collection").selectOption({ label: "Hero collection" });
+  await editor.getByLabel("When was it?", { exact: true }).fill("2000-01-01");
+  await chooseOption(editor, "Add to a collection", { label: "Hero collection" });
   await editor.locator("input[type=file]").setInputFiles(path.resolve("public/photos/lake-weekend.jpg"));
   await editor.getByRole("button", { name: "Save memory", exact: true }).click();
   await expect(editor).toHaveURL(/\/timeline$/);

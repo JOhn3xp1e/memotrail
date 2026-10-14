@@ -17,6 +17,9 @@ import { MemoryCard } from "@/components/memory-card";
 import { useMemoryData } from "@/hooks/use-memory-data";
 import { usePreferences } from "@/stores/preferences";
 import { useSamples } from "@/stores/samples";
+import { MemoSelect } from "@/components/ui/memo-select";
+import { MemoDateInput } from "@/components/ui/memo-date-input";
+import { validDate } from "@/lib/date-input";
 
 export function TimelinePage() {
   const { memories, collections, isSample, isLoading } = useMemoryData();
@@ -198,63 +201,41 @@ export function TimelinePage() {
         </span>
       </div>
       {(<div className="timeline-filters" aria-label="Filter memories">
-          <label>Year<select aria-label="Filter by year" value={year} onChange={(event) => updateParam("year", event.target.value)}>
-            <option value="">Every year</option>
-            {year && !years.includes(year) && <option value={year}>{year}</option>}
-            {years.map((value) => <option key={value} value={value}>{value}</option>)}
-          </select></label>
+          <label>Year<MemoSelect label="Filter by year" value={year} onValueChange={(value) => updateParam("year", value)} options={[{ value: "", label: "Every year" }, ...[...new Set([...years, ...(year ? [year] : [])])].map((value) => ({ value, label: value }))]} /></label>
           <label>
             Mood
-            <select
-              aria-label="Filter by mood"
+            <MemoSelect
+              label="Filter by mood"
               value={mood}
-              onChange={(event) => updateParam("mood", event.target.value)}
-            >
-              <option value="">Any mood</option>
-              {["grateful", "happy", "peaceful", "nostalgic", "adventurous"].map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value.charAt(0).toUpperCase() + value.slice(1)}
-                  </option>
-                ),
-              )}
-            </select>
+              onValueChange={(value) => updateParam("mood", value)}
+              options={[{ value: "", label: "Any mood" }, ...["grateful", "happy", "peaceful", "nostalgic", "adventurous"].map((value) => ({ value, label: value.charAt(0).toUpperCase() + value.slice(1) }))]}
+            />
           </label>
           <label>
             Collection
-            <select
-              aria-label="Filter by collection"
+            <MemoSelect
+              label="Filter by collection"
               value={collectionId}
-              onChange={(event) =>
-                updateParam("collection", event.target.value)
-              }
-            >
-              <option value="">Every collection</option>
-              {collections.map((collection) => (
-                <option key={collection.id} value={collection.id}>
-                  {collection.title}
-                </option>
-              ))}
-            </select>
+              onValueChange={(value) => updateParam("collection", value)}
+              options={[{ value: "", label: "Every collection" }, ...collections.map((collection) => ({ value: collection.id, label: collection.title }))]}
+            />
           </label>
           <label>
             From
-            <input
-              aria-label="Filter from date"
-              type="date"
+            <MemoDateInput
+              label="Filter from date"
               value={fromDate}
               max={toDate || undefined}
-              onChange={(event) => updateParam("from", event.target.value)}
+              onValueChange={(value) => { if (!value || validDate(value)) updateParam("from", value); }}
             />
           </label>
           <label>
             To
-            <input
-              aria-label="Filter to date"
-              type="date"
+            <MemoDateInput
+              label="Filter to date"
               value={toDate}
               min={fromDate || undefined}
-              onChange={(event) => updateParam("to", event.target.value)}
+              onValueChange={(value) => { if (!value || validDate(value)) updateParam("to", value); }}
             />
           </label>
           {(year || query || category !== "all" || mood || collectionId || fromDate || toDate) && (

@@ -8,7 +8,7 @@ import { useCapsuleClock, capsuleDate, countdown } from "@/hooks/use-capsules";
 import { CapsuleEnvelope } from "@/components/capsule-envelope";
 import { MemoryPhotoViewer } from "@/components/memory-photo-viewer";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { MemoConfirmDialog } from "@/components/ui/memo-confirm-dialog";
 import { usePreferences } from "@/stores/preferences";
 import { memoryPath } from "@/lib/memory-path";
 
@@ -68,6 +68,6 @@ function CapsuleDetails({ id }: { id: string }) {
     </motion.article>}
     {error && !confirm && <p role="alert" className="form-error">{error}</p>}
     <div className="dialog-actions"><Button variant="ghost" disabled={busy || opening} onClick={() => { setError(""); setConfirm(true); }}>Delete Capsule</Button></div>
-    <Dialog open={confirm} onOpenChange={(open) => { if (!busy) setConfirm(open); }}><DialogContent><DialogTitle>Let this letter go?</DialogTitle><DialogDescription>This permanently deletes the capsule and its attachments from this device. Any memory already saved from it will remain.</DialogDescription>{error && <p role="alert">{error}</p>}<div className="dialog-actions"><Button variant="ghost" disabled={busy} onClick={() => setConfirm(false)}>Keep capsule</Button><Button disabled={busy} onClick={() => act("delete")}>Confirm Delete Capsule</Button></div></DialogContent></Dialog>
+    <MemoConfirmDialog open={confirm} onOpenChange={setConfirm} title="Let this letter go?" description="This permanently deletes the capsule and its attachments from this device. Any memory already saved from it will remain." cancelLabel="Keep capsule" confirmLabel="Confirm Delete Capsule" busy={busy} onConfirm={() => void act("delete")}>{error && <p role="alert">{error}</p>}</MemoConfirmDialog>
   </div>;
 }

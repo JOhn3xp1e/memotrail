@@ -1,3 +1,4 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -56,18 +57,18 @@ test("capsules seal privately, unlock on time offline, convert once, and delete 
   await page.getByLabel("Capsule title").fill("For a brighter tomorrow");
   await page.getByLabel("Your letter").fill("Remember the wonderful afternoon by the lake.");
   await page.getByLabel("Recipient name (optional)").fill("Future me");
-  await page.getByLabel("Mood (optional)").selectOption("grateful");
+  await chooseOption(page, "Mood (optional)", "grateful");
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Attach photos").setInputFiles(["public/photos/lake-weekend.jpg", "public/photos/wildflowers.jpg"]);
   await expect(page.locator(".capsule-photo-previews img")).toHaveCount(2);
   await page.getByRole("button", { name: "Remove photo 2" }).click();
   await expect(page.locator(".capsule-photo-previews img")).toHaveCount(1);
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByLabel("Unlock date").fill("2026-10-12");
+  await page.getByLabel("Unlock date", { exact: true }).fill("2026-10-12");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("alert")).toContainText("future");
-  await page.getByLabel("Unlock date").fill("2026-10-13");
-  await page.getByLabel("Unlock time (optional)").fill("12:10");
+  await page.getByLabel("Unlock date", { exact: true }).fill("2026-10-13");
+  await page.getByLabel("Unlock time (optional)", { exact: true }).fill("12:10");
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.locator(".capsule-letter-text")).toContainText("wonderful afternoon");
   await page.getByRole("button", { name: "Seal Capsule", exact: true }).click();

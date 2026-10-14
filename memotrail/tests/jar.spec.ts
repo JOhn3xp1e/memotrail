@@ -12,6 +12,7 @@ test("jar handles empty, single, favorites, non-repeating picks and offline deta
   await editor.getByLabel("What made it special?").fill("A long conversation.");
   await editor.getByRole("button", { name: "Save memory", exact: true }).click();
   await expect(editor).toHaveURL(/\/timeline$/);
+  await page.bringToFront();
   await expect(page.getByRole("button", { name: "Shake the Jar" })).toBeEnabled();
   await page.getByRole("button", { name: "Shake the Jar" }).click();
   await expect(page.locator(".jar-reveal-card h2")).toHaveText("A quiet afternoon");
@@ -21,6 +22,8 @@ test("jar handles empty, single, favorites, non-repeating picks and offline deta
   await page.getByRole("switch", { name: "Favorites Only" }).click();
   await expect(page.getByRole("heading", { name: "Your favorites belong here." })).toBeVisible();
   await editor.getByRole("button", { name: "Favorite memory: A quiet afternoon", exact: true }).click();
+  await page.bringToFront();
+  await expect(page.getByRole("button", { name: "Pick a memory from the jar" })).toBeEnabled();
   await page.getByRole("button", { name: "Pick a memory from the jar" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".jar-reveal-card h2")).toHaveText("A quiet afternoon");

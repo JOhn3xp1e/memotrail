@@ -1,3 +1,4 @@
+import { chooseOption } from "./helpers/memo-select";
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import path from "node:path";
@@ -260,7 +261,7 @@ test("collections, memory editing, filters, favorites, and confirmed deletion wo
   await expect(page.getByLabel("Give this moment a title")).toHaveValue(
     "The blue lake",
   );
-  await page.getByLabel("Add to a collection").selectOption({
+  await chooseOption(page, "Add to a collection", {
     label: "Lake chapters",
   });
   await page.getByRole("button", { name: /Happy/ }).click();
@@ -279,17 +280,15 @@ test("collections, memory editing, filters, favorites, and confirmed deletion wo
   await expect(
     page.getByRole("button", { name: "Unfavorite memory: The blue lake" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await page.getByLabel("Filter by mood").selectOption("happy");
-  await page
-    .getByLabel("Filter by collection")
-    .selectOption({ label: "Lake chapters" });
-  await page.getByLabel("Filter from date").fill("2025-01-01");
-  await page.getByLabel("Filter to date").fill("2026-12-31");
+  await chooseOption(page, "Filter by mood", "happy");
+  await chooseOption(page, "Filter by collection", { label: "Lake chapters" });
+  await page.getByLabel("Filter from date", { exact: true }).fill("2025-01-01");
+  await page.getByLabel("Filter to date", { exact: true }).fill("2026-12-31");
   await expect(page.locator(".memory-card")).toHaveCount(1);
-  await page.getByLabel("Filter by mood").selectOption("");
-  await page.getByLabel("Filter by collection").selectOption("");
-  await page.getByLabel("Filter from date").fill("");
-  await page.getByLabel("Filter to date").fill("");
+  await chooseOption(page, "Filter by mood", "");
+  await chooseOption(page, "Filter by collection", "");
+  await page.getByLabel("Filter from date", { exact: true }).fill("");
+  await page.getByLabel("Filter to date", { exact: true }).fill("");
 
   await page
     .locator(".memory-card h3 button")

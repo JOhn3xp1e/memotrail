@@ -9,6 +9,7 @@ import { getDatabase } from "@/services/database";
 import { backupError, backupStatus, exportBackup, previewMerge, restoreBackup, saveBackupStatus, validateBackup, type ValidatedBackup } from "@/services/backup";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { useBackupOperation } from "@/stores/backup-operation";
+import { notify } from "@/stores/toasts";
 
 const fortnight = 14 * 24 * 60 * 60 * 1000;
 function bytes(value?: number) { return value === undefined ? "Unavailable" : `${(value / 1024 / 1024).toFixed(1)} MiB`; }
@@ -47,7 +48,7 @@ export function StorageBackup() {
     if (useBackupOperation.getState().busy) return;
     setBusy(true); setError("");
     try { await action(); }
-    catch (e) { setError(backupError(e)); setProgress(""); }
+    catch (e) { setError(backupError(e)); setProgress(""); notify(backupError(e), "error"); }
     finally { setBusy(false); }
   }
   async function download() {
@@ -86,7 +87,7 @@ export function StorageBackup() {
     <div className="backup-actions"><Button variant="outline" disabled={busy || persistence.status === "granted" || persistence.status === "pending" || persistence.status === "unsupported"} onClick={() => void persistence.request()}>{persistence.status === "granted" ? "Storage protection granted" : "Request persistent storage"}</Button></div>
     <p className="fine-print">Persistent storage can reduce automatic eviction. Clearing browser or site data deletes your journal, photos, capsules, and settings. Uninstalling the PWA may also remove local data, depending on your platform. Keep a ZIP copy outside this browser.</p>
     <Dialog open={!!backup} onOpenChange={(open) => { if (!open && !busy) { setBackup(null); setConfirmed(false); } }}>
-      <DialogContent className="backup-dialog" onEscapeKeyDown={(event) => { if (busy) event.preventDefault(); }} onInteractOutside={(event) => { if (busy) event.preventDefault(); }}>
+      <DialogContent className="backup-dialog" busy={busy}>
         <DialogTitle>A safe homecoming for your memories.</DialogTitle><DialogDescription>Every file and relationship has been checked. Choose how this backup joins your journal.</DialogDescription>
         {backup && <><p className="backup-preview">Exported {new Date(backup.manifest.exportedAt).toLocaleString()}<br />{backup.data.memories.length} memories · {backup.data.collections.length} collections · {backup.data.timeCapsules.length} capsules<br />{backup.data.media.length + backup.data.timeCapsuleMedia.length} attachments · {bytes(backup.mediaBytes)}</p>
           <fieldset disabled={busy} className="backup-modes"><legend>Restore method</legend>
