@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import { readFile } from "node:fs/promises";
 import { rewindPeriods, rewindStats, makeRewindSlides, type RewindPhoto } from "../src/lib/rewind";
 import type { Memory } from "../src/types/memory";

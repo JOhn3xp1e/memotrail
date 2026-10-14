@@ -70,6 +70,8 @@ export function AddMemoryPage() {
   const [collectionError, setCollectionError] = useState("");
   const [collectionSaved, setCollectionSaved] = useState("");
   const [savingCollection, setSavingCollection] = useState(false);
+  const [preparingPhotos, setPreparingPhotos] = useState(false);
+  const preparingRef = useRef(false);
   const [saving, setSaving] = useState(false);
   const [loadingEdit, setLoadingEdit] = useState(Boolean(editId));
 
@@ -124,7 +126,7 @@ export function AddMemoryPage() {
   }, [editId, update]);
 
   async function addFiles(files: FileList | null) {
-    if (!files) return;
+    if (!files || preparingRef.current || saving) return;
     const incoming = Array.from(files);
     const supported = incoming.filter(
       (file) =>
@@ -149,23 +151,26 @@ export function AddMemoryPage() {
       return;
     }
     if (!supported.length) return;
+    preparingRef.current = true;
+    setPreparingPhotos(true);
     try {
       setError("");
       const prepared = await Promise.all(supported.map(preparePhoto));
-      update({ photos: [...draft.photos, ...prepared] });
+      update({ photos: [...useDraft.getState().draft.photos, ...prepared] });
     } catch (photoError) {
       setError(
         photoError instanceof Error
           ? photoError.message
           : "One or more photos could not be opened.",
       );
-    }
+    } finally { preparingRef.current = false; setPreparingPhotos(false); }
   }
   function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     addFiles(event.target.files);
     event.target.value = "";
   }
   function onPreview() {
+    if (preparingRef.current) return;
     if (!draft.title.trim()) {
       setError("Give this moment a little title before previewing it.");
       return;
@@ -175,6 +180,7 @@ export function AddMemoryPage() {
   }
   async function onSave(event: FormEvent) {
     event.preventDefault();
+    if (preparingRef.current || saving || loadingEdit) return;
     if (!draft.title.trim()) {
       setError("Give this moment a title before saving it.");
       return;
@@ -293,6 +299,7 @@ export function AddMemoryPage() {
               type="file"
               accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
               multiple
+              disabled={preparingPhotos || saving}
               onChange={onFileChange}
               className="sr-only"
               aria-label="Choose photos for your memory preview"
@@ -301,6 +308,8 @@ export function AddMemoryPage() {
             <button
               type="button"
               className={`photo-dropzone ${dragging ? "dragging" : ""}`}
+              disabled={preparingPhotos || saving}
+              aria-busy={preparingPhotos}
               onClick={() => inputRef.current?.click()}
               onDragOver={(event) => {
                 event.preventDefault();
@@ -317,7 +326,7 @@ export function AddMemoryPage() {
                 <ImagePlus size={29} strokeWidth={1.25} />
               </span>
               <strong>
-                {draft.photos.length
+                {preparingPhotos ? "Preparing your photos…" : draft.photos.length
                   ? "Make room for one more"
                   : "Drop a little moment here"}
               </strong>
@@ -483,6 +492,7 @@ export function AddMemoryPage() {
             <Button
               type="button"
               variant="ghost"
+              disabled={preparingPhotos || saving}
               onClick={() => setConfirmReset(true)}
             >
               <RotateCcw size={15} />
@@ -493,14 +503,14 @@ export function AddMemoryPage() {
                 type="button"
                 variant="secondary"
                 onClick={onPreview}
-                disabled={loadingEdit || saving}
+                disabled={loadingEdit || saving || preparingPhotos}
               >
                 <Eye size={17} />
                 Preview
               </Button>
-              <Button type="submit" disabled={loadingEdit || saving}>
+              <Button type="submit" disabled={loadingEdit || saving || preparingPhotos}>
                 <Save size={17} />
-                {saving
+                {preparingPhotos ? "Preparing photos…" : saving
                   ? "Saving…"
                   : editId
                     ? "Save changes"

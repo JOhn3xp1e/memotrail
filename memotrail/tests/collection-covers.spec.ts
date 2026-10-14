@@ -1,5 +1,5 @@
 import { chooseOption } from "./helpers/memo-select";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import path from "node:path";
 
 test("collection covers react to uploads, selection, moves, and deletion", async ({ page, context }) => {

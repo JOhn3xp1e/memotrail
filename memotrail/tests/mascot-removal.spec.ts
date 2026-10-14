@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from "./fixtures";
 
 test('Mimo is absent on desktop, mobile and offline pages', async ({ page, context }) => {
   const requests: string[] = [];

@@ -1,4 +1,4 @@
-import { test, expect, devices } from "@playwright/test";
+import { test, expect, devices } from "./fixtures";
 import AxeBuilder from "@axe-core/playwright";
 import sharp from "sharp";
 import { chooseOption } from "./helpers/memo-select";

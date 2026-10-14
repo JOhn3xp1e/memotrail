@@ -1,5 +1,5 @@
 import { chooseOption } from "./helpers/memo-select";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import path from "node:path";
 
 test("memory details opens from every entry point and works offline", async ({ page, context }) => {

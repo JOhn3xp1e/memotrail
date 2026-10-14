@@ -1,5 +1,5 @@
 import { chooseOption } from "./helpers/memo-select";
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./fixtures";
 import path from "node:path";
 
 async function expectPhoto(page: Page, side: "front" | "back", title: string) {
@@ -110,4 +110,22 @@ test("two photos in one memory fill both frames even with sample mode enabled", 
     })),
   );
   expect(pixels[0]).not.toEqual(pixels[1]);
+});
+test("saving waits for photo decoding so attachments cannot be omitted", async ({ page }) => {
+  await page.addInitScript(() => {
+    const decode = window.createImageBitmap.bind(window);
+    let release!: () => void;
+    const ready = new Promise<void>((resolve) => { release = resolve; });
+    (window as unknown as { finishPhotoPreparation: () => void }).finishPhotoPreparation = release;
+    window.createImageBitmap = (async (...args: Parameters<typeof createImageBitmap>) => { await ready; return decode(...args); }) as typeof createImageBitmap;
+  });
+  await page.goto("/add"); await page.getByLabel("Give this moment a title").fill("Keep the photo too");
+  await page.locator("input[type=file]").setInputFiles(path.resolve("public/photos/italian-summer.jpg"));
+  await expect(page.getByRole("button", { name: "Preparing photos…", exact: true })).toBeDisabled();
+  await page.locator("form.composer-grid").evaluate((form) => (form as HTMLFormElement).requestSubmit());
+  await expect(page).toHaveURL(/\/add$/);
+  await page.evaluate(() => (window as unknown as { finishPhotoPreparation: () => void }).finishPhotoPreparation());
+  await expect(page.locator(".uploaded-photo")).toHaveCount(1);
+  await page.getByRole("button", { name: "Save memory", exact: true }).click(); await expect(page).toHaveURL(/\/timeline$/);
+  await page.goto("/"); await expectPhoto(page, "front", "Keep the photo too");
 });

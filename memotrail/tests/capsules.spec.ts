@@ -1,5 +1,5 @@
 import { chooseOption } from "./helpers/memo-select";
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import AxeBuilder from "@axe-core/playwright";
 
 test.use({ timezoneId: "Asia/Singapore" });

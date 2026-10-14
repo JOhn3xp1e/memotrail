@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test("jar handles empty, single, favorites, non-repeating picks and offline details", async ({ page, context }) => {
   await page.goto("/");
