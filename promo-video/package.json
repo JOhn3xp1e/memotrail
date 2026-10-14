@@ -1,0 +1,14 @@
+{
+  "name": "memotrail-living-scrapbook", "private": true, "type": "module",
+  "scripts": {
+    "promo:studio": "remotion studio src/index.tsx",
+    "promo:capture": "node scripts/capture.mjs",
+    "promo:render:landscape": "node scripts/render.mjs landscape",
+    "promo:render:vertical": "node scripts/render.mjs vertical",
+    "promo:render:all": "node scripts/render.mjs all",
+    "promo:qa": "node scripts/qa.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {"react":"19.2.8","react-dom":"19.2.8","remotion":"4.0.484","@remotion/cli":"4.0.484","@remotion/bundler":"4.0.484","@remotion/renderer":"4.0.484"},
+  "devDependencies": {"typescript":"~6.0.2","@types/react":"^19.2.18","@types/react-dom":"^19.2.3","@playwright/test":"^1.64.0","sharp":"^0.35.5"}
+}

@@ -1,0 +1,14 @@
+MemoTrail — sample photography
+
+These illustrative photographs from Unsplash are bundled locally for offline use.
+The sample stories are fictional. No sample content is saved into the journal.
+
+Italian summer: https://images.unsplash.com/photo-1516483638261-f4dbaf036963
+Lake weekend: https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1
+Slow mornings: https://images.unsplash.com/photo-1495474472287-4d71bcdd2085
+Our kind of day: https://images.unsplash.com/photo-1529156069898-49953e39b3ac
+Wildflowers: https://images.unsplash.com/photo-1490750967868-88aa4486c946
+Mountain air: https://images.unsplash.com/photo-1464822759023-fed622ff2c3b
+Golden hour: https://images.unsplash.com/photo-1470252649378-9c29740c9fa8
+
+License information: https://unsplash.com/license
