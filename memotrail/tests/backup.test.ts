@@ -11,6 +11,7 @@ const { getDatabase } = await import("../src/services/database");
 const { usePreferences } = await import("../src/stores/preferences");
 const { exportBackup, validateBackup, restoreBackup, previewMerge, sha256, journalTables, backupStatus, saveBackupStatus } = await import("../src/services/backup");
 const db = getDatabase();
+const { capsuleRepository } = await import("../src/services/capsule-repository");
 
 beforeEach(async () => {
   await db.transaction("rw", db.tables, async () => { for (const table of db.tables) await table.clear(); });
@@ -52,6 +53,23 @@ async function mutate(blob: Blob, action: (files: Record<string, Uint8Array>) =>
   }
   return new Blob([zipSync(files) as Uint8Array<ArrayBuffer>]);
 }
+
+test("capsules sealed with blank optional recipient and mood export and restore without modifying stored records", async () => {
+  await seed();
+  const capsuleId = await capsuleRepository.seal({ title: "For tomorrow", message: "Keep this letter", recipientName: undefined, mood: undefined, unlockAt: new Date(Date.now() + 86_400_000).toISOString() }, []);
+  const original = await db.timeCapsules.get(capsuleId);
+  assert.ok(original && Object.hasOwn(original, "recipientName") && Object.hasOwn(original, "mood"));
+  const file = await exportBackup();
+  assert.deepEqual(await db.timeCapsules.get(capsuleId), original);
+  const files = unzipSync(new Uint8Array(await file.arrayBuffer()));
+  const data = JSON.parse(strFromU8(files["data.json"]!)).data;
+  const exported = data.timeCapsules.find((row: { id: string }) => row.id === capsuleId);
+  assert.ok(!Object.hasOwn(exported, "recipientName") && !Object.hasOwn(exported, "mood"));
+  const backup = await validateBackup(file);
+  assert.equal((await previewMerge(backup)).additions, 0);
+  await restoreBackup(backup, "replace", true);
+  assert.deepEqual(await db.timeCapsules.get(capsuleId), JSON.parse(JSON.stringify(original)));
+});
 
 test("all seven journal tables, capsule letters, original bytes and settings round-trip into an empty database", async () => {
   const file = await makeBackup(); const original = await contents();

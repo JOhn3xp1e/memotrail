@@ -9,7 +9,6 @@ import { usePreferences } from "@/stores/preferences";
 import { useStoragePersistence } from "@/stores/storage-persistence";
 import { HomePage } from "@/pages/home";
 import { NotFoundPage } from "@/pages/not-found";
-import { MimoMascot } from "@/components/mimo-mascot";
 const RewindPage = lazy(() => import("@/pages/rewind").then((m) => ({ default: m.RewindPage })));
 const CapsulesPage = lazy(() => import("@/pages/capsules").then((m) => ({ default: m.CapsulesPage })));
 const CapsuleCreatePage = lazy(() => import("@/pages/capsule-create").then((m) => ({ default: m.CapsuleCreatePage })));
@@ -67,7 +66,6 @@ export default function App() {
                   <Route path="*" element={<NotFoundPage />} />
                 </Route>
               </Routes>
-              <MimoMascot />
             </BrowserRouter>
           </PwaProvider>
         </div>

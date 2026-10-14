@@ -338,8 +338,7 @@ export function SettingsPage() {
                   offline use. Clearing your browser’s site data removes local
                   your memories, photos, time capsules, preferences, and cached files.
                   Uninstalling the PWA may remove local data depending on your platform.
-                  Keep a backup outside this browser. Mimo is an animated mascot;
-                  no local or cloud AI is used.
+                  Keep a backup outside this browser. No local or cloud AI is used.
                 </p>
               </div>
             </>

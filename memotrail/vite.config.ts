@@ -18,9 +18,6 @@ export default defineConfig({
         "icons/*.png",
         "photos/*.jpg",
         "photo-credits.txt",
-        "assets/mimo/manifest.json",
-        "assets/mimo/*.png",
-        "MASCOTMIMO/mimo_pack/reference/mimo_static_preview.svg",
       ],
       manifest: {
         id: "/",

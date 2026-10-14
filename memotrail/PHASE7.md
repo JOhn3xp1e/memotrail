@@ -1,6 +1,6 @@
 # Phase 7 — backup, restore and offline reliability
 
-MemoTrail keeps journal content on the device. No AI assistant, cloud database, uploads or analytics were added. The existing Mimo sprite player is mounted as an interactive mascot, with wave/minimize/restore controls and offline assets.
+MemoTrail keeps journal content on the device. No AI assistant, cloud database, uploads or analytics were added. At the user's subsequent request, Mimo was removed from the app and its production assets were removed from the service worker precache. The dormant sprite source/assets remain in the repository.
 
 ## Files and persistence
 
@@ -10,9 +10,9 @@ MemoTrail keeps journal content on the device. No AI assistant, cloud database, 
 - `src/stores/backup-operation.ts`: global operation state protects backup/restore from an application update and enables a browser navigation warning.
 - `src/stores/storage-persistence.ts`: a previously denied persistence request can be retried.
 - `src/components/storage-backup.tsx`, `src/styles/backup.css`, `src/pages/settings.tsx`: storage estimates/counts, local reminder controls, ZIP download/selection, verified preview, explicit replacement confirmation, errors and progress.
-- `src/components/layout/app-shell.tsx`, `src/App.tsx`, `src/index.css`: local reminder, existing mascot and styles; accessible labels for the settings/navigation sidebars.
-- `src/hooks/use-pwa.tsx`, `vite.config.ts`: prompt-based updates, save-before-reload confirmation, backup operation guard, app-shell cache readiness check, and precaching the production mascot assets once.
-- `tests/backup.test.ts`, `tests/backup.spec.ts`: service and production-browser tests. `tests/mascot-removal.spec.ts` now verifies the current mascot-only requirement. The capsule migration assertion accepts IndexedDB version 40 (Dexie version 4). The existing edit-notice assertion distinguishes its status message from mascot/reminder statuses.
+- `src/components/layout/app-shell.tsx`, `src/App.tsx`, `src/index.css`: local reminder and accessible sidebar labels; the later removal unmounts Mimo and removes its stylesheet import.
+- `src/hooks/use-pwa.tsx`, `vite.config.ts`: prompt-based updates, save-before-reload confirmation, backup operation guard and app-shell cache readiness check. Mascot assets are excluded from precaching.
+- `tests/backup.test.ts`, `tests/backup.spec.ts`: service and production-browser tests, including capsules with optional recipient/mood explicitly stored as undefined. `tests/mascot-removal.spec.ts` verifies Mimo is absent on desktop/mobile/offline pages. The capsule migration assertion accepts IndexedDB version 40 (Dexie version 4). The existing edit-notice assertion distinguishes its status message from reminder statuses.
 - `package.json`, `package-lock.json`, `playwright.config.ts`: fflate runtime dependency; tsx/fake-indexeddb test dependencies; `npm run test:backup`; separate Node service tests from Playwright discovery.
 
 ## ZIP format 1
@@ -53,7 +53,7 @@ The storage estimate is approximate. The preflight conservatively reserves room 
 
 ## Offline behavior
 
-Workbox precaches the bundled app shell, lazy screens, local fonts, demo photos and production Mimo strips/manifest. It has no runtime cache rules for user media, ZIP files, Blob URLs or remote content. Journal records and attachment binaries remain in IndexedDB; Workbox cache cleanup does not touch that database.
+Workbox precaches the bundled app shell, lazy screens, local fonts and demo photos. Mimo is neither mounted nor precached. Workbox has no runtime cache rules for user media, ZIP files, Blob URLs or remote content. Journal records and attachment binaries remain in IndexedDB; Workbox cache cleanup does not touch that database.
 
 Updates wait for user action. The UI asks the user to save edits before reloading and disables updates during a backup/restore operation. Offline readiness checks that the app shell is actually cached, rather than relying solely on the existence of an active worker. During testing, duplicate Mimo precache entries with conflicting revisions caused offline startup to fail; retaining one includeAssets entry per mascot file corrected this.
 
@@ -74,11 +74,14 @@ The service suite checks byte-for-byte equality across all seven tables, setting
 
 The browser suite checks offline reload, export and restore, matching restored records and media bytes, local photo display, offline reading/editing, desktop and Android Chrome phone/touch emulation, standalone display-mode emulation, preview/conflict/confirmation UX, real IndexedDB abort/retry, archive errors, reminders, persistence retry, accessibility and layout. Existing journal, capsule, collections, timeline, jar and rewind tests also run.
 
+The subsequent `Invalid timeCapsules.recipientName` fix allows explicitly undefined values for known optional fields, while continuing to reject invalid required fields, unknown fields and malformed non-undefined values. IndexedDB retains those undefined properties when a capsule is created without a recipient or mood; JSON correctly omits them. Export validates without changing the stored records. The regression seals a capsule through the real repository, exports it, checks that the original record is untouched, merges against it, and restores it.
+
 Final verification on the corrected production build:
 
-- `npm run test:backup`: **11 passed**, including complete record/media equality, corrupt archive rejection, quota failure and interrupted transaction rollback/retry.
-- `npm run test:e2e`: **34 passed** in the final full run (4.0 minutes), including desktop/Android Chrome emulation, offline backup/restore/read/edit/photo display, real IndexedDB abort/retry, Mimo, accessibility and existing feature regressions.
-- `npm run build`: **passed**, TypeScript and Vite production build; Workbox generated a 76-entry precache.
+- `npm run test:backup`: **12 passed** after the optional-field fix, including blank recipient/mood, complete record/media equality, corrupt archive rejection, quota failure and interrupted transaction rollback/retry.
+- `npm run test:e2e`: **34 passed** in the original Phase 7 full run (4.0 minutes), before the subsequent mascot removal and optional-field fix.
+- Targeted production browser rerun after those fixes: **6 passed** (26.3 seconds), including desktop/Android-emulated offline export and restore with blank optional capsule fields, and no Mimo on desktop/mobile/offline pages.
+- `npm run build`: **passed** after the subsequent fixes, TypeScript and Vite production build; Workbox generated a 60-entry precache.
 - `npm run lint`: **passed with six existing warnings** in shared PWA, object URL, collection, shell and rewind components; no lint errors.
 - `git diff --check`: **passed**.
 

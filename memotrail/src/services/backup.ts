@@ -68,7 +68,12 @@ function validateData(value: unknown): asserts value is Data {
     const keys = new Set<string>();
     for (const row of rows) {
       requireValid(object(row) && required[table].every((key) => key in row), `Missing fields in ${table}.`);
-      for (const [key, field] of Object.entries(row)) requireValid(Object.hasOwn(schemas[table], key) && schemas[table][key]?.(field), `Invalid ${table}.${key}.`);
+      for (const [key, field] of Object.entries(row)) {
+        // IndexedDB preserves optional properties explicitly set to undefined;
+        // JSON omits them. Validate these just like an absent optional field.
+        const absentOptional = field === undefined && !required[table].includes(key);
+        requireValid(Object.hasOwn(schemas[table], key) && (absentOptional || schemas[table][key]?.(field)), `Invalid ${table}.${key}.`);
+      }
       const key = table === "memoryTags" ? JSON.stringify([row.memoryId, row.tagId]) : row.id as string;
       requireValid(!keys.has(key), `Duplicate ID in ${table}.`); keys.add(key);
     }

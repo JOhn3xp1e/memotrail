@@ -15,7 +15,7 @@ async function seed(page: Page) {
     }
     tx.objectStore("collections").add({ id: "c1", name: "Our days", description: "Together", createdAt: 1, updatedAt: 1, coverMediaId: "p1" });
     tx.objectStore("tags").add({ id: "t1", name: "family" }); tx.objectStore("memoryTags").add({ memoryId: "m1", tagId: "t1" });
-    tx.objectStore("timeCapsules").add({ id: "cap1", title: "Tomorrow", message: "Sealed private letter", recipientName: "Me", createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z", unlockAt: "2030-01-01T00:00:00Z", status: "sealed", memoryId: "m1" });
+    tx.objectStore("timeCapsules").add({ id: "cap1", title: "Tomorrow", message: "Sealed private letter", recipientName: undefined, mood: undefined, createdAt: "2025-01-01T00:00:00Z", updatedAt: "2025-01-01T00:00:00Z", unlockAt: "2030-01-01T00:00:00Z", status: "sealed", memoryId: "m1" });
     tx.objectStore("timeCapsuleMedia").add({ id: "cp1", capsuleId: "cap1", blob: new Blob([png], { type: "image/png" }), mimeType: "image/png", createdAt: "2025-01-01T00:00:00Z", order: 0 });
     await new Promise<void>((resolve, reject) => { tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); }); db.close();
   });
@@ -28,6 +28,8 @@ async function snapshot(page: Page) {
     for (const table of tables) {
       const rows = await new Promise<Record<string, unknown>[]>((resolve) => { const r = db.transaction(table).objectStore(table).getAll(); r.onsuccess = () => resolve(r.result); });
       values[table] = await Promise.all(rows.map(async (row) => {
+        // JSON backups represent optional undefined fields by omitting them.
+        row = Object.fromEntries(Object.entries(row).filter(([, value]) => value !== undefined));
         if (!(row.blob instanceof Blob)) return row;
         const { blob, ...rest } = row;
         return { ...rest, blobType: blob.type, bytes: Array.from(new Uint8Array(await blob.arrayBuffer())) };

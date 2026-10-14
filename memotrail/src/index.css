@@ -8,7 +8,6 @@
 @import "./styles/capsules.css";
 @import "./styles/rewind.css";
 @import "./styles/backup.css";
-@import "./styles/mimo.css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --color-background: var(--background);
