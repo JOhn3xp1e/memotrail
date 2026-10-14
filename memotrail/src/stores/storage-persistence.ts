@@ -19,7 +19,7 @@ export const useStoragePersistence = create<StoragePersistenceState>(
     error: "",
     request: async () => {
       if (
-        ["granted", "not-granted", "unsupported"].includes(get().status)
+        ["granted", "unsupported"].includes(get().status)
       ) {
         return;
       }

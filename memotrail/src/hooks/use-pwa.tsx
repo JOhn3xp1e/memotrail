@@ -8,6 +8,7 @@ import {
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { Download, RefreshCw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useBackupOperation } from "@/stores/backup-operation";
 
 interface InstallEvent extends Event {
   prompt(): Promise<void>;
@@ -31,6 +32,13 @@ const PwaContext = createContext<PwaState>({
 });
 
 export function PwaProvider({ children }: { children: ReactNode }) {
+  const backupBusy = useBackupOperation((state) => state.busy);
+  useEffect(() => {
+    if (!backupBusy) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [backupBusy]);
   const [online, setOnline] = useState(navigator.onLine);
   const [installEvent, setInstallEvent] = useState<InstallEvent | null>(null);
   const [installed, setInstalled] = useState(
@@ -47,8 +55,12 @@ export function PwaProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
     if ("serviceWorker" in navigator) {
-      void navigator.serviceWorker.ready.then(() => {
-        if (mounted) setCachedReady(true);
+      void navigator.serviceWorker.ready.then(async () => {
+        const shell = await caches.match(new URL(`${import.meta.env.BASE_URL}index.html`, location.origin), { ignoreSearch: true });
+        if (mounted) {
+          setCachedReady(!!shell);
+          if (!shell) setError(true);
+        }
       }).catch(() => { if (mounted) setError(true); });
     }
     const onOnline = () => setOnline(true);
@@ -98,12 +110,13 @@ export function PwaProvider({ children }: { children: ReactNode }) {
           <RefreshCw size={20} />
           <div>
             <strong>A fresh chapter is ready</strong>
-            <p>Updating reloads the app and clears unsaved previews.</p>
+            <p>Save your edits before updating. Updating reloads the app; your saved journal stays on this device.</p>
           </div>
           <Button
             size="sm"
+            disabled={backupBusy}
             onClick={() => {
-              void updateServiceWorker(true).catch(() => setError(true));
+              if (!useBackupOperation.getState().busy && window.confirm("Have you saved your edits? Update now and reload MemoTrail?")) void updateServiceWorker(true).catch(() => setError(true));
             }}
           >
             <Download size={15} />

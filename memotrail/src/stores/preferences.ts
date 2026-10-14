@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getDatabase } from "@/services/database";
 
 export type Theme = "light" | "dark" | "system";
 interface Preferences {
@@ -28,7 +29,17 @@ export const usePreferences = create<Preferences>()(
     {
       name: "memotrail-preferences",
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => ({
+        async getItem(key: string) {
+          const stored = await getDatabase().settings.get(key);
+          // Read legacy preferences without deleting them during migration.
+          return stored?.value ?? localStorage.getItem(key);
+        },
+        async setItem(key: string, value: string) {
+          await getDatabase().settings.put({ key, value });
+        },
+        async removeItem(key: string) { await getDatabase().settings.delete(key); },
+      })),
       partialize: ({ name, theme, sampleMode, reduceMotion }) => ({
         name,
         theme,

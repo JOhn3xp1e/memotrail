@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { usePreferences } from "@/stores/preferences";
 import { usePwa } from "@/hooks/use-pwa";
 import { useResolvedTheme } from "@/hooks/use-theme";
+import { BackupReminder } from "@/components/storage-backup";
 
 const destinations = [
   { to: "/", label: "Home", icon: House },
@@ -77,7 +78,7 @@ export function AppShell() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
-      <aside className="sidebar">
+      <aside className="sidebar" aria-label="MemoTrail navigation">
         <Link to="/" className="brand-link" aria-label="MemoTrail home">
           <Brand />
         </Link>
@@ -209,6 +210,7 @@ export function AppShell() {
                   </div>
                 }
               >
+                <BackupReminder />
                 {outlet}
               </Suspense>
             </motion.div>

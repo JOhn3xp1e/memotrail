@@ -2,8 +2,8 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
-  // Historical Mimo feature tests are retained; the mascot and assistant are no longer mounted.
-  testIgnore: ["**/mimo.spec.ts", "**/mimo-assets.spec.ts", "**/mimo-assistant.spec.ts", "**/mimo-strips.spec.ts"],
+  // Historical assistant tests require the retired chat UI. Service tests use node:test.
+  testIgnore: ["**/backup.test.ts", "**/mimo.spec.ts", "**/mimo-assets.spec.ts", "**/mimo-assistant.spec.ts", "**/mimo-strips.spec.ts"],
   fullyParallel: false,
   workers: 1,
   timeout: 45_000,

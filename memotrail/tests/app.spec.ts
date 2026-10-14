@@ -304,7 +304,7 @@ test("collections, memory editing, filters, favorites, and confirmed deletion wo
   );
   await page.getByLabel("Give this moment a title").fill("The quiet blue lake");
   await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page.getByRole("status")).toContainText(
+  await expect(page.getByRole("status").filter({ hasText: "Memory changes saved privately on this device." })).toContainText(
     "Memory changes saved privately on this device.",
   );
   await page.goto("/timeline");

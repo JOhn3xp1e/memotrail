@@ -9,6 +9,7 @@ import type {
 } from "@/types/memory";
 
 export class MemoTrailDatabase extends Dexie {
+  settings!: Table<{ key: string; value: string }, string>;
   timeCapsules!: EntityTable<TimeCapsule, "id">;
   timeCapsuleMedia!: EntityTable<TimeCapsuleMedia, "id">;
   memories!: EntityTable<Memory, "id">;
@@ -82,6 +83,7 @@ export class MemoTrailDatabase extends Dexie {
       timeCapsules: "id, createdAt, unlockAt, status",
       timeCapsuleMedia: "id, capsuleId, [capsuleId+order]",
     });
+    this.version(4).stores({ settings: "key" });
   }
 }
 

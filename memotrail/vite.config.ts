@@ -18,6 +18,9 @@ export default defineConfig({
         "icons/*.png",
         "photos/*.jpg",
         "photo-credits.txt",
+        "assets/mimo/manifest.json",
+        "assets/mimo/*.png",
+        "MASCOTMIMO/mimo_pack/reference/mimo_static_preview.svg",
       ],
       manifest: {
         id: "/",
@@ -55,6 +58,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,jpg,woff2}"],
         globIgnores: ["MASCOTMIMO/**", "MIMOREFERRENCE/**", "mimospritesheet/**", "assets/mimo/**"],
+        // Only bundled, same-origin files are precached. Blob media stays in IndexedDB;
+        // no runtime cache route handles user photos, backup files, or remote servers.
         navigateFallback: "/index.html",
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,

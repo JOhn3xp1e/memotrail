@@ -1,0 +1,18 @@
+.backup-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px 12px; margin: 20px 0; }
+.backup-stats dt { color: var(--muted-foreground); font-size: 11px; }
+.backup-stats dd { font-size: 15px; margin: 7px 0 0; overflow-wrap: anywhere; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.backup-progress, .backup-reminder { padding: 14px; border-radius: 12px; background: var(--secondary); color: var(--foreground); font-size: 12px; line-height: 1.7; margin: 14px 0; }
+.backup-progress progress { display: block; width: 100%; accent-color: var(--primary); margin-bottom: 10px; }
+.backup-error { font-size: 12px; color: var(--foreground); padding: 12px; border: 1px solid var(--primary); border-radius: 10px; overflow-wrap: anywhere; }
+.backup-dialog { max-height: 90dvh; overflow-y: auto; }
+.backup-preview { font-size: 13px; line-height: 1.9; margin: 18px 0; }
+.backup-modes { border: 0; margin: 18px 0; padding: 0; }
+.backup-modes legend { font-weight: 600; font-size: 13px; margin-bottom: 10px; }
+.backup-modes label { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; font-size: 12px; line-height: 1.7; cursor: pointer; }
+.backup-modes strong { display: block; color: var(--foreground); }
+.backup-modes input, .replace-confirm input { accent-color: var(--primary); flex-shrink: 0; margin-top: 4px; }
+.replace-confirm { display: flex; gap: 12px; font-size: 12px; line-height: 1.7; }
+.backup-reminder { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.backup-reminder a { text-decoration: underline; }
+@media(max-width:600px) { .backup-stats { grid-template-columns: repeat(2,minmax(0,1fr)); } .backup-actions > button { flex: 1 1 180px; } .backup-reminder { flex-direction: column; align-items: flex-start; } }

@@ -36,7 +36,7 @@ test("version 3 adds capsule tables without changing existing memories or photos
     const result = { memory, collection, bytes: await (media.blob as Blob).text(), stores: Array.from(database.objectStoreNames), version: database.version };
     database.close(); return result;
   });
-  expect(saved.version).toBe(30);
+  expect(saved.version).toBe(40);
   expect(saved.stores).toContain("timeCapsules");
   expect(saved.stores).toContain("timeCapsuleMedia");
   expect(saved.memory).toMatchObject({ title: "Keep this memory", description: "Untouched", collectionId: "album", favorite: true });

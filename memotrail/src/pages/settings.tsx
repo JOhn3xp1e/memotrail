@@ -27,6 +27,7 @@ import { Brand } from "@/components/brand";
 import { usePreferences, type Theme } from "@/stores/preferences";
 import { usePwa } from "@/hooks/use-pwa";
 import { useStoragePersistence } from "@/stores/storage-persistence";
+import { StorageBackup } from "@/components/storage-backup";
 
 const themes = [
   {
@@ -60,7 +61,8 @@ export function SettingsPage() {
     setSampleMode,
     setReduceMotion,
   } = usePreferences();
-  const [nameInput, setNameInput] = useState(name);
+  const [nameDraft, setNameDraft] = useState({ source: name, value: name });
+  const nameInput = nameDraft.source === name ? nameDraft.value : name;
   const [saved, setSaved] = useState(false);
   const [info, setInfo] = useState<"privacy" | "install" | "credits" | null>(
     null,
@@ -83,6 +85,7 @@ export function SettingsPage() {
       />
       <div className="settings-grid">
         <div className="settings-main">
+          <StorageBackup />
           <section className="settings-card">
             <div className="settings-section-heading">
               <span className="settings-icon rose">
@@ -102,7 +105,7 @@ export function SettingsPage() {
                   maxLength={40}
                   value={nameInput}
                   onChange={(event) => {
-                    setNameInput(event.target.value);
+                    setNameDraft({ source: name, value: event.target.value });
                     setSaved(false);
                   }}
                 />
@@ -205,7 +208,7 @@ export function SettingsPage() {
             </button>
           </section>
         </div>
-        <aside className="settings-aside">
+        <aside className="settings-aside" aria-label="Privacy and installation">
           <section className="privacy-card">
             <div className="privacy-emblem">
               <ShieldCheck size={30} strokeWidth={1.25} />
@@ -333,7 +336,10 @@ export function SettingsPage() {
                 <p>
                   The app caches its own files, fonts, and sample photos for
                   offline use. Clearing your browser’s site data removes local
-                  preferences and cached files.
+                  your memories, photos, time capsules, preferences, and cached files.
+                  Uninstalling the PWA may remove local data depending on your platform.
+                  Keep a backup outside this browser. Mimo is an animated mascot;
+                  no local or cloud AI is used.
                 </p>
               </div>
             </>
