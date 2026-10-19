@@ -18,7 +18,7 @@ function PhotoTile({ photo, reduced, caption = true }: { photo: RewindPhoto; red
     {photo.favorite && <span className="rewind-favorite-mark" aria-label="Marked as a favorite">♥</span>}
   </motion.div>;
 }
- 
+  
 function SlideVisual({ slide, reduced }: { slide: RewindSlide; reduced: boolean }) {
   const photos = slide.photos ?? [];
   if (slide.kind === "title") {
@@ -86,10 +86,7 @@ export function RewindPlayer({ slides, period, onClose }: { slides: RewindSlide[
   }, [stopped, current]);
   useEffect(() => {
     if (elapsed < 6000 || stopped) return;
-    if (current === slides.length - 1) {
-      setPaused(true);
-      return;
-    }
+    if (current === slides.length - 1) { setPaused(true); return; }
     setIndex((value) => value + 1); setElapsed(0);
   }, [elapsed, stopped, current, slides.length]);
 

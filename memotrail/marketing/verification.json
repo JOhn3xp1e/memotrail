@@ -1,0 +1,368 @@
+{
+  "checkedAt": "2026-10-14T09:48:17.989Z",
+  "screenshots": 27,
+  "socialPosts": 24,
+  "allPNGFilesDecoded": true,
+  "dimensions": "passed",
+  "requiredFeatures": "all captured",
+  "skipped": [],
+  "files": [
+    {
+      "file": "screenshots/desktop/01_Home_Dashboard_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/02_Add_Memory_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/03_Memory_Details_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/04_Collections_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/05_Timeline_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/06_On_This_Day_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/07_Memory_Jar_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/08_Time_Capsule_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/09_Memory_Rewind_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/07_Memory_Jar_Revealed_1440x900@2x.png",
+      "width": 2880,
+      "height": 1800,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/01_Home_Dashboard_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/02_Add_Memory_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/03_Memory_Details_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/04_Collections_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/05_Timeline_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/06_On_This_Day_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/07_Memory_Jar_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/08_Time_Capsule_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/09_Memory_Rewind_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/desktop/07_Memory_Jar_Revealed_1920x1080@2x.png",
+      "width": 3840,
+      "height": 2160,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/10_Mobile_Dashboard_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/11_Mobile_Memory_Details_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/12_Mobile_Collections_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/11_Mobile_Memory_Details_Photo_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/13_Mobile_Add_Memory_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/14_Mobile_Memory_Jar_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "screenshots/mobile/15_Mobile_Time_Capsule_390x844@2x.png",
+      "width": 780,
+      "height": 1688,
+      "kind": "raw UI",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/01_Meet_MemoTrail_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/02_Save_Memories_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/03_Collections_and_Timeline_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/04_Rediscover_Memories_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/05_Time_Capsule_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/facebook/06_Offline_First_Privacy_Facebook_Cover_1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/01_Meet_MemoTrail_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/02_Save_Memories_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/03_Collections_and_Timeline_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/04_Rediscover_Memories_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/05_Time_Capsule_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/06_Offline_First_Privacy_Square_1080x1080.png",
+      "width": 1080,
+      "height": 1080,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/01_Meet_MemoTrail_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/02_Save_Memories_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/03_Collections_and_Timeline_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/04_Rediscover_Memories_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/05_Time_Capsule_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/instagram/06_Offline_First_Privacy_Portrait_1080x1350.png",
+      "width": 1080,
+      "height": 1350,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/01_Meet_MemoTrail_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/02_Save_Memories_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/03_Collections_and_Timeline_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/04_Rediscover_Memories_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/05_Time_Capsule_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    },
+    {
+      "file": "social-posts/stories/06_Offline_First_Privacy_Story_1080x1920.png",
+      "width": 1080,
+      "height": 1920,
+      "kind": "social post",
+      "decode": "passed"
+    }
+  ]
+}

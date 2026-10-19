@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { lazy, useEffect } from "react";
 import { MotionConfig } from "motion/react";
 import { AppShell } from "@/components/layout/app-shell";
@@ -85,6 +86,7 @@ export default function App() {
                 </Route>
               </Routes>
               <MemoToastViewport />
+              <Analytics />
             </BrowserRouter>
           </PwaProvider>
         </div>

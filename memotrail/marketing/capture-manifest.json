@@ -1,0 +1,611 @@
+{
+  "generatedAt": "2026-10-14T09:47:34.672Z",
+  "origin": "http://127.0.0.1:4196",
+  "date": "2026-10-14",
+  "theme": "dark",
+  "isolation": "Three ephemeral newContext profiles; no persistent userDataDir; empty journal guard",
+  "captures": [
+    {
+      "name": "01_Home_Dashboard",
+      "file": "screenshots/desktop/01_Home_Dashboard_1440x900@2x.png",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 270,
+        "y": 228.28125,
+        "width": 536.75,
+        "height": 361.09375
+      }
+    },
+    {
+      "name": "02_Add_Memory",
+      "file": "screenshots/desktop/02_Add_Memory_1440x900@2x.png",
+      "route": "/add",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 296,
+        "y": 349.875,
+        "width": 765,
+        "height": 44
+      }
+    },
+    {
+      "name": "03_Memory_Details",
+      "file": "screenshots/desktop/03_Memory_Details_1440x900@2x.png",
+      "route": "/memories/marketing-lake",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 944.15625,
+        "y": 185,
+        "width": 455.828125,
+        "height": 369.3125
+      }
+    },
+    {
+      "name": "04_Collections",
+      "file": "screenshots/desktop/04_Collections_1440x900@2x.png",
+      "route": "/collections",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 270,
+        "y": 310.671875,
+        "width": 356.65625,
+        "height": 328.34375
+      }
+    },
+    {
+      "name": "05_Timeline",
+      "file": "screenshots/desktop/05_Timeline_1440x900@2x.png",
+      "route": "/timeline",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 298,
+        "y": 514.453125,
+        "width": 142.296875,
+        "height": 30.234375
+      }
+    },
+    {
+      "name": "06_On_This_Day",
+      "file": "screenshots/desktop/06_On_This_Day_1440x900@2x.png",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 1140,
+        "y": 382.375,
+        "width": 260,
+        "height": 159.75
+      }
+    },
+    {
+      "name": "07_Memory_Jar",
+      "file": "screenshots/desktop/07_Memory_Jar_1440x900@2x.png",
+      "route": "/jar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 335,
+        "y": 340.28125,
+        "width": 480,
+        "height": 518.59375
+      }
+    },
+    {
+      "name": "08_Time_Capsule",
+      "file": "screenshots/desktop/08_Time_Capsule_1440x900@2x.png",
+      "route": "/capsules",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 270,
+        "y": 250.46875,
+        "width": 360.65625,
+        "height": 479.78125
+      }
+    },
+    {
+      "name": "09_Memory_Rewind",
+      "file": "screenshots/desktop/09_Memory_Rewind_1440x900@2x.png",
+      "route": "/rewind",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 270,
+        "y": 346.671875,
+        "width": 266,
+        "height": 254.875
+      }
+    },
+    {
+      "name": "07_Memory_Jar_Revealed",
+      "file": "screenshots/desktop/07_Memory_Jar_Revealed_1440x900@2x.png",
+      "route": "/jar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "pixels": {
+        "width": 2880,
+        "height": 1800
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 855,
+        "y": 291.984375,
+        "width": 480,
+        "height": 491.171875
+      },
+      "supplemental": true
+    },
+    {
+      "name": "01_Home_Dashboard",
+      "file": "screenshots/desktop/01_Home_Dashboard_1920x1080@2x.png",
+      "route": "/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 385,
+        "y": 237.28125,
+        "width": 655.5,
+        "height": 405.8125
+      }
+    },
+    {
+      "name": "02_Add_Memory",
+      "file": "screenshots/desktop/02_Add_Memory_1920x1080@2x.png",
+      "route": "/add",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 411,
+        "y": 439.90625,
+        "width": 1015,
+        "height": 44
+      }
+    },
+    {
+      "name": "03_Memory_Details",
+      "file": "screenshots/desktop/03_Memory_Details_1920x1080@2x.png",
+      "route": "/memories/marketing-lake",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 1205,
+        "y": 194,
+        "width": 560,
+        "height": 373.1875
+      }
+    },
+    {
+      "name": "04_Collections",
+      "file": "screenshots/desktop/04_Collections_1920x1080@2x.png",
+      "route": "/collections",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 385,
+        "y": 321.203125,
+        "width": 440,
+        "height": 328.34375
+      }
+    },
+    {
+      "name": "05_Timeline",
+      "file": "screenshots/desktop/05_Timeline_1920x1080@2x.png",
+      "route": "/timeline",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 413,
+        "y": 524.984375,
+        "width": 142.296875,
+        "height": 30.234375
+      }
+    },
+    {
+      "name": "06_On_This_Day",
+      "file": "screenshots/desktop/06_On_This_Day_1920x1080@2x.png",
+      "route": "/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 1475,
+        "y": 472.09375,
+        "width": 290,
+        "height": 159.75
+      }
+    },
+    {
+      "name": "07_Memory_Jar",
+      "file": "screenshots/desktop/07_Memory_Jar_1920x1080@2x.png",
+      "route": "/jar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 575,
+        "y": 349.28125,
+        "width": 480,
+        "height": 518.59375
+      }
+    },
+    {
+      "name": "08_Time_Capsule",
+      "file": "screenshots/desktop/08_Time_Capsule_1920x1080@2x.png",
+      "route": "/capsules",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 385,
+        "y": 431,
+        "width": 327,
+        "height": 479.78125
+      }
+    },
+    {
+      "name": "09_Memory_Rewind",
+      "file": "screenshots/desktop/09_Memory_Rewind_1920x1080@2x.png",
+      "route": "/rewind",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 385,
+        "y": 357.203125,
+        "width": 258.390625,
+        "height": 254.875
+      }
+    },
+    {
+      "name": "07_Memory_Jar_Revealed",
+      "file": "screenshots/desktop/07_Memory_Jar_Revealed_1920x1080@2x.png",
+      "route": "/jar",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pixels": {
+        "width": 3840,
+        "height": 2160
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 1095,
+        "y": 362.984375,
+        "width": 480,
+        "height": 491.171875
+      },
+      "supplemental": true
+    },
+    {
+      "name": "10_Mobile_Dashboard",
+      "file": "screenshots/mobile/10_Mobile_Dashboard_390x844@2x.png",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 49,
+        "y": 257.640625,
+        "width": 292,
+        "height": 102.8125
+      }
+    },
+    {
+      "name": "11_Mobile_Memory_Details",
+      "file": "screenshots/mobile/11_Mobile_Memory_Details_390x844@2x.png",
+      "route": "/memories/marketing-lake",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 22,
+        "y": 224.328125,
+        "width": 346,
+        "height": 418.78125
+      }
+    },
+    {
+      "name": "12_Mobile_Collections",
+      "file": "screenshots/mobile/12_Mobile_Collections_390x844@2x.png",
+      "route": "/collections",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 22,
+        "y": 382.09375,
+        "width": 346,
+        "height": 270.34375
+      }
+    },
+    {
+      "name": "11_Mobile_Memory_Details_Photo",
+      "file": "screenshots/mobile/11_Mobile_Memory_Details_Photo_390x844@2x.png",
+      "route": "/memories/marketing-lake",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 22,
+        "y": 157,
+        "width": 346,
+        "height": 535.328125
+      },
+      "supplemental": true
+    },
+    {
+      "name": "13_Mobile_Add_Memory",
+      "file": "screenshots/mobile/13_Mobile_Add_Memory_390x844@2x.png",
+      "route": "/add",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 41,
+        "y": 319.21875,
+        "width": 308,
+        "height": 44
+      },
+      "supplemental": true
+    },
+    {
+      "name": "14_Mobile_Memory_Jar",
+      "file": "screenshots/mobile/14_Mobile_Memory_Jar_390x844@2x.png",
+      "route": "/jar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 22,
+        "y": 155,
+        "width": 346,
+        "height": 102.6875
+      },
+      "supplemental": true
+    },
+    {
+      "name": "15_Mobile_Time_Capsule",
+      "file": "screenshots/mobile/15_Mobile_Time_Capsule_390x844@2x.png",
+      "route": "/capsules",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixels": {
+        "width": 780,
+        "height": 1688
+      },
+      "deviceScaleFactor": 2,
+      "theme": "dark",
+      "synthetic": true,
+      "focusBox": {
+        "x": 22,
+        "y": 212.53125,
+        "width": 346,
+        "height": 442.78125
+      },
+      "supplemental": true
+    }
+  ],
+  "skipped": [],
+  "failures": []
+}
